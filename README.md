@@ -23,7 +23,7 @@ code in this repository from a fresh download; nothing is copied from a paper.
 | **Licence** | **CC BY 4.0** (research use permitted, attribution required) |
 | **Version / download date** | Kaggle mirror, downloaded **2026-09-25** (5,863 files: 5,216 train / 16 val / 624 test; recorded automatically in `data/raw/DOWNLOAD_INFO.json`). After removing 5,794 archive packaging copies and 94 hidden duplicates: **5,824 unique images**. |
 | **How it was collected** | Anterior–posterior chest radiographs of children aged 1–5 from Guangzhou Women and Children's Medical Center, taken during routine care; low-quality scans were removed; labels were graded by two physicians, with the evaluation set checked by a third (Kermany et al., *Cell* 172(5):1122–1131, 2018, https://doi.org/10.1016/j.cell.2018.02.010). |
-| **Why this dataset** | It is the most cited pediatric pneumonia CXR benchmark, it is large enough that a linear baseline does not solve it on the held-out test folder, and it has documented but rarely audited data problems (patient leakage, duplicates, an acquisition shortcut) that make it a demanding test of data handling and fair comparison. _[Add one sentence on the link to the group's research or work.]_ |
+| **Why this dataset** | It is the most cited pediatric pneumonia CXR benchmark, it is large enough that a linear baseline does not solve it on the held-out test folder, and it has documented but rarely audited data problems (patient leakage, duplicates, an acquisition shortcut) that make it a demanding test of data handling and fair comparison. |
 
 Everything the audit found is written to `data/audit.md` by `prepare_data.py` and summarised in §3.
 
