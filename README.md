@@ -2,7 +2,7 @@
 
 **CSBP711 Advanced Artificial Intelligence, United Arab Emirates University, Fall 2026 — Assignment 1: Datasets and Algorithm Comparison**
 
-Group: **Mahd Hindi, Khaled AlHassani, Abdullah AlKaabi** — College of Informatics & AI
+Group: **Mahd Hindi, Khaled AlHassani, Abdulla AlKaabi** — College of Computing & AI
 
 Slides: `slides/CSBP711_A1_slides.pdf` · Repository: https://github.com/mahdhindi/PNEMONIA_DIAGNOSER
 
