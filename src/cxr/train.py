@@ -49,8 +49,9 @@ def image_level_split(df: pd.DataFrame, seed: int, fracs=(0.8, 0.1, 0.1)) -> pd.
     difference to the patient-grouped runs is the split alone."""
     rng = np.random.default_rng(seed)
     out = df.copy()
-    out["split"] = ""
-    for _, part in out.groupby("label"):
+    keep = out["split"].isin(["train", "val", "test"]) & (out["cache_idx"] >= 0)   # exclude duplicate archive copies
+    out.loc[~keep, "split"] = "dropped"
+    for _, part in out[keep].groupby("label"):
         idx = part.index.to_numpy().copy()
         rng.shuffle(idx)
         n = len(idx); n_tr = int(round(fracs[0] * n)); n_va = int(round(fracs[1] * n))

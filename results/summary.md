@@ -4,11 +4,12 @@
 
 | Rank | Model | AUROC | AUROC 95% CI (seed 1) | Accuracy | Balanced acc. | Macro-F1 | Recall (pneu.) | Specificity | Params (M) | Ckpt (MB) | Train time (min) | Infer (ms/img) | Seeds |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | ResNet-50 (ImageNet, fine-tuned) | 0.9706 ± 0.0015 | [0.956, 0.984] | 0.8625 ± 0.0343 | 0.8169 | 0.8374 ± 0.0455 | 0.9974 | 0.6364 | 23.51 | 94.3 | 4.4 | 1.86 | 2 |
-| 2 | Small CNN (scratch) | 0.9416 ± 0.0060 | [0.924, 0.963] | 0.8261 ± 0.0034 | 0.7686 | 0.7885 ± 0.0044 | 0.9961 | 0.5411 | 0.39 | 1.6 | 3.4 | 1.50 | 2 |
-| 3 | DenseNet-121 (ImageNet, fine-tuned) | 0.9357 ± 0.0174 | [0.893, 0.948] | 0.8220 ± 0.0275 | 0.7623 | 0.7812 ± 0.0405 | 0.9987 | 0.5260 | 6.96 | 28.4 | 5.9 | 2.34 | 2 |
-| 4 | Logistic regression (pixels) | 0.8950 ± 0.0056 | [0.872, 0.922] | 0.7743 ± 0.0423 | 0.7042 | 0.7135 ± 0.0659 | 0.9819 | 0.4264 | 0.15 | 0.6 | 3.0 | 1.32 | 2 |
-| 5 | Majority class | 0.5000 ± 0.0000 | [0.500, 0.500] | 0.6262 ± 0.0000 | 0.5000 | 0.3851 ± 0.0000 | 1.0000 | 0.0000 | 0.00 | 0.0 | 0.0 | 1.23 | 2 |
+| 1 | ViT DeiT-B/16 (ImageNet, fine-tuned) | 0.9728 ± 0.0006 | [0.958, 0.985] | 0.8236 ± 0.0275 | 0.7645 | 0.7835 ± 0.0403 | 0.9987 | 0.5303 | 85.80 | 343.2 | 9.2 | 3.56 | 2 |
+| 2 | ResNet-50 (ImageNet, fine-tuned) | 0.9706 ± 0.0015 | [0.956, 0.984] | 0.8625 ± 0.0343 | 0.8169 | 0.8374 ± 0.0455 | 0.9974 | 0.6364 | 23.51 | 94.3 | 4.4 | 1.86 | 2 |
+| 3 | Small CNN (scratch) | 0.9416 ± 0.0060 | [0.924, 0.963] | 0.8261 ± 0.0034 | 0.7686 | 0.7885 ± 0.0044 | 0.9961 | 0.5411 | 0.39 | 1.6 | 3.4 | 1.50 | 2 |
+| 4 | DenseNet-121 (ImageNet, fine-tuned) | 0.9357 ± 0.0174 | [0.893, 0.948] | 0.8220 ± 0.0275 | 0.7623 | 0.7812 ± 0.0405 | 0.9987 | 0.5260 | 6.96 | 28.4 | 5.9 | 2.34 | 2 |
+| 5 | Logistic regression (pixels) | 0.8950 ± 0.0056 | [0.872, 0.922] | 0.7743 ± 0.0423 | 0.7042 | 0.7135 ± 0.0659 | 0.9819 | 0.4264 | 0.15 | 0.6 | 3.0 | 1.32 | 2 |
+| 6 | Majority class | 0.5000 ± 0.0000 | [0.500, 0.500] | 0.6262 ± 0.0000 | 0.5000 | 0.3851 ± 0.0000 | 1.0000 | 0.0000 | 0.00 | 0.0 | 0.0 | 1.23 | 2 |
 
 ![](figures/main_auroc.png)
 
@@ -31,25 +32,26 @@ Training images per fraction: {'10% train': 445, '25% train': 1108, '100% train'
 
 | model | 10% train | 25% train | 100% train | 10% train rank | 25% train rank | 100% train rank |
 |---|---|---|---|---|---|---|
-| Majority class |  |  | 0.5000 |  |  | 5 |
-| Logistic regression (pixels) | 0.8518 | 0.9081 | 0.8950 | 4 | 3 | 4 |
-| Small CNN (scratch) | 0.8727 | 0.9019 | 0.9416 | 2 | 4 | 2 |
-| ResNet-50 (ImageNet, fine-tuned) | 0.8712 | 0.9756 | 0.9706 | 3 | 1 | 1 |
-| DenseNet-121 (ImageNet, fine-tuned) | 0.9455 | 0.9571 | 0.9357 | 1 | 2 | 3 |
+| Majority class |  |  | 0.5000 |  |  | 6 |
+| Logistic regression (pixels) | 0.8518 | 0.9081 | 0.8950 | 4 | 3 | 5 |
+| Small CNN (scratch) | 0.8727 | 0.9019 | 0.9416 | 2 | 4 | 3 |
+| ResNet-50 (ImageNet, fine-tuned) | 0.8712 | 0.9756 | 0.9706 | 3 | 1 | 2 |
+| DenseNet-121 (ImageNet, fine-tuned) | 0.9455 | 0.9571 | 0.9357 | 1 | 2 | 4 |
+| ViT DeiT-B/16 (ImageNet, fine-tuned) |  |  | 0.9728 |  |  | 1 |
 
 ![](figures/ablation_fraction.png)
 
 ## Extra check - removing the aspect-ratio (padding) cue
 
-Same split, same seeds, images squashed to a square instead of padded, so the original aspect ratio is no longer visible. Tests whether the false positives on test NORMAL images come from the geometry shortcut found in the audit.
+Same split, same seed(s) ([42]), images squashed to a square instead of padded, so the original aspect ratio is no longer visible. Tests whether the false positives on test NORMAL images come from the geometry shortcut found in the audit. Padded numbers here are for the same seed(s) only.
 
 | Model | auroc_pad | auroc_stretch | spec_pad | spec_stretch | bal_acc_pad | bal_acc_stretch |
 |---|---|---|---|---|---|---|
 | Majority class | 0.5000 | 0.5000 | 0.0000 | 0.0000 | 0.5000 | 0.5000 |
-| Logistic regression (pixels) | 0.8950 | 0.9119 | 0.4264 | 0.5974 | 0.7042 | 0.7780 |
-| Small CNN (scratch) | 0.9416 | 0.9471 | 0.5411 | 0.7403 | 0.7686 | 0.8624 |
-| ResNet-50 (ImageNet, fine-tuned) | 0.9706 | 0.9896 | 0.6364 | 0.8095 | 0.8169 | 0.9035 |
-| DenseNet-121 (ImageNet, fine-tuned) | 0.9357 | 0.9836 | 0.5260 | 0.7273 | 0.7623 | 0.8611 |
+| Logistic regression (pixels) | 0.8989 | 0.9119 | 0.5022 | 0.5974 | 0.7433 | 0.7780 |
+| Small CNN (scratch) | 0.9458 | 0.9471 | 0.5455 | 0.7403 | 0.7714 | 0.8624 |
+| ResNet-50 (ImageNet, fine-tuned) | 0.9717 | 0.9896 | 0.5714 | 0.8095 | 0.7844 | 0.9035 |
+| DenseNet-121 (ImageNet, fine-tuned) | 0.9233 | 0.9836 | 0.4719 | 0.7273 | 0.7359 | 0.8611 |
 
 ## Correct-classification rate by image subtype (test split)
 
@@ -58,15 +60,16 @@ Pneumonia is one label covering bacterial and viral cases; viral pneumonia is ty
 | model | bacteria (n=240) | normal (n=231) | virus (n=147) |
 |---|---|---|---|
 | Majority class | 1.0000 | 0.0000 | 1.0000 |
-| Logistic regression (pixels) | 0.9903 | 0.4834 | 0.9478 |
-| Small CNN (scratch) | 0.9889 | 0.6075 | 0.9977 |
-| ResNet-50 (ImageNet, fine-tuned) | 0.9958 | 0.6941 | 1.0000 |
-| DenseNet-121 (ImageNet, fine-tuned) | 0.9972 | 0.5931 | 0.9977 |
+| Logistic regression (pixels) | 0.9958 | 0.4264 | 0.9592 |
+| Small CNN (scratch) | 0.9938 | 0.5411 | 1.0000 |
+| ResNet-50 (ImageNet, fine-tuned) | 0.9958 | 0.6364 | 1.0000 |
+| DenseNet-121 (ImageNet, fine-tuned) | 0.9979 | 0.5260 | 1.0000 |
+| ViT DeiT-B/16 (ImageNet, fine-tuned) | 0.9979 | 0.5303 | 1.0000 |
 
 
 # Data audit
 
-Prepared 2026-09-25T15:02:17+00:00 from `/content/repo/data/raw` (strategy: `original_test`).
+Prepared 2026-11-04T11:04:58+00:00 from `/content/repo/data/raw` (strategy: `original_test`).
 
 ## Size
 
@@ -98,4 +101,4 @@ Prepared 2026-09-25T15:02:17+00:00 from `/content/repo/data/raw` (strategy: `ori
 
 ## Near-duplicate calibration
 
-Nearest-neighbour pHash distance percentiles: {'p1': 50, 'p5': 56, 'p10': 60, 'p25': 66, 'p50': 72, 'p75': 78, 'p90': 84} (threshold 10 bits of 256).
+Nearest-neighbour pHash distance percentiles: {'p1': 44, 'p5': 48, 'p10': 52, 'p25': 56, 'p50': 62, 'p75': 68, 'p90': 74} (threshold 10 bits of 256).
