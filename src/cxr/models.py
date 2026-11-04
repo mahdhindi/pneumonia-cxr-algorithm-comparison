@@ -66,13 +66,14 @@ def densenet121(pretrained: bool = True):
     return m
 
 
-def vit_deit_b(pretrained: bool = True):
+def vit_deit_b(pretrained: bool = True, img_size: int = 224):
     """Paper-critique reality check (Assignment 2): the model of Singh et al.,
     Sci. Rep. 14:2487 (2024) - DeiT-Base/16 at 224 px with ImageNet-1k
     weights ('DEIT_Base_Patch16_224'), fully fine-tuned, one-logit head.
     Weights come from timm (facebook/deit_base_patch16_224)."""
     import timm  # imported lazily so the A1 models keep working without timm
-    return timm.create_model("deit_base_patch16_224", pretrained=pretrained, num_classes=1)
+    # img_size is 224 in every real run; other sizes (smoke test) make timm interpolate the position embeddings
+    return timm.create_model("deit_base_patch16_224", pretrained=pretrained, num_classes=1, img_size=img_size)
 
 
 # name -> default learning rate, needs training?, family label
@@ -101,7 +102,7 @@ def build_model(name: str, img_size: int, pretrained: bool = True) -> nn.Module:
     if name == "densenet121":
         return densenet121(pretrained)
     if name == "vit_deit_b":
-        return vit_deit_b(pretrained)
+        return vit_deit_b(pretrained, img_size)
     raise ValueError(f"unknown model {name}; choose from {list(ZOO)}")
 
 
