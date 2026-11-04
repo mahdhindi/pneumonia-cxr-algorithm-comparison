@@ -64,6 +64,8 @@ class CachedCXR(Dataset):
     def __init__(self, images: np.ndarray, rows: pd.DataFrame, transform):
         self.images = images                       # memmap or array [N, S, S]
         self.idx = rows["cache_idx"].to_numpy()
+        if (self.idx < 0).any() or (self.idx >= len(images)).any():
+            raise ValueError("rows with no cached image (cache_idx -1 = dropped duplicate) reached the Dataset")
         self.labels = rows["label"].to_numpy().astype(np.float32)
         self.subtype = rows["subtype"].to_numpy()
         self.transform = transform
