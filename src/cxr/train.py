@@ -35,8 +35,39 @@ from .seed import make_generator, set_seed, worker_init_fn
 
 
 def run_name(a) -> str:
-    extra = ("" if a.resize == "pad" else f"__{a.resize}") + (("__" + a.tag) if a.tag else "")
+    extra = ("" if a.resize == "pad" else f"__{a.resize}") + ("" if a.split == "patient" else f"__{a.split}split") \
+        + (("__" + a.tag) if a.tag else "")
     return f"{a.model}__abl-{a.ablation}__frac-{a.train_fraction:g}__seed-{a.seed}{extra}"
+
+
+def image_level_split(df: pd.DataFrame, seed: int, fracs=(0.8, 0.1, 0.1)) -> pd.DataFrame:
+    """Assignment 2 reality check: reproduce the *leaky* protocol of Singh et
+    al. (2024) - pool every image (the dataset's own train/val/test folders
+    included), then draw a random, label-stratified 80/10/10 split BY IMAGE,
+    ignoring patient identity.  Scans of one child can land on both sides.
+    Everything else (preprocessing, cache, protocol) is unchanged, so any
+    difference to the patient-grouped runs is the split alone."""
+    rng = np.random.default_rng(seed)
+    out = df.copy()
+    out["split"] = ""
+    for _, part in out.groupby("label"):
+        idx = part.index.to_numpy().copy()
+        rng.shuffle(idx)
+        n = len(idx); n_tr = int(round(fracs[0] * n)); n_va = int(round(fracs[1] * n))
+        out.loc[idx[:n_tr], "split"] = "train"
+        out.loc[idx[n_tr:n_tr + n_va], "split"] = "val"
+        out.loc[idx[n_tr + n_va:], "split"] = "test"
+    return out
+
+
+def split_leakage(df: pd.DataFrame) -> dict:
+    """How many val/test images share a patient with a training image."""
+    tr = set(df.loc[df.split == "train", "patient_key"])
+    out = {}
+    for s in ("val", "test"):
+        part = df[df.split == s]
+        out[s] = dict(n=int(len(part)), with_patient_in_train=int(part["patient_key"].isin(tr).sum()))
+    return out
 
 
 @torch.no_grad()
@@ -75,7 +106,10 @@ def main(argv=None):
                     help="permute = fixed random pixel permutation applied to all splits")
     ap.add_argument("--train_fraction", type=float, default=1.0,
                     help="keep this fraction of training patients (data-size ablation)")
-    ap.add_argument("--no_pretrained", action="store_true", help="random init for resnet50/densenet121")
+    ap.add_argument("--split", choices=["patient", "image"], default="patient",
+                    help="patient = A1 patient-grouped split + official test folder (default); "
+                         "image = random 80/10/10 split by image ignoring patients (Singh et al. 2024 protocol)")
+    ap.add_argument("--no_pretrained", action="store_true", help="random init for resnet50/densenet121/vit_deit_b")
     ap.add_argument("--hflip", action="store_true")
     ap.add_argument("--no_amp", action="store_true")
     ap.add_argument("--num_workers", type=int, default=2)
@@ -92,6 +126,11 @@ def main(argv=None):
 
     # ------------------------------------------------------------------ data
     df, images = load_index(a.data, a.img_size, a.resize)
+    if a.split == "image":
+        df = image_level_split(df, a.seed)
+    leak = split_leakage(df)
+    print(f"[{name}] split={a.split}: val {leak['val']['with_patient_in_train']}/{leak['val']['n']} and "
+          f"test {leak['test']['with_patient_in_train']}/{leak['test']['n']} images share a patient with train")
     tr = subsample_train(df[df["split"] == "train"], a.train_fraction, a.seed)
     va, te = df[df["split"] == "val"], df[df["split"] == "test"]
     abl = None if a.ablation == "none" else a.ablation
@@ -174,7 +213,8 @@ def main(argv=None):
 
     res = dict(
         run=name, model=a.model, family=spec["family"], seed=a.seed, ablation=a.ablation,
-        train_fraction=a.train_fraction, pretrained=(not a.no_pretrained) and a.model in ("resnet50", "densenet121"),
+        train_fraction=a.train_fraction, pretrained=(not a.no_pretrained) and spec["pretrained"],
+        split=a.split, split_leakage=leak,
         n_train=len(ds_tr), n_val=len(ds_va), n_test=len(ds_te),
         params=n_params, params_M=round(n_params / 1e6, 3), checkpoint_mb=round(ckpt_mb, 2),
         train_time_s=round(train_time, 1), wall_time_s=round(wall_time, 1), epochs=a.epochs if spec["trainable"] else 0,
