@@ -66,13 +66,27 @@ def densenet121(pretrained: bool = True):
     return m
 
 
-# name -> (constructor, default learning rate, needs training?)
+def vit_deit_b(pretrained: bool = True, img_size: int = 224):
+    """Paper-critique reality check (Assignment 2): the model of Singh et al.,
+    Sci. Rep. 14:2487 (2024) - DeiT-Base/16 at 224 px with ImageNet-1k
+    weights ('DEIT_Base_Patch16_224'), fully fine-tuned, one-logit head.
+    Weights come from timm (facebook/deit_base_patch16_224)."""
+    import timm  # imported lazily so the A1 models keep working without timm
+    # img_size is 224 in every real run; other sizes (smoke test) make timm interpolate the position embeddings
+    return timm.create_model("deit_base_patch16_224", pretrained=pretrained, num_classes=1, img_size=img_size)
+
+
+# name -> default learning rate, needs training?, family label
+# A1 rule: only the LR differs between models (from-scratch 1e-3, pretrained 1e-4).
+# vit_deit_b uses the LR reported by Singh et al. (1e-5) so the re-run is faithful
+# to the paper; scripts/run_a2.sh also runs it at the A1 pretrained LR (1e-4).
 ZOO = {
-    "majority":    dict(lr=0.0,  trainable=False, family="baseline (no learning)"),
-    "logreg":      dict(lr=1e-4, trainable=True,  family="linear baseline"),
-    "smallcnn":    dict(lr=1e-3, trainable=True,  family="CNN from scratch"),
-    "resnet50":    dict(lr=1e-4, trainable=True,  family="CNN, ImageNet-pretrained, fine-tuned"),
-    "densenet121": dict(lr=1e-4, trainable=True,  family="CNN, ImageNet-pretrained, fine-tuned"),
+    "majority":    dict(lr=0.0,  trainable=False, pretrained=False, family="baseline (no learning)"),
+    "logreg":      dict(lr=1e-4, trainable=True,  pretrained=False, family="linear baseline"),
+    "smallcnn":    dict(lr=1e-3, trainable=True,  pretrained=False, family="CNN from scratch"),
+    "resnet50":    dict(lr=1e-4, trainable=True,  pretrained=True,  family="CNN, ImageNet-pretrained, fine-tuned"),
+    "densenet121": dict(lr=1e-4, trainable=True,  pretrained=True,  family="CNN, ImageNet-pretrained, fine-tuned"),
+    "vit_deit_b":  dict(lr=1e-5, trainable=True,  pretrained=True,  family="ViT (DeiT-B/16), ImageNet-pretrained, fine-tuned"),
 }
 
 
@@ -87,6 +101,8 @@ def build_model(name: str, img_size: int, pretrained: bool = True) -> nn.Module:
         return resnet50(pretrained)
     if name == "densenet121":
         return densenet121(pretrained)
+    if name == "vit_deit_b":
+        return vit_deit_b(pretrained, img_size)
     raise ValueError(f"unknown model {name}; choose from {list(ZOO)}")
 
 

@@ -18,9 +18,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-ORDER = ["majority", "logreg", "smallcnn", "resnet50", "densenet121"]
+ORDER = ["majority", "logreg", "smallcnn", "resnet50", "densenet121", "vit_deit_b"]
 LABEL = {"majority": "Majority class", "logreg": "Logistic regression (pixels)", "smallcnn": "Small CNN (scratch)",
-         "resnet50": "ResNet-50 (ImageNet, fine-tuned)", "densenet121": "DenseNet-121 (ImageNet, fine-tuned)"}
+         "resnet50": "ResNet-50 (ImageNet, fine-tuned)", "densenet121": "DenseNet-121 (ImageNet, fine-tuned)",
+         "vit_deit_b": "ViT DeiT-B/16 (ImageNet, fine-tuned)"}
 
 
 def md_table(df: pd.DataFrame, floatfmt="{:.4f}") -> str:
@@ -38,7 +39,8 @@ def load_runs(results: Path) -> pd.DataFrame:
         r = json.load(open(f))
         t = r["test"]
         rows.append(dict(model=r["model"], seed=r["seed"], ablation=r["ablation"], frac=float(r["train_fraction"]),
-                         resize=r.get("resize", "pad"), tag=r.get("tag", ""), balanced_acc=t["balanced_accuracy"],
+                         resize=r.get("resize", "pad"), tag=r.get("tag", ""), split=r.get("split", "patient"),
+                         lr=r["config"]["lr"], balanced_acc=t["balanced_accuracy"],
                          params_M=r["params_M"], ckpt_mb=r["checkpoint_mb"], train_time_s=r["train_time_s"],
                          infer_ms=r["infer_ms_per_img"], best_epoch=r["best_epoch"], n_train=r["n_train"],
                          auroc=t["auroc"], accuracy=t["accuracy"], macro_f1=t["macro_f1"], recall=t["recall"],
@@ -78,7 +80,7 @@ def main(argv=None):
     a = ap.parse_args(argv)
     R = Path(a.results); F = R / "figures"; F.mkdir(exist_ok=True, parents=True)
     df_all = load_runs(R)
-    df = df_all[(df_all.resize == "pad") & (df_all.tag == "")]
+    df = df_all[(df_all.resize == "pad") & (df_all.tag == "") & (df_all.split == "patient")]
     order = [m for m in ORDER if m in set(df.model)]
 
     # ------------------------------------------------------------ main table
@@ -181,7 +183,8 @@ def main(argv=None):
                   md_table(fb), "", "![](figures/ablation_fraction.png)", ""]
 
     # ------------------------------------------ extra check: stretch resize
-    st = df_all[(df_all.resize == "stretch") & (df_all.ablation == "none") & (df_all.frac == 1.0) & (df_all.tag == "")]
+    st = df_all[(df_all.resize == "stretch") & (df_all.ablation == "none") & (df_all.frac == 1.0) & (df_all.tag == "")
+                & (df_all.split == "patient")]
     if len(st):
         # compare against the padded runs of the SAME seeds, so the check is apples to apples
         pad_same = main[main.seed.isin(st.seed.unique())]
@@ -202,6 +205,8 @@ def main(argv=None):
     sub_rows = []
     for f in sorted(R.glob("*__abl-none__frac-1__seed-*.json")):
         r = json.load(open(f)); per = r["test"].get("per_subtype_accuracy", {})
+        if r.get("split", "patient") != "patient" or r.get("tag", "") or r.get("resize", "pad") != "pad":
+            continue
         if per:
             sub_rows.append(dict(model=LABEL.get(r["model"], r["model"]), seed=r["seed"],
                                  **{f"{k} (n={v['n']})": v["recall_of_true_label"] for k, v in per.items()}))
