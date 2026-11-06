@@ -193,6 +193,74 @@ def cmd_untrained(a):
         print(f"[untrained seed {seed}] TEST AUROC {out['test']['auroc']:.4f} accuracy {out['test']['accuracy']:.4f}")
 
 
+def _practice_order(df):
+    return df[df.split == "val"].sample(frac=1.0, random_state=0).reset_index(drop=True)
+
+
+def _test_auroc_of_seed(seed, images, rows_te, cache):
+    if seed not in cache:
+        torch.manual_seed(seed)
+        p, y = scores(WrittenCNN().eval(), images, rows_te, batch=128)
+        cache[seed] = compute_metrics(y, p, n_boot=0)
+    return cache[seed]
+
+
+def cmd_floor(a):
+    """Distribution of test AUROC over many random, untrained networks (no feedback at all)."""
+    df, images = load_index(a.data, 224)
+    te = df[df.split == "test"]
+    vals = []
+    for s in range(1000, 1000 + a.n):
+        torch.manual_seed(s)
+        p, y = scores(WrittenCNN().eval(), images, te, batch=128)
+        m = compute_metrics(y, p, n_boot=0)
+        vals.append(dict(seed=s, auroc=m["auroc"], accuracy=m["accuracy"], specificity=m["specificity"]))
+        if (s - 999) % 25 == 0:
+            print(f"  {s - 999}/{a.n} random networks scored")
+    au = np.array([v["auroc"] for v in vals])
+    out = dict(kind="random-init floor", n=a.n, seeds=[1000, 999 + a.n], median=float(np.median(au)),
+               p05=float(np.percentile(au, 5)), p95=float(np.percentile(au, 95)), max=float(au.max()),
+               frac_ge={str(t): float((au >= t).mean()) for t in a.thresholds}, runs=vals)
+    Path(a.results, "written__floor.json").write_text(json.dumps(out, indent=2))
+    print(f"[floor] {a.n} random untrained networks: test AUROC median {out['median']:.3f}, "
+          f"5-95 % [{out['p05']:.3f}, {out['p95']:.3f}], max {out['max']:.3f}")
+    for t, f in out["frac_ge"].items():
+        print(f"  share with AUROC >= {t}: {f:.1%}")
+
+
+def cmd_search(a):
+    """Matched-budget rival to condition B: draw `passes` random networks, score each on one
+    256-image practice slice (the same slice schedule Astra got), keep the best by practice AUROC,
+    and score that one on the test set. Repeated `reps` times. No training, no gradients."""
+    df, images = load_index(a.data, 224)
+    va, te = _practice_order(df), df[df.split == "test"]
+    slices = [va.iloc[[(i * 256 + j) % len(va) for j in range(256)]] for i in range(a.passes)]
+    cache, picked = {}, []
+    for r in range(a.reps):
+        best = None
+        for k in range(a.passes):
+            seed = 100000 + r * a.passes + k
+            torch.manual_seed(seed)
+            p, y = scores(WrittenCNN().eval(), images, slices[k], batch=128)
+            au = compute_metrics(y, p, n_boot=0)["auroc"]
+            if best is None or au > best[1]:
+                best = (seed, au)
+        m = _test_auroc_of_seed(best[0], images, te, cache)
+        picked.append(dict(rep=r, seed=best[0], practice_auroc=best[1], test_auroc=m["auroc"], test_accuracy=m["accuracy"],
+                           test_specificity=m["specificity"]))
+        if (r + 1) % 10 == 0:
+            print(f"  {r + 1}/{a.reps} repetitions")
+    au = np.array([x["test_auroc"] for x in picked])
+    out = dict(kind=f"random search, best of {a.passes} on practice slices", reps=a.reps, passes=a.passes,
+               median=float(np.median(au)), p05=float(np.percentile(au, 5)), p95=float(np.percentile(au, 95)),
+               frac_ge={str(t): float((au >= t).mean()) for t in a.thresholds}, runs=picked)
+    Path(a.results, f"written__search{a.passes}.json").write_text(json.dumps(out, indent=2))
+    print(f"[search] best-of-{a.passes} random networks (chosen on practice), {a.reps} repetitions: test AUROC median "
+          f"{out['median']:.3f}, 5-95 % [{out['p05']:.3f}, {out['p95']:.3f}]")
+    for t, f in out["frac_ge"].items():
+        print(f"  share with AUROC >= {t}: {f:.1%}")
+
+
 def cmd_report(a):
     R = Path(a.results); rows = []
 
@@ -210,7 +278,10 @@ def cmd_report(a):
     for f in sorted(R.glob("written__*.json")):
         r = json.loads(f.read_text())
         if r.get("source", "").startswith("LLM"):
-            add(f"WrittenCNN, weights written by {r.get('llm', 'LLM')} ({r['label']})", f"no training; {r.get('practice_passes_used', 0)} practice passes", [r])
+            n_pass = r.get("practice_passes_before_final", r.get("practice_passes_used", 0))
+            ci = r["test"].get("ci95", {}).get("auroc")
+            add(f"WrittenCNN, weights written by {r.get('llm', 'LLM')} ({r['label']})",
+                f"no training; {n_pass} practice passes" + (f"; AUROC 95% CI [{ci[0]:.3f}, {ci[1]:.3f}]" if ci else ""), [r])
     add("WrittenCNN, random init", "no training (floor)", load("written__untrained-seed*.json"))
     add("WrittenCNN, trained", "gradient descent, A1 protocol", load("writtencnn__abl-none__frac-1__seed-4[23].json"))
     for m, name in [("logreg", "Logistic regression (pixels)"), ("smallcnn", "Small CNN (scratch)"), ("resnet50", "ResNet-50 (ImageNet)"), ("majority", "Majority class")]:
@@ -220,6 +291,12 @@ def cmd_report(a):
     for r in rows:
         au = f"{r['auroc']:.3f}" + (f" ± {r['auroc_sd']:.3f}" if r["auroc_sd"] is not None else "")
         lines.append(f"| {r['model']} | {r['how']} | {r['runs']} | {au} | {r['acc']:.3f} | {r['sens']:.3f} | {r['spec']:.3f} | {r['params']:,.0f} | {r['train_min']:.1f} |")
+    for name, label in [("written__floor.json", "Random untrained networks (no feedback)"), ("written__search10.json", "Best of 10 random networks, chosen on practice slices (Astra's budget)")]:
+        f = R / name
+        if f.exists():
+            d = json.loads(f.read_text()); n = d.get("n", d.get("reps"))
+            ge = ", ".join(f"{float(t):.3f}: {v:.0%}" for t, v in d["frac_ge"].items())
+            lines.append(f"| {label} | {n} draws; median [5th-95th pct]; share >= {ge} | {n} | {d['median']:.3f} [{d['p05']:.3f}, {d['p95']:.3f}] | | | | 5,569 | 0.0 |")
     md = "# LLM-written weights vs trained weights (patient-grouped split, official test folder, n = 618)\n\n" + "\n".join(lines) + "\n"
     (R / "written_table.md").write_text(md)
     print(md)
@@ -241,9 +318,16 @@ def main(argv=None):
     sub.choices["evaluate"].add_argument("--results", default="results")
     p = sub.add_parser("untrained"); p.add_argument("--data", default="data"); p.add_argument("--results", default="results")
     p.add_argument("--seeds", type=int, nargs="+", default=[42, 43])
+    for name in ("floor", "search"):
+        p = sub.add_parser(name); p.add_argument("--data", default="data"); p.add_argument("--results", default="results")
+        p.add_argument("--thresholds", type=float, nargs="+", default=[0.519, 0.737, 0.882])
+    sub.choices["floor"].add_argument("--n", type=int, default=200)
+    sub.choices["search"].add_argument("--reps", type=int, default=100)
+    sub.choices["search"].add_argument("--passes", type=int, default=10)
     p = sub.add_parser("report"); p.add_argument("--results", default="results")
     a = ap.parse_args(argv)
-    {"check": cmd_check, "practice": cmd_practice, "evaluate": cmd_evaluate, "untrained": cmd_untrained, "report": cmd_report}[a.cmd](a)
+    {"check": cmd_check, "practice": cmd_practice, "evaluate": cmd_evaluate, "untrained": cmd_untrained,
+     "floor": cmd_floor, "search": cmd_search, "report": cmd_report}[a.cmd](a)
 
 
 if __name__ == "__main__":

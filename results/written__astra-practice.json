@@ -1,0 +1,82 @@
+{
+  "model": "writtencnn",
+  "source": "LLM-written weights, no training",
+  "label": "astra-practice",
+  "llm": "Astra",
+  "weights_file": "astra/weights_practice_final.py",
+  "n_params": 5569,
+  "params_M": 0.005569,
+  "train_time_s": 0.0,
+  "split": "patient",
+  "resize": "pad",
+  "ablation": "none",
+  "train_fraction": 1.0,
+  "seed": 0,
+  "practice_passes_used": 11,
+  "val": {
+    "n": 782,
+    "accuracy": 0.6662404092071611,
+    "balanced_accuracy": 0.7266265090992623,
+    "precision": 0.9206349206349206,
+    "recall": 0.6010362694300518,
+    "specificity": 0.8522167487684729,
+    "f1": 0.7272727272727273,
+    "macro_f1": 0.6486446008686536,
+    "auroc": 0.7585100861856267,
+    "auprc": 0.9098333189373656,
+    "confusion": {
+      "tn": 173,
+      "fp": 30,
+      "fn": 231,
+      "tp": 348
+    },
+    "ci95": {
+      "accuracy": [
+        0.6342391304347826,
+        0.7007672634271099
+      ],
+      "auroc": [
+        0.7230036426804406,
+        0.7901070698852428
+      ],
+      "macro_f1": [
+        0.6127751077300025,
+        0.6814202588043711
+      ]
+    }
+  },
+  "test": {
+    "n": 618,
+    "accuracy": 0.6731391585760518,
+    "balanced_accuracy": 0.7023725628376791,
+    "precision": 0.8438661710037175,
+    "recall": 0.58656330749354,
+    "specificity": 0.8181818181818182,
+    "f1": 0.6920731707317073,
+    "macro_f1": 0.6718986543313709,
+    "auroc": 0.7368256205465509,
+    "auprc": 0.8115719510671184,
+    "confusion": {
+      "tn": 189,
+      "fp": 42,
+      "fn": 160,
+      "tp": 227
+    },
+    "ci95": {
+      "accuracy": [
+        0.6375404530744336,
+        0.7087378640776699
+      ],
+      "auroc": [
+        0.6949828863039023,
+        0.7794613332561813
+      ],
+      "macro_f1": [
+        0.6358375210436098,
+        0.7069642312380913
+      ]
+    }
+  },
+  "practice_passes_before_final": 10,
+  "note": "practice_passes_used counts 11 log entries; the 11th was the FINAL file run once more on practice images after Astra declared FINAL (see astra/README.md)."
+}

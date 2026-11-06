@@ -1,0 +1,80 @@
+{
+  "model": "writtencnn",
+  "source": "LLM-written weights, no training",
+  "label": "astra-zeroshot",
+  "llm": "Astra",
+  "weights_file": "astra/weights_zeroshot.py",
+  "n_params": 5569,
+  "params_M": 0.005569,
+  "train_time_s": 0.0,
+  "split": "patient",
+  "resize": "pad",
+  "ablation": "none",
+  "train_fraction": 1.0,
+  "seed": 0,
+  "practice_passes_used": 0,
+  "val": {
+    "n": 782,
+    "accuracy": 0.618925831202046,
+    "balanced_accuracy": 0.4995363162238274,
+    "precision": 0.7401709401709402,
+    "recall": 0.7478411053540587,
+    "specificity": 0.2512315270935961,
+    "f1": 0.7439862542955327,
+    "macro_f1": 0.49949312714776634,
+    "auroc": 0.5894569369645304,
+    "auprc": 0.8292925976098491,
+    "confusion": {
+      "tn": 51,
+      "fp": 152,
+      "fn": 146,
+      "tp": 433
+    },
+    "ci95": {
+      "accuracy": [
+        0.5869245524296676,
+        0.6521739130434783
+      ],
+      "auroc": [
+        0.5508540609282562,
+        0.6266576925666971
+      ],
+      "macro_f1": [
+        0.4652835123822282,
+        0.5326745612409145
+      ]
+    }
+  },
+  "test": {
+    "n": 618,
+    "accuracy": 0.5485436893203883,
+    "balanced_accuracy": 0.48335514614584385,
+    "precision": 0.6158798283261803,
+    "recall": 0.7416020671834626,
+    "specificity": 0.22510822510822512,
+    "f1": 0.6729191090269636,
+    "macro_f1": 0.472229789500427,
+    "auroc": 0.5192456122688681,
+    "auprc": 0.6452018004864906,
+    "confusion": {
+      "tn": 52,
+      "fp": 179,
+      "fn": 100,
+      "tp": 287
+    },
+    "ci95": {
+      "accuracy": [
+        0.511326860841424,
+        0.5874190938511326
+      ],
+      "auroc": [
+        0.4730625104019306,
+        0.5653292626125703
+      ],
+      "macro_f1": [
+        0.4324979676567662,
+        0.5095600864224635
+      ]
+    }
+  }
+}
