@@ -9,7 +9,6 @@
 import numpy as np
 import math
 
-
 def make_weights():
     """Return the six deterministic float32 parameter arrays."""
 

@@ -58,3 +58,8 @@ and image knowledge rather than anything it may remember about this specific dat
 - Condition B, pass 1 used the practice images in index order (sorted by class: 199 normal, 57 pneumonia
   in the first slice). From pass 2 on, practice slices come from a fixed shuffled order (seed 0) so every
   slice contains both classes. Nothing else changed; the test folder was not touched.
+- Condition B, after Astra declared FINAL (10 practice passes used), the FINAL file was run once more
+  through the practice cell (logged as pass 11, practice images only) and that output was shown to Astra.
+  Astra made no further change; the FINAL file is byte-for-byte the one it declared. The test folder was
+  not touched. Astra's FINAL weights are numerically identical to its passes 4 and 5.
+- Astra read the pasted prompts and practice outputs only; the transcript shows no code execution.
