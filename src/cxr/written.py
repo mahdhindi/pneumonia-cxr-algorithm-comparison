@@ -137,7 +137,9 @@ def cmd_practice(a):
     if used >= a.budget:
         sys.exit(f"budget exhausted: {used}/{a.budget} practice passes already used ({log})")
     df, images = load_index(a.data, 224)
-    va = df[df.split == "val"].reset_index(drop=True)
+    # fixed shuffled order (seed 0) so every slice mixes both classes; the index file is sorted by class.
+    # (Pass 1 of the first Astra run used the unshuffled order: 199 normal + 57 pneumonia. Recorded in astra/README.md.)
+    va = df[df.split == "val"].sample(frac=1.0, random_state=0).reset_index(drop=True)
     start = (used * a.n) % len(va) if a.rotate else 0
     rows = va.iloc[[(start + i) % len(va) for i in range(min(a.n, len(va)))]]
     p, y = scores(build(load_weights(a.weights)), images, rows)

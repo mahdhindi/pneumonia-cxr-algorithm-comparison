@@ -53,3 +53,8 @@ and image knowledge rather than anything it may remember about this specific dat
 - No test result is ever shown to Astra.
 - Every Astra reply, every weights file and every practice output is kept (`astra/`).
 - The weights files are checked automatically: only numpy and math, no file access, no random numbers.
+
+## Log of deviations
+- Condition B, pass 1 used the practice images in index order (sorted by class: 199 normal, 57 pneumonia
+  in the first slice). From pass 2 on, practice slices come from a fixed shuffled order (seed 0) so every
+  slice contains both classes. Nothing else changed; the test folder was not touched.
