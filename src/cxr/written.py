@@ -291,7 +291,8 @@ def cmd_report(a):
     for r in rows:
         au = f"{r['auroc']:.3f}" + (f" ± {r['auroc_sd']:.3f}" if r["auroc_sd"] is not None else "")
         lines.append(f"| {r['model']} | {r['how']} | {r['runs']} | {au} | {r['acc']:.3f} | {r['sens']:.3f} | {r['spec']:.3f} | {r['params']:,.0f} | {r['train_min']:.1f} |")
-    for name, label in [("written__floor.json", "Random untrained networks (no feedback)"), ("written__search10.json", "Best of 10 random networks, chosen on practice slices (Astra's budget)")]:
+    for name, label in [("written__floor.json", "Random untrained networks (no feedback)"), ("written__search10.json", "Best of 10 random networks, chosen on practice slices (condition B's budget)"),
+                        ("written__search11.json", "Best of 11 random networks, chosen on practice slices (condition D's budget)")]:
         f = R / name
         if f.exists():
             d = json.loads(f.read_text()); n = d.get("n", d.get("reps"))
