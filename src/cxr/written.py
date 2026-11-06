@@ -45,7 +45,7 @@ FORBIDDEN_NAMES = {"open", "exec", "eval", "compile", "__import__", "input", "gl
 
 
 # ------------------------------------------------------------------ loading
-def static_check(src: str) -> list[str]:
+def static_check(src: str, required: str = "make_weights") -> list[str]:
     """Reject code that could read data, the network or the file system."""
     problems = []
     tree = ast.parse(src)
@@ -63,8 +63,8 @@ def static_check(src: str) -> list[str]:
             problems.append(f"file access '.{node.attr}'")
         elif isinstance(node, ast.Attribute) and node.attr == "random":
             problems.append("np.random (weights must be written, not sampled)")
-    if not any(isinstance(n, ast.FunctionDef) and n.name == "make_weights" for n in tree.body):
-        problems.append("no top-level function make_weights()")
+    if not any(isinstance(n, ast.FunctionDef) and n.name == required for n in tree.body):
+        problems.append(f"no top-level function {required}()")
     return problems
 
 
