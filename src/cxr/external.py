@@ -100,7 +100,8 @@ def cmd_evaluate(a):
     R = Path(a.results)
     entries = []
     for label, f in [("Astra zero-shot (A)", "astra/weights_zeroshot.py"), ("Astra practice (B)", "astra/weights_practice_final.py"),
-                     ("Astra examples (C)", "astra/weights_examples.py")]:
+                     ("Astra examples (C)", "astra/weights_examples.py"),
+                     ("Astra examples + practice (D)", "astra/weights_examples_practice_final.py")]:
         if Path(f).exists():
             entries.append((label, "LLM-written, no training", lambda f=f: build_written(load_weights(f)), f))
     for name, label in [("writtencnn", "Same CNN, trained"), ("smallcnn", "Small CNN, trained"), ("resnet50", "ResNet-50, trained")]:
@@ -122,7 +123,7 @@ def cmd_evaluate(a):
               f"acc {met['accuracy']:.3f}  sens {met['recall']:.3f}  spec {met['specificity']:.3f}")
     # internal test AUROC next to it, from the existing result files
     internal = {"Astra zero-shot (A)": "written__astra-zeroshot.json", "Astra practice (B)": "written__astra-practice.json",
-                "Astra examples (C)": "written__astra-examples.json"}
+                "Astra examples (C)": "written__astra-examples.json", "Astra examples + practice (D)": "written__astra-examples-practice.json"}
     for r in out:
         f = internal.get(r["model"])
         if f is None:
