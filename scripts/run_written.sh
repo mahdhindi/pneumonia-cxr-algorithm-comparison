@@ -27,4 +27,7 @@ fi
 if [ "${FINAL:-0}" = "1" ] && [ -f astra/weights_practice_final.py ] && [ ! -f results/written__astra-practice.json ]; then
   python -m cxr.written evaluate --weights astra/weights_practice_final.py --label astra-practice --log astra/practice_log.jsonl
 fi
+if [ "${FINAL:-0}" = "1" ] && [ -f astra/weights_examples.py ] && [ ! -f results/written__astra-examples.json ]; then
+  python -m cxr.written evaluate --weights astra/weights_examples.py --label astra-examples
+fi
 [ "${FINAL:-0}" = "1" ] && python -m cxr.written report || echo "baselines done; Astra weights NOT scored (run with FINAL=1 after both conditions)"
