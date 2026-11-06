@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torchvision
 
 
@@ -52,6 +53,42 @@ class SmallCNN(nn.Module):
         return self.head(self.features(x))
 
 
+class WrittenCNN(nn.Module):
+    """Project experiment ("weight-space programming", after Takehi et al. 2026):
+    a tiny CNN whose weights are WRITTEN by an LLM with no training, and which
+    is also trained normally as the comparison ("writtencnn" in ZOO).
+
+    Input: the standard pipeline tensor [B, 3, 224, 224] (ImageNet-normalised
+    copies of one grayscale image).  The first thing forward() does is undo that,
+    so the layers see ONE channel with values in [0, 1] (0 = black, 1 = white).
+
+        g      [B, 1, 224, 224]  grayscale in [0, 1]
+        conv1  Conv2d(1 -> 16, 5x5, stride 2, padding 2) -> ReLU -> MaxPool 2   => [B, 16, 56, 56]
+        conv2  Conv2d(16 -> 32, 3x3, stride 1, padding 1) -> ReLU -> MaxPool 2  => [B, 32, 28, 28]
+        pool   AdaptiveAvgPool2d(4)  (a 4 x 4 grid over the image)              => [B, 32, 4, 4]
+        fc     flatten (channel-major: index = c*16 + row*4 + col) -> Linear(512 -> 1) = logit
+        P(pneumonia) = sigmoid(logit)
+
+    5,569 parameters: conv1.weight [16,1,5,5], conv1.bias [16], conv2.weight [32,16,3,3],
+    conv2.bias [32], fc.weight [1,512], fc.bias [1]."""
+
+    SHAPES = {"conv1.weight": (16, 1, 5, 5), "conv1.bias": (16,), "conv2.weight": (32, 16, 3, 3),
+              "conv2.bias": (32,), "fc.weight": (1, 512), "fc.bias": (1,)}
+
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 16, 5, stride=2, padding=2)
+        self.conv2 = nn.Conv2d(16, 32, 3, stride=1, padding=1)
+        self.pool = nn.AdaptiveAvgPool2d(4)
+        self.fc = nn.Linear(512, 1)
+
+    def forward(self, x):
+        g = x[:, :1] * 0.229 + 0.485                      # undo ImageNet normalisation of channel 0 -> [0, 1]
+        h = F.max_pool2d(F.relu(self.conv1(g)), 2)
+        h = F.max_pool2d(F.relu(self.conv2(h)), 2)
+        return self.fc(torch.flatten(self.pool(h), 1))
+
+
 def resnet50(pretrained: bool = True):
     w = torchvision.models.ResNet50_Weights.IMAGENET1K_V2 if pretrained else None
     m = torchvision.models.resnet50(weights=w)
@@ -84,6 +121,7 @@ ZOO = {
     "majority":    dict(lr=0.0,  trainable=False, pretrained=False, family="baseline (no learning)"),
     "logreg":      dict(lr=1e-4, trainable=True,  pretrained=False, family="linear baseline"),
     "smallcnn":    dict(lr=1e-3, trainable=True,  pretrained=False, family="CNN from scratch"),
+    "writtencnn":  dict(lr=1e-3, trainable=True,  pretrained=False, family="tiny CNN (5.6k params), trained - comparison for LLM-written weights"),
     "resnet50":    dict(lr=1e-4, trainable=True,  pretrained=True,  family="CNN, ImageNet-pretrained, fine-tuned"),
     "densenet121": dict(lr=1e-4, trainable=True,  pretrained=True,  family="CNN, ImageNet-pretrained, fine-tuned"),
     "vit_deit_b":  dict(lr=1e-5, trainable=True,  pretrained=True,  family="ViT (DeiT-B/16), ImageNet-pretrained, fine-tuned"),
@@ -97,6 +135,8 @@ def build_model(name: str, img_size: int, pretrained: bool = True) -> nn.Module:
         return LogisticRegression(img_size)
     if name == "smallcnn":
         return SmallCNN()
+    if name == "writtencnn":
+        return WrittenCNN()
     if name == "resnet50":
         return resnet50(pretrained)
     if name == "densenet121":
