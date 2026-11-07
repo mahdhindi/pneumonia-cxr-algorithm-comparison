@@ -8,6 +8,11 @@ the final layer's 2,049 numbers and practice results, and edits them by reasonin
     python -m cxr.edit export                            # writes astra/edit/resnet50_fc.txt for the LLM to read
     python -m cxr.edit practice --edit astra/edit/edit_v1.py      # one practice pass (val images only)
     python -m cxr.edit practice                          # pass 0: the unedited model (free, not counted)
+
+Practice pool (default --pool test_half): the official test folder is split by patient (seed 0) into a
+practice half and a scoring half. Our validation set cannot be the practice pool: it comes from the
+training collection, where the model is already near-perfect (AUROC 0.9995), so the collection-shift
+problem the edit is meant to fix is invisible there. The threshold rival uses the same practice half.
     python -m cxr.edit evaluate --edit astra/edit/edit_final.py   # once: edited vs unedited vs threshold rival, on test
 
 An edit file is Python that defines edit(weight, bias) -> (new_weight, new_bias), where weight is
@@ -101,6 +106,26 @@ def apply_edit(path, w, b):
     return nw, nb
 
 
+def pools(z, mode, data="data"):
+    """Practice and scoring sets. 'test_half' (default): the official test folder split by PATIENT (seed 0)
+    into a practice half and a scoring half, so practice shows the same collection shift the model meets at
+    scoring time. 'val': our validation set as practice, whole test folder as scoring (no shift visible)."""
+    if mode == "val":
+        return (z["val_x"], z["val_y"], z["val_id"]), (z["test_x"], z["test_y"])
+    import pandas as pd
+    df = pd.read_csv(Path(data) / "index.csv")
+    t = df[df.split == "test"].reset_index(drop=True)
+    assert len(t) == len(z["test_y"]) and (t.label.values == z["test_y"]).all(), "index.csv does not match features.npz"
+    pats = np.array(sorted(t.patient_key.unique()))
+    rng = np.random.default_rng(0)
+    prac_p = set(rng.permutation(pats)[: len(pats) // 2])
+    is_prac = t.patient_key.isin(prac_p).values
+    pi = np.flatnonzero(is_prac); pi = pi[np.random.default_rng(1).permutation(len(pi))]   # mix the classes
+    si = np.flatnonzero(~is_prac)
+    ids = np.array([f"T{int(c):05d}" for c in t.cache_idx.values[pi]])
+    return (z["test_x"][pi], z["test_y"][pi], ids), (z["test_x"][si], z["test_y"][si])
+
+
 def prob(x, w, b):
     return 1 / (1 + np.exp(-np.clip(x @ w + b, -50, 50)))
 
@@ -109,15 +134,20 @@ def cmd_practice(a):
     z = np.load(FEAT)
     log = Path(a.log); log.parent.mkdir(parents=True, exist_ok=True)
     used = sum(1 for _ in log.open()) if log.exists() else 0
+    (px, py, pid), _ = pools(z, a.pool)
     if a.edit is None:
-        sl = np.arange(len(z["val_y"])); label = f"PASS 0 (unedited model, all {len(sl)} practice images, not counted)"
+        sl = np.arange(len(py)); label = f"PASS 0 (unedited model, all {len(sl)} practice images, not counted)"
     else:
         if used >= a.budget:
             sys.exit(f"budget exhausted: {used}/{a.budget}")
-        n = len(z["val_y"]); start = (used * 256) % n
-        sl = np.array([(start + i) % n for i in range(256)]); label = f"PRACTICE PASS {used + 1}/{a.budget}"
+        if a.pool == "val":
+            n = len(py); start = (used * 256) % n
+            sl = np.array([(start + i) % n for i in range(256)])
+        else:
+            sl = np.arange(len(py))                          # the whole practice half every pass
+        label = f"PRACTICE PASS {used + 1}/{a.budget}"
     w, b = apply_edit(a.edit, z["w"], float(z["b"][0]))
-    p, y = prob(z["val_x"][sl], w, b), z["val_y"][sl]
+    p, y = prob(px[sl], w, b), py[sl]
     m = compute_metrics(y, p, n_boot=0)
     changed = int((np.abs(w - z["w"]) > 1e-9).sum())
     print(f"{label}  (n={len(y)} practice images; label 1 = PNEUMONIA)")
@@ -127,10 +157,10 @@ def cmd_practice(a):
     if a.edit is not None:
         with log.open("a") as f:
             f.write(json.dumps(dict(pass_no=used + 1, edit=str(a.edit), n=int(len(y)), auroc=m["auroc"], accuracy=m["accuracy"],
-                                    recall=m["recall"], specificity=m["specificity"], weights_changed=changed, bias=b,
+                                    recall=m["recall"], specificity=m["specificity"], weights_changed=changed, bias=b, pool=a.pool,
                                     time=time.strftime("%Y-%m-%d %H:%M:%S"))) + "\n")
     print("practice_image_id,label,p_pneumonia")
-    for i, pi, yi in zip(z["val_id"][sl], p, y):
+    for i, pi, yi in zip(pid[sl], p, y):
         print(f"{i},{yi},{pi:.4f}")
 
 
@@ -144,7 +174,7 @@ def cmd_evaluate(a):
     z = np.load(FEAT)
     w0, b0 = z["w"], float(z["b"][0])
     w1, b1 = apply_edit(a.edit, w0, b0)
-    xt, yt, xv, yv = z["test_x"], z["test_y"], z["val_x"], z["val_y"]
+    (xv, yv, _), (xt, yt) = pools(z, a.pool)
     rows = []
 
     def add(name, how, p_test, thr=0.5):
@@ -161,7 +191,7 @@ def cmd_evaluate(a):
     p1 = prob(xt, w1, b1)
     changed = int((np.abs(w1 - w0) > 1e-9).sum())
     add(f"ResNet-50 edited by {a.llm}", f"no gradients; {changed} of 2,048 weights changed, bias {b0:+.3f} -> {b1:+.3f}", p1)
-    out = dict(edit_file=str(a.edit), llm=a.llm, checkpoint=CKPT, practice_passes=sum(1 for _ in Path(a.log).open()) if Path(a.log).exists() else 0,
+    out = dict(edit_file=str(a.edit), llm=a.llm, pool=a.pool, n_practice=int(len(yv)), n_scoring=int(len(yt)), checkpoint=CKPT, practice_passes=sum(1 for _ in Path(a.log).open()) if Path(a.log).exists() else 0,
                weights_changed=changed, rows=rows)
     R = Path(a.results); R.mkdir(exist_ok=True, parents=True)
     (R / "edit_resnet50.json").write_text(json.dumps(out, indent=2))
@@ -169,7 +199,8 @@ def cmd_evaluate(a):
     for r in rows:
         lines.append(f"| {r['model']} | {r['how']} | {r['auroc']:.3f} [{r['auroc_ci'][0]:.3f}, {r['auroc_ci'][1]:.3f}] | {r['accuracy']:.3f} | "
                      f"{r['sensitivity']:.3f} | {r['specificity']:.3f} | {r['balanced_accuracy']:.3f} |")
-    md = "# Condition E: LLM edit of the trained ResNet-50's final layer (official test folder, n = 618)\n\n" + "\n".join(lines) + "\n"
+    where = "official test folder, n = 618" if a.pool == "val" else f"scoring half of the official test folder (patients not in the practice half), n = {len(yt)}"
+    md = f"# Condition E: LLM edit of the trained ResNet-50's final layer ({where})\n\n" + "\n".join(lines) + "\n"
     (R / "edit_resnet50.md").write_text(md); print(md)
 
 
@@ -178,9 +209,9 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("features"); p.add_argument("--data", default="data"); p.add_argument("--ckpt", default=CKPT)
     sub.add_parser("export")
-    p = sub.add_parser("practice"); p.add_argument("--edit", default=None); p.add_argument("--log", default="astra/edit/practice_log_E.jsonl")
+    p = sub.add_parser("practice"); p.add_argument("--pool", choices=["test_half", "val"], default="test_half"); p.add_argument("--edit", default=None); p.add_argument("--log", default="astra/edit/practice_log_E.jsonl")
     p.add_argument("--budget", type=int, default=20)
-    p = sub.add_parser("evaluate"); p.add_argument("--edit", required=True); p.add_argument("--llm", default="Astra")
+    p = sub.add_parser("evaluate"); p.add_argument("--pool", choices=["test_half", "val"], default="test_half"); p.add_argument("--edit", required=True); p.add_argument("--llm", default="Astra")
     p.add_argument("--log", default="astra/edit/practice_log_E.jsonl"); p.add_argument("--results", default="results")
     a = ap.parse_args(argv)
     {"features": cmd_features, "export": cmd_export, "practice": cmd_practice, "evaluate": cmd_evaluate}[a.cmd](a)

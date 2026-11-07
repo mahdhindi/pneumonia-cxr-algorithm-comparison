@@ -3,7 +3,11 @@
 Start a NEW Astra chat. Attach `resnet50_fc.txt` (downloaded by notebook cell E1). Paste everything
 below the line, and then, at the end of the same message, paste the full output of cell E1's
 "PASS 0" (the unedited model on all practice images). For each "PRACTICE PASS n" file, run cell E2 and
-paste back its full output. Never paste anything from the test set.
+paste back its full output. Never paste anything from the scoring half.
+
+Practice X-rays = one half of the official test folder (split by patient, seed 0, 308 images); scoring =
+the other half (310 images). Our validation set is NOT used: the model is already near-perfect on it
+(AUROC 0.9995), so the problem the edit should fix does not show there.
 
 ---
 
@@ -21,7 +25,7 @@ You may change only this final layer: the 2,048 weights and the bias. The attach
 ## What you get
 
 - Below this prompt: **PASS 0**, the unedited network's results on all practice X-rays (AUROC, accuracy, sensitivity, specificity, mean P(pneumonia) per class, and a per-image table of practice-image id, true label and P(pneumonia)). Label 1 = PNEUMONIA, 0 = NORMAL.
-- Up to **20 practice passes**. For each, you send me an edit file; I apply it once, with no training, to the next 256 practice X-rays (cycling through the practice pool) and send back the same kind of output, plus how many weights your edit changed. You will never see the images, the features, or anything from the scoring set.
+- Up to **20 practice passes**. For each, you send me an edit file; I apply it once, with no training, to the same practice X-rays and send back the same kind of output, plus how many weights your edit changed. You will never see the images, the features, or anything from the scoring set.
 
 ## Rules
 
@@ -32,7 +36,7 @@ You may change only this final layer: the 2,048 weights and the bias. The attach
 
 ## How the FINAL edit will be scored
 
-Once, on held-out X-rays of patients who appear nowhere else, collected separately from the practice X-rays. Primary metric: AUROC. Also reported: accuracy at P = 0.5, sensitivity (pneumonia recall), specificity (normal recall) and balanced accuracy. It will be compared with the unedited network and with the simplest possible fix (moving the decision threshold).
+Once, on held-out X-rays from the same collection as the practice X-rays, but of different patients (no child appears in both). Primary metric: AUROC. Also reported: accuracy at P = 0.5, sensitivity (pneumonia recall), specificity (normal recall) and balanced accuracy. It will be compared with the unedited network and with the simplest possible fix (moving the decision threshold to its best point on the same practice X-rays).
 
 ## What to send back each time
 
