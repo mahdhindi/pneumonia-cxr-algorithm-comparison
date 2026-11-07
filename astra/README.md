@@ -63,3 +63,21 @@ and image knowledge rather than anything it may remember about this specific dat
   Astra made no further change; the FINAL file is byte-for-byte the one it declared. The test folder was
   not touched. Astra's FINAL weights are numerically identical to its passes 4 and 5.
 - Astra read the pasted prompts and practice outputs only; the transcript shows no code execution.
+- Condition E, design change before any Astra run: the first PASS 0 used our validation set, where the
+  trained ResNet-50 is already near-perfect (AUROC 0.9995, specificity 0.97), so the problem the edit is
+  meant to fix (test-folder specificity 0.50) was invisible. Practice was moved to a patient-split half of
+  the official test folder (306 images, seed 0); scoring uses the other half (312 images, different
+  children). The threshold rival uses the same practice half. Astra never saw the first PASS 0.
+- Condition E, ResNet-50 seed 42 was retrained in a fresh Colab session (test AUROC 0.966 vs 0.972 in A1;
+  GPU training is not bit-for-bit reproducible). Its own result is in results/retrain/.
+- Condition E, unlike A-D, Astra ran short scripts (Python/PowerShell) on the attached weight file to compute
+  summary numbers for its rules (mean weight, RMS, clip limit, number of weights below the prune cut). These
+  read only resnet50_fc.txt and the pasted practice outputs; nothing was fitted to per-image scores. See
+  edit/transcript_E.md.
+
+## Condition E result (scoring half, n = 312; 4 of 20 practice passes used)
+| Model | Test AUROC [95% CI] | Sensitivity | Specificity | Balanced acc. |
+|---|---|---|---|---|
+| ResNet-50 trained, unedited | 0.954 [0.925, 0.977] | 0.995 | 0.496 | 0.745 |
+| + threshold moved on practice half (Youden, 0.999) | 0.954 [0.925, 0.977] | 0.935 | 0.894 | 0.914 |
+| + Astra's edit (centre, prune 170 small weights, bias - ln 2) | 0.954 [0.925, 0.977] | 0.990 | 0.637 | 0.814 |
