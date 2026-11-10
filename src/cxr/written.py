@@ -34,6 +34,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
 from .dataset import CachedCXR, build_transform, load_index
@@ -120,6 +121,46 @@ def scores(model, images, rows, batch=64):
     return np.concatenate(p), ds.labels.astype(int)
 
 
+def diagnose(model, images, rows, batch=64):
+    """Condition F feedback: how each channel of the LLM's network behaves on the practice images,
+    split by class. Channel-level summaries only (16 + 32 rows), never per-cell or per-image features,
+    so the LLM can see which of its detectors separate the classes without being handed a fitting target."""
+    from sklearn.metrics import roc_auc_score
+    ds = CachedCXR(images, rows, build_transform(224, False, None))
+    c1, c2, contrib, ys = [], [], [], []
+    w_fc = model.fc.weight.detach().reshape(32, 16)
+    with torch.no_grad():
+        for x, y in DataLoader(ds, batch, shuffle=False):
+            g = x[:, :1] * 0.229 + 0.485
+            h1 = F.max_pool2d(F.relu(model.conv1(g)), 2)                     # [B,16,56,56]
+            h2 = model.pool(F.max_pool2d(F.relu(model.conv2(h1)), 2))        # [B,32,4,4]
+            c1.append(h1.mean((2, 3)).numpy()); c2.append(h2.mean((2, 3)).numpy())
+            contrib.append((h2.reshape(-1, 32, 16) * w_fc).sum(2).numpy())   # each conv2 channel's share of the logit
+            ys.append(y.numpy())
+    c1, c2, contrib, y = np.concatenate(c1), np.concatenate(c2), np.concatenate(contrib), np.concatenate(ys).astype(int)
+
+    def auc(v):
+        return 0.5 if np.ptp(v) < 1e-12 else float(roc_auc_score(y, v))
+
+    lines = ["", "CHANNEL DIAGNOSTICS (same practice images; label 1 = PNEUMONIA)",
+             "separation = AUROC of that channel's mean activation alone (0.5 = no separation; above 0.5 = higher on pneumonia,"
+             " below 0.5 = higher on normal). silent = share of images where the channel is 0 everywhere.",
+             "conv1 (after ReLU + max-pool, mean over the whole 56x56 map):",
+             "channel,mean_normal,mean_pneumonia,separation,silent"]
+    for c in range(16):
+        v = c1[:, c]
+        lines.append(f"conv1.{c},{v[y == 0].mean():.4f},{v[y == 1].mean():.4f},{auc(v):.3f},{(v <= 0).mean():.2f}")
+    lines += ["conv2 (after ReLU + max-pool + 4x4 average, mean over the 16 cells); logit_* = this channel's mean"
+              " contribution to the logit (its 16 fc weights x its 16 cell values) per class:",
+              "channel,mean_normal,mean_pneumonia,separation,silent,logit_normal,logit_pneumonia"]
+    for c in range(32):
+        v, k = c2[:, c], contrib[:, c]
+        lines.append(f"conv2.{c},{v[y == 0].mean():.4f},{v[y == 1].mean():.4f},{auc(v):.3f},{(v <= 0).mean():.2f},"
+                     f"{k[y == 0].mean():+.4f},{k[y == 1].mean():+.4f}")
+    lines.append(f"fc.bias {float(model.fc.bias.detach()):+.4f}")
+    return "\n".join(lines)
+
+
 # ------------------------------------------------------------------ commands
 def cmd_check(a):
     w = load_weights(a.weights)
@@ -142,7 +183,8 @@ def cmd_practice(a):
     va = df[df.split == "val"].sample(frac=1.0, random_state=0).reset_index(drop=True)
     start = (used * a.n) % len(va) if a.rotate else 0
     rows = va.iloc[[(start + i) % len(va) for i in range(min(a.n, len(va)))]]
-    p, y = scores(build(load_weights(a.weights)), images, rows)
+    model = build(load_weights(a.weights))
+    p, y = scores(model, images, rows)
     m = compute_metrics(y, p, n_boot=0)
     rec = dict(pass_no=used + 1, budget=a.budget, weights=str(a.weights), n=int(len(y)), time=time.strftime("%Y-%m-%d %H:%M:%S"),
                auroc=m["auroc"], accuracy=m["accuracy"], recall=m["recall"], specificity=m["specificity"])
@@ -156,6 +198,8 @@ def cmd_practice(a):
         print("practice_image_id,label,p_pneumonia")
         for (_, r), pi, yi in zip(rows.iterrows(), p, y):
             print(f"P{int(r['cache_idx']):05d},{yi},{pi:.4f}")
+    if a.diagnose:
+        print(diagnose(model, images, rows))
 
 
 def cmd_evaluate(a):
@@ -313,6 +357,7 @@ def main(argv=None):
     sub.choices["practice"].add_argument("--n", type=int, default=256, help="practice images per pass")
     sub.choices["practice"].add_argument("--rotate", action="store_true", help="use a different slice of the practice set each pass")
     sub.choices["practice"].add_argument("--per_image", action="store_true", help="also print per-image scores")
+    sub.choices["practice"].add_argument("--diagnose", action="store_true", help="condition F: also print per-channel diagnostics")
     sub.choices["evaluate"].add_argument("--label", required=True)
     sub.choices["evaluate"].add_argument("--llm", default="Astra")
     sub.choices["evaluate"].add_argument("--log", default="", help="practice log, to record how many passes were used")

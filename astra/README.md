@@ -81,3 +81,12 @@ and image knowledge rather than anything it may remember about this specific dat
 | ResNet-50 trained, unedited | 0.954 [0.925, 0.977] | 0.995 | 0.496 | 0.745 |
 | + threshold moved on practice half (Youden, 0.999) | 0.954 [0.925, 0.977] | 0.935 | 0.894 | 0.914 |
 | + Astra's edit (centre, prune 170 small weights, bias - ln 2) | 0.954 [0.925, 0.977] | 0.990 | 0.637 | 0.814 |
+
+## Condition F (examples + practice + channel diagnostics)
+Same as D (16 example images, up to 20 practice passes on rotating 256-image slices of the practice set,
+per-image table), plus per-channel diagnostics after every pass: for each conv1 and conv2 channel, mean
+activation by class, its separation (AUROC of the channel's mean activation alone), share of images where
+it is silent, and, for conv2, its mean contribution to the logit by class. Channel-level only (48 rows),
+never per-cell or per-image features. Prompt: PROMPT_F_diagnostics.md. Runs: practice_F<run>/,
+practice_log_F<run>.jsonl, result written__astra-diagnose-r<run>.json; rival: best-of-n random search
+with n = the passes that run used (written__search<n>.json).
