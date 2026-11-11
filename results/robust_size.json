@@ -221,6 +221,40 @@
       }
     },
     {
+      "model": "Astra, images + practice + channel report (F, run 2)",
+      "how": "LLM-written, no training",
+      "n_params": 5569,
+      "auroc_full": 0.8650290278197255,
+      "auroc_matched": 0.656326530612245,
+      "auroc_matched_ci": [
+        0.5656967602717756,
+        0.7463039760050716
+      ],
+      "auroc_matched_wide": 0.6354848304580607,
+      "drop": 0.20870249720748046,
+      "spearman_logit_vs_log_height": {
+        "normal": -0.6331045810126147,
+        "pneumonia": -0.7168466796033458
+      }
+    },
+    {
+      "model": "Astra, images + practice + channel report (F, run 3)",
+      "how": "LLM-written, no training",
+      "n_params": 5569,
+      "auroc_full": 0.8376231864603958,
+      "auroc_matched": 0.6918367346938776,
+      "auroc_matched_ci": [
+        0.6050319014028692,
+        0.7754182883448419
+      ],
+      "auroc_matched_wide": 0.670582986317668,
+      "drop": 0.14578645176651817,
+      "spearman_logit_vs_log_height": {
+        "normal": -0.47946631804960926,
+        "pneumonia": -0.6642015460708266
+      }
+    },
+    {
       "model": "Same CNN, trained (seed 42)",
       "how": "gradient descent, A1 protocol",
       "n_params": 5569,
