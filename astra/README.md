@@ -109,6 +109,14 @@ with n = the passes that run used (written__search<n>.json).
 
 ### Condition F, run 2
 - Clean run: new Astra chat, 4 practice passes on 4 consecutive (different) practice slices, no Colab reset.
-  FINAL weights are numerically identical to v4. Scored before the transcript was checked (transcript to add).
+  FINAL weights are numerically identical to v4. Scored before the transcript was checked; checked afterwards
+  (transcript_F2.md): no code executed (file reads only), every coefficient a round constant (-1, -0.5, -0.25,
+  bias +1.0 then +0.9). The user pasted pass 1's output twice by mistake; Astra noticed and asked for pass 2's
+  result; no extra evaluation was run (the log has exactly 4 entries).
+- How F uses the report: in both runs Astra used the per-channel separation to CHOOSE which of its own
+  hand-built channels to read out and with which sign (run 2: channel 8, local intensity range, separation
+  0.061, so read with a negative weight), then set round-number weights by hand. This is allowed by the
+  prompt (no weight is a formula of the statistics), but it is label-informed feature selection on the
+  practice set, and should be described as such.
 - Test result (n = 618): AUROC 0.865 [0.835, 0.891], accuracy 0.773, sensitivity 0.886, specificity 0.584.
 - Condition F over 2 independent chats: AUROC 0.870 +/- 0.005 (same CNN trained: 0.882 +/- 0.012).
