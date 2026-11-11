@@ -72,7 +72,15 @@ def robust():
     for lab, key, c, m in pick:
         r = next(r for r in d["rows"] if key in r["model"] and (key != "(seed 42)" or "Same CNN" in r["model"]))
         rows.append((lab, r["auroc_full"], r["auroc_matched"], c, m))
-    fig, ax = plt.subplots(figsize=(3.45, 2.05))
+    g = R / "head_resnet50.json"
+    if g.exists():                      # condition G: heads on a frozen ImageNet ResNet-50 (same 140-image subset)
+        h = {r["model"]: r for r in j("head_resnet50.json")["rows"]}
+        extra = [("G: Astra head, frozen RN50", "Head written by", ASTRA, "o"), ("G: selection rule, frozen RN50", "Selection rule", REF, "D"),
+                 ("G: trained probe, frozen RN50", "Linear probe", TRAINED, "s")]
+        for lab, key, c, m in extra:
+            r = next(v for k, v in h.items() if k.startswith(key))
+            rows.insert(-1, (lab, r["auroc"], r["auroc_size_matched"], c, m))
+    fig, ax = plt.subplots(figsize=(3.45, 0.27 * len(rows) + 0.25))
     y = list(range(len(rows)))[::-1]
     for yi, (lab, full, mat, c, m) in zip(y, rows):
         ax.annotate("", xy=(mat, yi), xytext=(full, yi), arrowprops=dict(arrowstyle="-|>", color=c, lw=1.1, alpha=0.7, shrinkA=3, shrinkB=3, mutation_scale=7))

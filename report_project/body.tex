@@ -8,9 +8,9 @@ With no feedback, Astra was at chance (test AUROC 0.519).
 Practice scores raised it to 0.737, and 16 example images added little (0.745).
 A per-channel diagnostic report raised it to 0.859\,$\pm$\,0.016 over three independent chats, close to gradient training (0.882\,$\pm$\,0.012).
 Every chat beat all 100 matched random searches (best 0.821).
-A size-matched robustness check shows that part of this score comes from an acquisition artefact.
-Astra's rule (``less fine texture means pneumonia'') falls to 0.703 when image size is equalised; the trained CNN falls to 0.742.
-Editing the last layer of a trained ResNet-50 gave no gain over moving its threshold.
+On a frozen ImageNet ResNet-50, Astra's hand-written final layer reached 0.902.
+That beat a mechanical feature-selection rule (0.883) and random search (0.678), but not a trained linear probe on the same features (0.947).
+A size-matched robustness check shows that part of every score comes from an acquisition artefact, and that Astra's selected features lean on it more than trained weights do (0.703 vs.\ 0.742 on the CNN; 0.724 vs.\ 0.862 on ResNet-50 features).
 \end{abstract}
 
 \section{Introduction and research question}
@@ -30,6 +30,7 @@ It also asks a sharper question of the same pipeline: is gradient training neede
 The edit mode named in our critique slides is reported in Section~\ref{sec:edit}.
 
 \textit{Research question.} Can an LLM agent (GPT-6 Astra), writing all 5,569 weights of a small CNN by reasoning alone, reach a higher test AUROC for pediatric pneumonia detection than a random search given the same number of practice evaluations, and how close does it come to the same CNN trained by gradient descent?
+We then repeat the best setting on stronger, pretrained features (Section~\ref{sec:g}).
 
 \section{Method and experimental setup}
 \subsection{Data, splits and preprocessing (unchanged from Assignment~1)}
@@ -60,6 +61,8 @@ In a practice pass, Astra sends a full weight file.
 We run it once, with no training, on the next 256 practice images and return AUROC, accuracy, sensitivity, specificity and per-image scores.
 The F report adds, for each of the 16 conv1 and 32 conv2 channels, the mean activation per class, its \emph{separation} (the AUROC of that channel alone), the share of images where it is silent, and (for conv2) its contribution to the logit.
 F was run in three independent chats.
+\textbf{G} repeats F's setting on a frozen ImageNet ResNet-50 (\texttt{IMAGENET1K\_V2}, never trained on X-rays).
+There, Astra writes only the final layer (2,048 weights and a bias), and the report has one row per feature, sorted by separation; no images are attached, since the features have no names.
 Astra chooses when to stop; its FINAL file is scored once on the test folder.
 
 \subsection{Baselines}
@@ -69,6 +72,10 @@ This is repeated 100 times to obtain a distribution.
 \emph{Gradient training}, the strong reference: the same CNN trained with the Assignment~1 recipe (AdamW, learning rate $10^{-3}$, 12 epochs, checkpoint by validation AUROC, seeds 42 and 43).
 \emph{Random-init floor}: 200 untrained networks with no selection.
 ResNet-50 from Assignment~1 gives the ceiling.
+For G, all rivals use the same frozen features.
+The \emph{matched random search} draws 17 random heads.
+A \emph{selection rule} is the mechanical version of ``read the report and keep what separates'': it keeps the top-$k$ features by $|\mathrm{separation}-0.5|$ on the practice images, with weights $\pm1/(k\,\sigma)$ and $k\in\{8,32,128,512\}$ chosen on those images, and uses no gradients.
+A \emph{linear probe} is logistic regression trained on the 4,424 training images, with $C$ chosen on the practice set.
 
 \subsection{Metrics and compute}
 The primary metric is test AUROC with a 95\,\% bootstrap CI (1,000 resamples).
@@ -143,10 +150,42 @@ That is reasoning, not training, but it is not data-free, and we report it as su
 The matched random search also selects on practice labels, but it selects whole networks.
 Its winners overfit the practice slices (median practice AUROC 0.84, test 0.69), whereas Astra's F networks keep a smaller gap (practice set 0.93, test 0.86).
 
+\begin{table}[t]
+\centering
+\caption{Condition G: final layer on a frozen ImageNet ResNet-50 (test $n{=}618$; size-matched subset, 140 images).}
+\label{tab:g}
+\setlength{\tabcolsep}{2.2pt}
+\footnotesize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Final layer obtained by & Test AUROC & Spec. & Feat. & Size-matched \\
+\midrule
+\textbf{Astra, 17 passes + report} & \textbf{0.902} {\scriptsize[0.88, 0.92]} & 0.59 & 26 & 0.724 \\
+Selection rule (no LLM) & 0.883 {\scriptsize[0.85, 0.91]} & 0.80 & 32 & 0.669 \\
+Best of 17 random heads$^\dagger$ & 0.678 {\scriptsize[0.57, 0.78]} & -- & 2,048 & 0.571 \\
+Linear probe, trained & 0.947 {\scriptsize[0.93, 0.96]} & 0.53 & 2,047 & 0.862 \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\raggedright\scriptsize $^\dagger$median [5th--95th pct] over 100 repetitions; maximum 0.800. Fit time of the probe: under 1\,s.
+\end{table}
+
+\subsection{Stronger features: a frozen ImageNet ResNet-50}\label{sec:g}
+Table~\ref{tab:g} repeats the best setting on pretrained features.
+Astra used 17 of its 20 passes, changing one thing at a time and comparing passes on overlapping image batches.
+Its final layer uses 26 hand-picked features with weights $+4$, $-2$, $\pm1$, $\pm0.5$ and $-0.25$, and bias 0.
+It reached 0.902, up from 0.859 on the small CNN.
+No random search came close (maximum 0.800), and the mechanical selection rule scored 0.883, so Astra's careful testing added a little beyond ``take the top features''.
+The two confidence intervals overlap, however.
+The trained linear probe on the same features reached 0.947, a gap of 0.045, twice the gap on the small CNN.
+\emph{Explanation, tied to the setup.} With 2,048 unnamed features, an LLM can only shortlist a few dozen that separate on practice images, whereas training uses all of them jointly.
+Astra predicted about 0.96, discounting for having consulted the practice set 17 times; practice AUROC ran 0.96--0.98.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{project_robust.pdf}
-\caption{Robustness check. On 140 test images matched for original width and height, image height alone drops to chance. All models lose AUROC, so part of every score on this dataset comes from acquisition size. Astra's F networks lose more (mean 0.703) than the gradient-trained CNN (0.742); the ImageNet ResNet-50 is the most robust.}
+\caption{Robustness check. On 140 test images matched for original width and height, image height alone drops to chance. All models lose AUROC, so part of every score on this dataset comes from acquisition size. Astra's F networks lose more (mean 0.703) than the gradient-trained CNN (0.742). On frozen ImageNet features (G), the trained probe holds (0.862) while hand-selected features fall (Astra 0.724, selection rule 0.669).}
 \label{fig:robust}
 \end{figure}
 
@@ -161,6 +200,9 @@ Astra found this rule from its channel report, and gradient descent on the same 
 Only the larger, ImageNet-pretrained network is largely immune.
 This is the shortcut-learning pattern documented for chest X-ray models that pick up hospital and acquisition cues~\cite{zech2018,geirhos2020}.
 In all three chats Astra itself warned that the texture cue might reflect acquisition, exposure or processing differences rather than disease.
+The same pattern holds on the frozen ResNet-50 features (Table~\ref{tab:g}, Fig.~\ref{fig:robust}).
+The trained probe keeps 0.862 on the size-matched subset, but Astra's 26 features fall to 0.724 and the selection rule to 0.669.
+Features chosen because they separate the practice images best tend to be the ones that also track image size; a probe that spreads its weight over all 2,048 features is far less exposed.
 
 \subsection{Edit mode: fixing a trained ResNet-50}\label{sec:edit}
 In MIT's edit mode, Astra edited the final layer (2,048 weights and a bias) of our trained ResNet-50, given practice feedback from one patient-split half of the test folder (306 images); it was scored on the other half (312 images).
@@ -171,11 +213,13 @@ When the only flaw is the operating point, one number fixes it, and an LLM edit 
 \section{Limitations and future work}
 We used one LLM and one dataset.
 F has three chats, and each other condition has one.
+G has one chat.
 The loop was run by hand, which caused one log reset (F run 1) and one accidental re-run (F run 3); both are documented, and neither gave Astra extra information.
+In G, Astra was allowed a tool only to read the long reports (all 36 commands were plain file reads), and it read the top and bottom of each report, so our sort order shaped its shortlist.
 The size-matched subset is small (140 images) and atypical (large pneumonia and small normal files), so absolute AUROC there is lower for every model.
 The comparison between models matters more than the level.
 Astra's compute cannot be measured, so ``time'' is human wall-clock.
-A longer study would automate the loop, add a second LLM, normalise acquisition size in preprocessing before the LLM sees any feedback, test on an external pediatric collection, and try larger architectures, where hand-writing is harder and pretrained features matter more.
+A longer study would automate the loop, add a second LLM, normalise acquisition size in preprocessing before the LLM sees any feedback, test on an external pediatric collection, and give the LLM a report on feature \emph{groups} rather than 2,048 single features, so that it can use more of the representation.
 
 \section*{AI-use statement and contributions}
 \emph{AI use.} GPT-6 Astra is the system under study.
