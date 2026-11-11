@@ -1,0 +1,36 @@
+% Local build: IEEE conference layout (letter, two columns, 10 pt Times) from standard TeX Live packages.
+% For submission on Overleaf with the official class, compile main_ieeetran.tex instead (same body.tex).
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage[top=0.75in,bottom=1in,left=0.625in,right=0.625in,columnsep=0.25in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage{graphicx,booktabs,amsmath,url,microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage[font=footnotesize,labelsep=period]{caption}
+\graphicspath{{../results/figures/}}
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+\titleformat{\section}{\normalsize\scshape\centering}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{8pt plus 2pt}{4pt}
+\titleformat{\subsection}{\normalsize\itshape}{\thesubsection.}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{5pt plus 1pt}{2pt}
+\renewcommand{\tablename}{TABLE}
+\renewcommand{\thetable}{\Roman{table}}
+\captionsetup[table]{labelsep=newline,justification=centering,textfont=sc}
+\renewcommand{\figurename}{Fig.}
+\setlength{\parskip}{0pt}
+\renewenvironment{abstract}{\noindent\bfseries\itshape Abstract---\ignorespaces\small}{\par\vspace{4pt}}
+\makeatletter
+\renewcommand{\maketitle}{\twocolumn[{\centering
+  {\fontsize{20}{24}\selectfont \@title\par}\vspace{10pt}
+  {\@author\par}\vspace{14pt}}]}
+\makeatother
+\title{Can an LLM Write the Weights? Hand-Programmed CNN Weights for Pediatric Pneumonia Detection versus Matched Random Search and Gradient Training}
+\author{Mahd Hindi \qquad Khaled AlHassani \qquad Abdulla AlKaabi\\[2pt]
+{\small\itshape United Arab Emirates University, Al Ain, UAE}\\
+{\small\itshape CSBP711 Advanced Artificial Intelligence, Fall 2026}}
+\begin{document}
+\maketitle
+\input{body}
+\end{document}
