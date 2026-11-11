@@ -137,3 +137,15 @@ with n = the passes that run used (written__search<n>.json).
 - All three runs reached the same rule from different first designs: less local texture/contrast = pneumonia.
   Final readouts: run 1, seven detail/contrast channels; run 2, channel 8 (local intensity range) plus two
   coarse-contrast channels; run 3, channel 12 (mean edge magnitude) alone.
+
+## Condition G (Astra writes the final layer of a frozen ImageNet ResNet-50)
+Backbone: torchvision ResNet-50 IMAGENET1K_V2, frozen, never trained on X-rays; 2,048 pooled features.
+Astra writes 2,048 weights + 1 bias (make_head()), same rules as F, same 256-image practice slices in the
+same order, budget 20. PASS 0 (free): feature report with an all-zero head on slice 1. Report: one row per
+feature (mean by class, separation, silent share, contribution), sorted by separation. No images attached.
+Prompt: PROMPT_G_resnet_head.md; files astra/head/head_vN.py, log practice_log_G1.jsonl; scoring
+src/cxr/head.py evaluate -> results/head_resnet50.{json,md}, with three rivals on the same features:
+matched random search (best of N random heads), a mechanical selection rule (top-k features by
+separation on the practice images seen, sign/(k*sd) weights, k chosen on those images; no gradients),
+and a trained linear probe (logistic regression on the training split, C chosen on practice).
+Every row also reports AUROC on the size-matched subset from the robustness check.
