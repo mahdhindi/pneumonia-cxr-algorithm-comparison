@@ -149,3 +149,15 @@ matched random search (best of N random heads), a mechanical selection rule (top
 separation on the practice images seen, sign/(k*sd) weights, k chosen on those images; no gradients),
 and a trained linear probe (logistic regression on the training split, C chosen on practice).
 Every row also reports AUROC on the size-matched subset from the robustness check.
+
+### Condition G, run 1: checks before scoring
+- 17 practice passes + free PASS 0. FINAL = the 26-feature head of passes 9-11 (bias 0), hand-picked
+  values (+4, -2, +1, -1, -0.25, +0.5, -0.5). Astra predicted ~0.96 test AUROC.
+- Deviation (permission given by the user mid-chat): Astra said it could not read the long attached
+  report without a tool, and the user allowed a tool "solely to read the attachment, with no code
+  execution or automated analysis". All 36 commands in transcript_G1.md are PowerShell Get-Content reads
+  (first 330 lines and last 100 lines of each output); no computation. Because the report is sorted by
+  separation, those reads show the header, the per-image table, the ~65 most pneumonia-leaning and the
+  100 most normal-leaning features: our sort order decided which features Astra could see.
+- Design note: PASS 0 and practice pass 1 both use the first 256-image slice (the prompt says "next"),
+  so pass 1 (0.979) was measured on the images Astra had selected features from. Later passes rotate.
