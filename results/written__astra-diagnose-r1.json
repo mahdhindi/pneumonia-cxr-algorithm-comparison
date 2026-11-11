@@ -1,0 +1,80 @@
+{
+  "model": "writtencnn",
+  "source": "LLM-written weights, no training",
+  "label": "astra-diagnose-r1",
+  "llm": "Astra",
+  "weights_file": "astra/practice_F1/weights_diag_final.py",
+  "n_params": 5569,
+  "params_M": 0.005569,
+  "train_time_s": 0.0,
+  "split": "patient",
+  "resize": "pad",
+  "ablation": "none",
+  "train_fraction": 1.0,
+  "seed": 0,
+  "practice_passes_used": 2,
+  "val": {
+    "n": 782,
+    "accuracy": 0.850383631713555,
+    "balanced_accuracy": 0.7774020095799621,
+    "precision": 0.8762214983713354,
+    "recall": 0.9291882556131261,
+    "specificity": 0.625615763546798,
+    "f1": 0.9019279128248114,
+    "macro_f1": 0.7932820157115972,
+    "auroc": 0.9271888852021065,
+    "auprc": 0.9746735802012404,
+    "confusion": {
+      "tn": 127,
+      "fp": 76,
+      "fn": 41,
+      "tp": 538
+    },
+    "ci95": {
+      "accuracy": [
+        0.8235294117647058,
+        0.8734015345268542
+      ],
+      "auroc": [
+        0.9085621035371807,
+        0.9433957115537274
+      ],
+      "macro_f1": [
+        0.7600830133405875,
+        0.8249337345082026
+      ]
+    }
+  },
+  "test": {
+    "n": 618,
+    "accuracy": 0.7508090614886731,
+    "balanced_accuracy": 0.6797543541729588,
+    "precision": 0.7279843444227005,
+    "recall": 0.9612403100775194,
+    "specificity": 0.39826839826839827,
+    "f1": 0.8285077951002228,
+    "macro_f1": 0.6864432466625374,
+    "auroc": 0.8755551081132477,
+    "auprc": 0.9265806505327574,
+    "confusion": {
+      "tn": 92,
+      "fp": 139,
+      "fn": 15,
+      "tp": 372
+    },
+    "ci95": {
+      "accuracy": [
+        0.7168284789644013,
+        0.7847896440129449
+      ],
+      "auroc": [
+        0.8477742170586292,
+        0.9001809174798238
+      ],
+      "macro_f1": [
+        0.6469105041431432,
+        0.7245596075823478
+      ]
+    }
+  }
+}

@@ -2,6 +2,7 @@
 
 | Model | How the weights were obtained | Runs | Test AUROC | Accuracy | Sensitivity | Specificity | Params | Train (min) |
 |---|---|---|---|---|---|---|---|---|
+| WrittenCNN, weights written by Astra (astra-diagnose-r1) | no training; 2 practice passes; AUROC 95% CI [0.848, 0.900] | 1 | 0.876 | 0.751 | 0.961 | 0.398 | 5,569 | 0.0 |
 | WrittenCNN, weights written by Astra (astra-examples-practice) | no training; 11 practice passes; AUROC 95% CI [0.705, 0.785] | 1 | 0.745 | 0.702 | 0.693 | 0.719 | 5,569 | 0.0 |
 | WrittenCNN, weights written by Astra (astra-examples) | no training; 0 practice passes; AUROC 95% CI [0.553, 0.646] | 1 | 0.599 | 0.610 | 0.889 | 0.143 | 5,569 | 0.0 |
 | WrittenCNN, weights written by Astra (astra-practice) | no training; 10 practice passes; AUROC 95% CI [0.695, 0.779] | 1 | 0.737 | 0.673 | 0.587 | 0.818 | 5,569 | 0.0 |

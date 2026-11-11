@@ -90,3 +90,19 @@ it is silent, and, for conv2, its mean contribution to the logit by class. Chann
 never per-cell or per-image features. Prompt: PROMPT_F_diagnostics.md. Runs: practice_F<run>/,
 practice_log_F<run>.jsonl, result written__astra-diagnose-r<run>.json; rival: best-of-n random search
 with n = the passes that run used (written__search<n>.json).
+
+### Condition F, run 1: deviations and result
+- The Colab session reset between passes 2 and 3. The practice log was not rebuilt, so the counter
+  restarted: Astra's pass 3 (v3) ran on the same 256-image slice as pass 1 (logged as pass 1/20), and
+  pass 4 (v4 = v3 unchanged) on the same slice as pass 2 (logged as pass 2/20). Astra noticed this in the
+  conversation and used pass 4 to re-test v3 on the second slice. 4 practice evaluations in total, on 512
+  of the 782 practice images. practice_log_F1.jsonl holds only passes 3-4; passes 1 (AUROC 0.6308) and 2
+  (0.8929) are recorded in transcript_F1.md, and v1/v2 were recovered from the transcript's code blocks.
+- The matched rival is therefore best-of-4 random networks (written__search4.json), not best-of-2.
+- Astra executed no code in this run (file reads only).
+- Test result (n = 618): AUROC 0.876 [0.848, 0.900], accuracy 0.751, sensitivity 0.961, specificity 0.398.
+  Same CNN trained by gradient descent: 0.882 +/- 0.012. Best-of-4 random search: median 0.691
+  [5-95 %: 0.432, 0.769], max over 100 repetitions 0.821; none reached 0.876.
+- Open question: the readout scores "less fine detail" as pneumonia. In A1, original image size alone
+  separates the classes (test AUROC 0.92), and smaller originals are shrunk less, so detail could be a
+  resolution shortcut. Needs a robustness check.
