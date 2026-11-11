@@ -322,10 +322,14 @@ def cmd_report(a):
     for f in sorted(R.glob("written__*.json")):
         r = json.loads(f.read_text())
         if r.get("source", "").startswith("LLM"):
-            n_pass = r.get("practice_passes_before_final", r.get("practice_passes_used", 0))
+            n_pass = r.get("practice_evaluations_total", r.get("practice_passes_before_final", r.get("practice_passes_used", 0)))
             ci = r["test"].get("ci95", {}).get("auroc")
             add(f"WrittenCNN, weights written by {r.get('llm', 'LLM')} ({r['label']})",
                 f"no training; {n_pass} practice passes" + (f"; AUROC 95% CI [{ci[0]:.3f}, {ci[1]:.3f}]" if ci else ""), [r])
+    runs_f = load("written__astra-diagnose-r*.json")
+    if len(runs_f) > 1:
+        add(f"WrittenCNN, weights written by Astra, condition F (mean of {len(runs_f)} independent chats)",
+            "no training; images + practice + channel report", runs_f)
     add("WrittenCNN, random init", "no training (floor)", load("written__untrained-seed*.json"))
     add("WrittenCNN, trained", "gradient descent, A1 protocol", load("writtencnn__abl-none__frac-1__seed-4[23].json"))
     for m, name in [("logreg", "Logistic regression (pixels)"), ("smallcnn", "Small CNN (scratch)"), ("resnet50", "ResNet-50 (ImageNet)"), ("majority", "Majority class")]:
@@ -335,8 +339,9 @@ def cmd_report(a):
     for r in rows:
         au = f"{r['auroc']:.3f}" + (f" ± {r['auroc_sd']:.3f}" if r["auroc_sd"] is not None else "")
         lines.append(f"| {r['model']} | {r['how']} | {r['runs']} | {au} | {r['acc']:.3f} | {r['sens']:.3f} | {r['spec']:.3f} | {r['params']:,.0f} | {r['train_min']:.1f} |")
-    for name, label in [("written__floor.json", "Random untrained networks (no feedback)"), ("written__search10.json", "Best of 10 random networks, chosen on practice slices (condition B's budget)"),
-                        ("written__search11.json", "Best of 11 random networks, chosen on practice slices (condition D's budget)")]:
+    searches = sorted(R.glob("written__search*.json"), key=lambda f: int(f.stem.split("search")[1]))
+    for name, label in [("written__floor.json", "Random untrained networks (no feedback)")] + [
+            (f.name, f"Best of {f.stem.split('search')[1]} random networks, chosen on practice slices (matched budget)") for f in searches]:
         f = R / name
         if f.exists():
             d = json.loads(f.read_text()); n = d.get("n", d.get("reps"))

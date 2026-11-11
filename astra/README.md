@@ -106,3 +106,9 @@ with n = the passes that run used (written__search<n>.json).
 - Open question: the readout scores "less fine detail" as pneumonia. In A1, original image size alone
   separates the classes (test AUROC 0.92), and smaller originals are shrunk less, so detail could be a
   resolution shortcut. Needs a robustness check.
+
+### Condition F, run 2
+- Clean run: new Astra chat, 4 practice passes on 4 consecutive (different) practice slices, no Colab reset.
+  FINAL weights are numerically identical to v4. Scored before the transcript was checked (transcript to add).
+- Test result (n = 618): AUROC 0.865 [0.835, 0.891], accuracy 0.773, sensitivity 0.886, specificity 0.584.
+- Condition F over 2 independent chats: AUROC 0.870 +/- 0.005 (same CNN trained: 0.882 +/- 0.012).

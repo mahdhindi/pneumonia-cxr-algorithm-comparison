@@ -76,5 +76,7 @@
         0.7245596075823478
       ]
     }
-  }
+  },
+  "practice_evaluations_total": 4,
+  "practice_note": "Colab reset after pass 2; log restarted, so practice_passes_used shows 2. Astra used 4 evaluations (passes 3-4 repeated the slices of passes 1-2). See astra/README.md."
 }
