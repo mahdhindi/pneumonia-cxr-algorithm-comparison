@@ -161,3 +161,8 @@ Every row also reports AUROC on the size-matched subset from the robustness chec
   100 most normal-leaning features: our sort order decided which features Astra could see.
 - Design note: PASS 0 and practice pass 1 both use the first 256-image slice (the prompt says "next"),
   so pass 1 (0.979) was measured on the images Astra had selected features from. Later passes rotate.
+- Result (official test folder, n = 618; size-matched subset, 140 images):
+  Astra's head: AUROC 0.902 [0.877, 0.922], sens 0.935, spec 0.589, 26 features; size-matched 0.724.
+  Selection rule (top-32 by separation on the 782 practice images, no gradients): 0.883 [0.853, 0.905]; size-matched 0.669.
+  Linear probe (logistic regression on 4,424 training images): 0.947 [0.926, 0.963]; size-matched 0.862.
+  Best of 17 random heads (100 reps): median 0.678 [0.573, 0.781], max 0.800; size-matched median 0.571.

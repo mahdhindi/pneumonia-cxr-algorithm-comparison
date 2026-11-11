@@ -1,0 +1,65 @@
+{
+  "backbone": "torchvision ResNet-50 IMAGENET1K_V2, frozen, never trained on X-rays",
+  "head_file": "astra/head/head_final.py",
+  "llm": "Astra",
+  "practice_passes": 17,
+  "n_test": 618,
+  "n_size_matched": 140,
+  "rows": [
+    {
+      "model": "Head written by Astra",
+      "how": "no training; 17 practice passes + feature report",
+      "auroc": 0.9023680884146,
+      "auroc_ci": [
+        0.8766397933335128,
+        0.9218141025040664
+      ],
+      "accuracy": 0.8058252427184466,
+      "sensitivity": 0.9354005167958657,
+      "specificity": 0.5887445887445888,
+      "features_used": 26,
+      "auroc_size_matched": 0.7242857142857143
+    },
+    {
+      "model": "Selection rule (mechanical rival)",
+      "how": "top-32 features by separation on the 782 practice images seen; no gradients",
+      "auroc": 0.8829267201360225,
+      "auroc_ci": [
+        0.8533341745586956,
+        0.9048838974580666
+      ],
+      "accuracy": 0.8106796116504854,
+      "sensitivity": 0.8165374677002584,
+      "specificity": 0.8008658008658008,
+      "features_used": 32,
+      "auroc_size_matched": 0.6685714285714286,
+      "k": 32
+    },
+    {
+      "model": "Linear probe (trained)",
+      "how": "logistic regression on 4,424 training images, C=0.01 chosen on practice; fit 0.9 s",
+      "auroc": 0.9466872490128304,
+      "auroc_ci": [
+        0.9259093887261078,
+        0.9626945190272491
+      ],
+      "accuracy": 0.8203883495145631,
+      "sensitivity": 0.9922480620155039,
+      "specificity": 0.5324675324675324,
+      "features_used": 2047,
+      "auroc_size_matched": 0.8622448979591837,
+      "C": 0.01
+    }
+  ],
+  "random_search": {
+    "passes": 17,
+    "reps": 100,
+    "median": 0.6780205152298175,
+    "p05": 0.5734174524872199,
+    "p95": 0.7813136906160163,
+    "max": 0.7997248229806369,
+    "share_ge_astra": 0.0,
+    "size_matched_median": 0.5712244897959184,
+    "practice_auroc_median": 0.7795484349045168
+  }
+}
