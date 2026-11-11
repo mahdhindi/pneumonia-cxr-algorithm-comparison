@@ -120,3 +120,20 @@ with n = the passes that run used (written__search<n>.json).
   practice set, and should be described as such.
 - Test result (n = 618): AUROC 0.865 [0.835, 0.891], accuracy 0.773, sensitivity 0.886, specificity 0.584.
 - Condition F over 2 independent chats: AUROC 0.870 +/- 0.005 (same CNN trained: 0.882 +/- 0.012).
+
+### Condition F, run 3
+- New Astra chat; the 17 images were still attached from the Astra_project folder (the "clean empty folder"
+  step was not applied). Transcript (transcript_F3.md): no code executed, only pasted outputs read; every
+  coefficient a round constant (-1 per cell, bias +1.0 then +1.25; rejected variant -0.5/-1.5 rows).
+- Log has 5 entries but Astra saw 4 evaluations: entry 3 is an accidental re-run of v2 on the third practice
+  slice whose output was never pasted to Astra (Astra's table lists it as "no result used"). Astra's
+  "PRACTICE PASS 5" file was saved and run as weights_diag_v4.py. FINAL = v3 exactly (Astra rejected v4/"v5").
+- Matched rival: best-of-5 random search (written__search5.json; conservative, since Astra used 4).
+- Test result (n = 618): AUROC 0.838 [0.803, 0.867], accuracy 0.743, sensitivity 0.871, specificity 0.528.
+
+### Condition F over 3 independent chats
+- Test AUROC 0.876, 0.865, 0.838 -> mean 0.859 +/- 0.016 (SD). Same CNN trained: 0.882 +/- 0.012.
+- Matched random search (best-of-4/5): median 0.69-0.70; best of 100 repetitions 0.821; none reached 0.838.
+- All three runs reached the same rule from different first designs: less local texture/contrast = pneumonia.
+  Final readouts: run 1, seven detail/contrast channels; run 2, channel 8 (local intensity range) plus two
+  coarse-contrast channels; run 3, channel 12 (mean edge magnitude) alone.

@@ -1,0 +1,5 @@
+{"pass_no": 1, "budget": 20, "weights": "astra/practice_F3/weights_diag_v1.py", "n": 256, "time": "2026-11-11 08:35:11", "auroc": 0.6124848973016512, "accuracy": 0.59375, "recall": 0.6020942408376964, "specificity": 0.5692307692307692}
+{"pass_no": 2, "budget": 20, "weights": "astra/practice_F3/weights_diag_v2.py", "n": 256, "time": "2026-11-11 08:44:17", "auroc": 0.9329970575872215, "accuracy": 0.6484375, "recall": 0.5384615384615384, "specificity": 1.0}
+{"pass_no": 3, "budget": 20, "weights": "astra/practice_F3/weights_diag_v2.py", "n": 256, "time": "2026-11-11 08:47:29", "auroc": 0.9212949212949212, "accuracy": 0.70703125, "recall": 0.5989010989010989, "specificity": 0.972972972972973}
+{"pass_no": 4, "budget": 20, "weights": "astra/practice_F3/weights_diag_v3.py", "n": 256, "time": "2026-11-11 08:48:04", "auroc": 0.9379782521143778, "accuracy": 0.87109375, "recall": 0.8848167539267016, "specificity": 0.8307692307692308}
+{"pass_no": 5, "budget": 20, "weights": "astra/practice_F3/weights_diag_v4.py", "n": 256, "time": "2026-11-11 08:54:45", "auroc": 0.9183571666112404, "accuracy": 0.8359375, "recall": 0.8041237113402062, "specificity": 0.9354838709677419}

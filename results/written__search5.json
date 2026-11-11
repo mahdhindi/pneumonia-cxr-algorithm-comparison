@@ -1,0 +1,815 @@
+{
+  "kind": "random search, best of 5 on practice slices",
+  "reps": 100,
+  "passes": 5,
+  "median": 0.6954204279785676,
+  "p05": 0.4439698759466201,
+  "p95": 0.7688272537109746,
+  "frac_ge": {
+    "0.519": 0.91,
+    "0.737": 0.22,
+    "0.882": 0.0
+  },
+  "runs": [
+    {
+      "rep": 0,
+      "seed": 100001,
+      "practice_auroc": 0.8542244640605297,
+      "test_auroc": 0.7712395270534805,
+      "test_accuracy": 0.4045307443365696,
+      "test_specificity": 0.9956709956709957
+    },
+    {
+      "rep": 1,
+      "seed": 100006,
+      "practice_auroc": 0.7646069777217319,
+      "test_auroc": 0.7052921238967751,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 2,
+      "seed": 100012,
+      "practice_auroc": 0.882907632907633,
+      "test_auroc": 0.7321610344866158,
+      "test_accuracy": 0.4077669902912621,
+      "test_specificity": 0.9913419913419913
+    },
+    {
+      "rep": 3,
+      "seed": 100019,
+      "practice_auroc": 0.5339208513468573,
+      "test_auroc": 0.6752016286900007,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 4,
+      "seed": 100023,
+      "practice_auroc": 0.3783326621022956,
+      "test_auroc": 0.5381444567491078,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 5,
+      "seed": 100028,
+      "practice_auroc": 0.7559403946838501,
+      "test_auroc": 0.6538810027182119,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 6,
+      "seed": 100030,
+      "practice_auroc": 0.5481272654047523,
+      "test_auroc": 0.7003478863943979,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 7,
+      "seed": 100037,
+      "practice_auroc": 0.77999702999703,
+      "test_auroc": 0.6427564683378637,
+      "test_accuracy": 0.3948220064724919,
+      "test_specificity": 0.9913419913419913
+    },
+    {
+      "rep": 8,
+      "seed": 100040,
+      "practice_auroc": 0.8775674587192912,
+      "test_auroc": 0.7646565320983927,
+      "test_accuracy": 0.37540453074433655,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 9,
+      "seed": 100049,
+      "practice_auroc": 0.8622381110741604,
+      "test_auroc": 0.7074230678881841,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 10,
+      "seed": 100051,
+      "practice_auroc": 0.6726775956284152,
+      "test_auroc": 0.7611161448370751,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 11,
+      "seed": 100059,
+      "practice_auroc": 0.8442800133022945,
+      "test_auroc": 0.6485340671387183,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 12,
+      "seed": 100062,
+      "practice_auroc": 0.8856548856548857,
+      "test_auroc": 0.6999675604326767,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 13,
+      "seed": 100067,
+      "practice_auroc": 0.8073953073953075,
+      "test_auroc": 0.738850296989832,
+      "test_accuracy": 0.37540453074433655,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 14,
+      "seed": 100073,
+      "practice_auroc": 0.9166331051147805,
+      "test_auroc": 0.789763638600848,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 15,
+      "seed": 100079,
+      "practice_auroc": 0.8766212171599601,
+      "test_auroc": 0.6961587077866147,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 16,
+      "seed": 100080,
+      "practice_auroc": 0.7689085783326621,
+      "test_auroc": 0.67003367003367,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 17,
+      "seed": 100089,
+      "practice_auroc": 0.8814432989690721,
+      "test_auroc": 0.7221327337606407,
+      "test_accuracy": 0.5226537216828478,
+      "test_specificity": 0.8787878787878788
+    },
+    {
+      "rep": 18,
+      "seed": 100092,
+      "practice_auroc": 0.8760023760023761,
+      "test_auroc": 0.7127196662080383,
+      "test_accuracy": 0.3818770226537217,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 19,
+      "seed": 100099,
+      "practice_auroc": 0.8282341203857666,
+      "test_auroc": 0.696824278219627,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 20,
+      "seed": 100100,
+      "practice_auroc": 0.7498993153443416,
+      "test_auroc": 0.6280132442923141,
+      "test_accuracy": 0.6343042071197411,
+      "test_specificity": 0.025974025974025976
+    },
+    {
+      "rep": 21,
+      "seed": 100107,
+      "practice_auroc": 0.8532818532818532,
+      "test_auroc": 0.7577267693546764,
+      "test_accuracy": 0.4449838187702265,
+      "test_specificity": 0.974025974025974
+    },
+    {
+      "rep": 22,
+      "seed": 100110,
+      "practice_auroc": 0.8083769633507852,
+      "test_auroc": 0.6600948577692763,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 23,
+      "seed": 100119,
+      "practice_auroc": 0.8575823079481212,
+      "test_auroc": 0.7390180878552972,
+      "test_accuracy": 0.7103559870550162,
+      "test_specificity": 0.3203463203463203
+    },
+    {
+      "rep": 24,
+      "seed": 100123,
+      "practice_auroc": 0.9378171566653242,
+      "test_auroc": 0.8210901931832164,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 25,
+      "seed": 100125,
+      "practice_auroc": 0.817720499395892,
+      "test_auroc": 0.6728861147465799,
+      "test_accuracy": 0.6715210355987055,
+      "test_specificity": 0.3463203463203463
+    },
+    {
+      "rep": 26,
+      "seed": 100132,
+      "practice_auroc": 0.8791208791208791,
+      "test_auroc": 0.8013132431737084,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 27,
+      "seed": 100139,
+      "practice_auroc": 0.8745427336215498,
+      "test_auroc": 0.6718514044095438,
+      "test_accuracy": 0.6310679611650486,
+      "test_specificity": 0.021645021645021644
+    },
+    {
+      "rep": 28,
+      "seed": 100141,
+      "practice_auroc": 0.42870954182429594,
+      "test_auroc": 0.3836594069152208,
+      "test_accuracy": 0.3705501618122977,
+      "test_specificity": 0.9826839826839827
+    },
+    {
+      "rep": 29,
+      "seed": 100145,
+      "practice_auroc": 0.8944824808699153,
+      "test_auroc": 0.7353378748727586,
+      "test_accuracy": 0.39805825242718446,
+      "test_specificity": 0.9913419913419913
+    },
+    {
+      "rep": 30,
+      "seed": 100153,
+      "practice_auroc": 0.551913008457511,
+      "test_auroc": 0.4445395259348747,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 31,
+      "seed": 100156,
+      "practice_auroc": 0.6496006725514922,
+      "test_auroc": 0.5368972113158159,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 32,
+      "seed": 100161,
+      "practice_auroc": 0.8078184110970996,
+      "test_auroc": 0.6907949931205744,
+      "test_accuracy": 0.38349514563106796,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 33,
+      "seed": 100165,
+      "practice_auroc": 0.772815142972211,
+      "test_auroc": 0.587419040907413,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 34,
+      "seed": 100173,
+      "practice_auroc": 0.8432541280708818,
+      "test_auroc": 0.6834793113862881,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 35,
+      "seed": 100177,
+      "practice_auroc": 0.8888105138105138,
+      "test_auroc": 0.7453046522813965,
+      "test_accuracy": 0.7216828478964401,
+      "test_specificity": 0.5714285714285714
+    },
+    {
+      "rep": 36,
+      "seed": 100180,
+      "practice_auroc": 0.8174385823600483,
+      "test_auroc": 0.5028636307706075,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 37,
+      "seed": 100185,
+      "practice_auroc": 0.8971405557792993,
+      "test_auroc": 0.7218530823181986,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 38,
+      "seed": 100194,
+      "practice_auroc": 0.6412121715996011,
+      "test_auroc": 0.6947157063436133,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 39,
+      "seed": 100198,
+      "practice_auroc": 0.7536045106725735,
+      "test_auroc": 0.6467163327628443,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 40,
+      "seed": 100202,
+      "practice_auroc": 0.8892931392931394,
+      "test_auroc": 0.7049229839927514,
+      "test_accuracy": 0.5420711974110033,
+      "test_specificity": 0.8138528138528138
+    },
+    {
+      "rep": 41,
+      "seed": 100206,
+      "practice_auroc": 0.8539722572509458,
+      "test_auroc": 0.7371835743928767,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 42,
+      "seed": 100212,
+      "practice_auroc": 0.8586278586278586,
+      "test_auroc": 0.6956721142767656,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 43,
+      "seed": 100218,
+      "practice_auroc": 0.8734595247684253,
+      "test_auroc": 0.7227535599628623,
+      "test_accuracy": 0.6326860841423948,
+      "test_specificity": 0.658008658008658
+    },
+    {
+      "rep": 44,
+      "seed": 100221,
+      "practice_auroc": 0.8682639764606979,
+      "test_auroc": 0.6224369945300178,
+      "test_accuracy": 0.42394822006472493,
+      "test_specificity": 0.9393939393939394
+    },
+    {
+      "rep": 45,
+      "seed": 100226,
+      "practice_auroc": 0.8010088272383354,
+      "test_auroc": 0.7222613734241641,
+      "test_accuracy": 0.6747572815533981,
+      "test_specificity": 0.5541125541125541
+    },
+    {
+      "rep": 46,
+      "seed": 100232,
+      "practice_auroc": 0.8838728838728839,
+      "test_auroc": 0.7200353479423246,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 47,
+      "seed": 100237,
+      "practice_auroc": 0.8693198693198693,
+      "test_auroc": 0.748162690023155,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 48,
+      "seed": 100244,
+      "practice_auroc": 0.8971566345194547,
+      "test_auroc": 0.7447789075696053,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 49,
+      "seed": 100246,
+      "practice_auroc": 0.8809583858764187,
+      "test_auroc": 0.7110193854379901,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 50,
+      "seed": 100253,
+      "practice_auroc": 0.8899718082964155,
+      "test_auroc": 0.691454970524738,
+      "test_accuracy": 0.4967637540453074,
+      "test_specificity": 0.8268398268398268
+    },
+    {
+      "rep": 51,
+      "seed": 100256,
+      "practice_auroc": 0.7915510718789407,
+      "test_auroc": 0.759410271038178,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 52,
+      "seed": 100263,
+      "practice_auroc": 0.5329842931937173,
+      "test_auroc": 0.5255992930411535,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 53,
+      "seed": 100265,
+      "practice_auroc": 0.8970600080547725,
+      "test_auroc": 0.7054487287045427,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 54,
+      "seed": 100270,
+      "practice_auroc": 0.8372130487313733,
+      "test_auroc": 0.5294081456872155,
+      "test_accuracy": 0.63915857605178,
+      "test_specificity": 0.06060606060606061
+    },
+    {
+      "rep": 55,
+      "seed": 100277,
+      "practice_auroc": 0.8222453222453222,
+      "test_auroc": 0.6803248431155409,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 56,
+      "seed": 100282,
+      "practice_auroc": 0.7433917433917433,
+      "test_auroc": 0.5598342226249202,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 57,
+      "seed": 100286,
+      "practice_auroc": 0.9382934005884824,
+      "test_auroc": 0.7422900097318703,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 58,
+      "seed": 100291,
+      "practice_auroc": 0.8849936948297604,
+      "test_auroc": 0.76481313690616,
+      "test_accuracy": 0.39158576051779936,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 59,
+      "seed": 100295,
+      "practice_auroc": 0.5500604107933951,
+      "test_auroc": 0.537534816604584,
+      "test_accuracy": 0.3802588996763754,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 60,
+      "seed": 100304,
+      "practice_auroc": 0.9064682407715332,
+      "test_auroc": 0.7239840263096077,
+      "test_accuracy": 0.6650485436893204,
+      "test_specificity": 0.15151515151515152
+    },
+    {
+      "rep": 61,
+      "seed": 100305,
+      "practice_auroc": 0.7965364478453483,
+      "test_auroc": 0.7211203955390002,
+      "test_accuracy": 0.3786407766990291,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 62,
+      "seed": 100310,
+      "practice_auroc": 0.8782923882400322,
+      "test_auroc": 0.683417788068951,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 63,
+      "seed": 100319,
+      "practice_auroc": 0.8759561024276689,
+      "test_auroc": 0.739096390259181,
+      "test_accuracy": 0.6294498381877023,
+      "test_specificity": 0.008658008658008658
+    },
+    {
+      "rep": 64,
+      "seed": 100320,
+      "practice_auroc": 0.8134514699959726,
+      "test_auroc": 0.5549850666129736,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 65,
+      "seed": 100328,
+      "practice_auroc": 0.7157470801449859,
+      "test_auroc": 0.4927010973522602,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 66,
+      "seed": 100330,
+      "practice_auroc": 0.9123640757148611,
+      "test_auroc": 0.7526315200733806,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 67,
+      "seed": 100335,
+      "practice_auroc": 0.8391461941200162,
+      "test_auroc": 0.6074532702439679,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 68,
+      "seed": 100344,
+      "practice_auroc": 0.5650149650814766,
+      "test_auroc": 0.43314652616978194,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 69,
+      "seed": 100349,
+      "practice_auroc": 0.6576737612238112,
+      "test_auroc": 0.6603409510386254,
+      "test_accuracy": 0.40614886731391586,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 70,
+      "seed": 100353,
+      "practice_auroc": 0.545308095046315,
+      "test_auroc": 0.6562412608924237,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 71,
+      "seed": 100357,
+      "practice_auroc": 0.7342961092961093,
+      "test_auroc": 0.6521415707462219,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 72,
+      "seed": 100362,
+      "practice_auroc": 0.7785120285120286,
+      "test_auroc": 0.6601004507981252,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 73,
+      "seed": 100366,
+      "practice_auroc": 0.8120218579234972,
+      "test_auroc": 0.6978142443258722,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 74,
+      "seed": 100370,
+      "practice_auroc": 0.91389448248087,
+      "test_auroc": 0.7501034710337036,
+      "test_accuracy": 0.6909385113268608,
+      "test_specificity": 0.6753246753246753
+    },
+    {
+      "rep": 75,
+      "seed": 100379,
+      "practice_auroc": 0.45443964083804456,
+      "test_auroc": 0.4082128035616407,
+      "test_accuracy": 0.3478964401294498,
+      "test_specificity": 0.8658008658008658
+    },
+    {
+      "rep": 76,
+      "seed": 100382,
+      "practice_auroc": 0.9013216513216513,
+      "test_auroc": 0.7687002919561059,
+      "test_accuracy": 0.7103559870550162,
+      "test_specificity": 0.27705627705627706
+    },
+    {
+      "rep": 77,
+      "seed": 100386,
+      "practice_auroc": 0.7126523749474569,
+      "test_auroc": 0.6517276866114077,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 78,
+      "seed": 100392,
+      "practice_auroc": 0.8596673596673596,
+      "test_auroc": 0.7090506392831974,
+      "test_accuracy": 0.6747572815533981,
+      "test_specificity": 0.5541125541125541
+    },
+    {
+      "rep": 79,
+      "seed": 100395,
+      "practice_auroc": 0.8971405557792993,
+      "test_auroc": 0.7228430484244437,
+      "test_accuracy": 0.46601941747572817,
+      "test_specificity": 0.9307359307359307
+    },
+    {
+      "rep": 80,
+      "seed": 100402,
+      "practice_auroc": 0.8186441936441937,
+      "test_auroc": 0.5807185923464994,
+      "test_accuracy": 0.49838187702265374,
+      "test_specificity": 0.6536796536796536
+    },
+    {
+      "rep": 81,
+      "seed": 100408,
+      "practice_auroc": 0.7609343536045106,
+      "test_auroc": 0.6507097553609181,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 82,
+      "seed": 100413,
+      "practice_auroc": 0.6826419653644784,
+      "test_auroc": 0.42584203049319325,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 83,
+      "seed": 100416,
+      "practice_auroc": 0.8408575031525851,
+      "test_auroc": 0.7188272537109747,
+      "test_accuracy": 0.6699029126213593,
+      "test_specificity": 0.5714285714285714
+    },
+    {
+      "rep": 84,
+      "seed": 100424,
+      "practice_auroc": 0.8608247422680413,
+      "test_auroc": 0.6951687416803696,
+      "test_accuracy": 0.6796116504854369,
+      "test_specificity": 0.35064935064935066
+    },
+    {
+      "rep": 85,
+      "seed": 100429,
+      "practice_auroc": 0.7679580977718656,
+      "test_auroc": 0.7321218832846741,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 86,
+      "seed": 100433,
+      "practice_auroc": 0.5561820378574306,
+      "test_auroc": 0.6535789791603744,
+      "test_accuracy": 0.6682847896440129,
+      "test_specificity": 0.36363636363636365
+    },
+    {
+      "rep": 87,
+      "seed": 100436,
+      "practice_auroc": 0.8574190836485919,
+      "test_auroc": 0.7748526236898331,
+      "test_accuracy": 0.5744336569579288,
+      "test_specificity": 0.8831168831168831
+    },
+    {
+      "rep": 88,
+      "seed": 100440,
+      "practice_auroc": 0.7462746677406363,
+      "test_auroc": 0.6056131637526987,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 89,
+      "seed": 100449,
+      "practice_auroc": 0.8333056202194878,
+      "test_auroc": 0.7128315267850152,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 90,
+      "seed": 100451,
+      "practice_auroc": 0.9081967213114754,
+      "test_auroc": 0.6948499390359856,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 91,
+      "seed": 100455,
+      "practice_auroc": 0.813813934756343,
+      "test_auroc": 0.5179648086624831,
+      "test_accuracy": 0.6262135922330098,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 92,
+      "seed": 100461,
+      "practice_auroc": 0.814123581336696,
+      "test_auroc": 0.6787811671532601,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 93,
+      "seed": 100465,
+      "practice_auroc": 0.8041079339508659,
+      "test_auroc": 0.6320346320346321,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 94,
+      "seed": 100474,
+      "practice_auroc": 0.1753408713002993,
+      "test_auroc": 0.31212456793852145,
+      "test_accuracy": 0.6213592233009708,
+      "test_specificity": 0.0
+    },
+    {
+      "rep": 95,
+      "seed": 100479,
+      "practice_auroc": 0.5500498836049219,
+      "test_auroc": 0.5932301978813607,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 96,
+      "seed": 100480,
+      "practice_auroc": 0.8120016109544905,
+      "test_auroc": 0.6795250399901562,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 97,
+      "seed": 100489,
+      "practice_auroc": 0.9143664782174926,
+      "test_auroc": 0.716500553709856,
+      "test_accuracy": 0.44660194174757284,
+      "test_specificity": 0.9653679653679653
+    },
+    {
+      "rep": 98,
+      "seed": 100490,
+      "practice_auroc": 0.9346757954087797,
+      "test_auroc": 0.7416244392988579,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    },
+    {
+      "rep": 99,
+      "seed": 100499,
+      "practice_auroc": 0.877203192550715,
+      "test_auroc": 0.7360314104500152,
+      "test_accuracy": 0.3737864077669903,
+      "test_specificity": 1.0
+    }
+  ]
+}

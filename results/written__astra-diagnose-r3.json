@@ -1,0 +1,82 @@
+{
+  "model": "writtencnn",
+  "source": "LLM-written weights, no training",
+  "label": "astra-diagnose-r3",
+  "llm": "Astra",
+  "weights_file": "astra/practice_F3/weights_diag_final.py",
+  "n_params": 5569,
+  "params_M": 0.005569,
+  "train_time_s": 0.0,
+  "split": "patient",
+  "resize": "pad",
+  "ablation": "none",
+  "train_fraction": 1.0,
+  "seed": 0,
+  "practice_passes_used": 5,
+  "val": {
+    "n": 782,
+    "accuracy": 0.8631713554987213,
+    "balanced_accuracy": 0.843619456001089,
+    "precision": 0.927536231884058,
+    "recall": 0.8842832469775475,
+    "specificity": 0.8029556650246306,
+    "f1": 0.905393457117595,
+    "macro_f1": 0.8291401465726543,
+    "auroc": 0.9296476854097009,
+    "auprc": 0.9755561710920216,
+    "confusion": {
+      "tn": 163,
+      "fp": 40,
+      "fn": 67,
+      "tp": 512
+    },
+    "ci95": {
+      "accuracy": [
+        0.840153452685422,
+        0.8849424552429668
+      ],
+      "auroc": [
+        0.9130082835758697,
+        0.9458601652223766
+      ],
+      "macro_f1": [
+        0.8005088031592684,
+        0.8572986682850897
+      ]
+    }
+  },
+  "test": {
+    "n": 618,
+    "accuracy": 0.7427184466019418,
+    "balanced_accuracy": 0.6994697808651297,
+    "precision": 0.7556053811659192,
+    "recall": 0.8708010335917312,
+    "specificity": 0.5281385281385281,
+    "f1": 0.8091236494597839,
+    "macro_f1": 0.7072913532658721,
+    "auroc": 0.8376231864603958,
+    "auprc": 0.8957341145054348,
+    "confusion": {
+      "tn": 122,
+      "fp": 109,
+      "fn": 50,
+      "tp": 337
+    },
+    "ci95": {
+      "accuracy": [
+        0.7087378640776699,
+        0.7766990291262136
+      ],
+      "auroc": [
+        0.8032977602446603,
+        0.8665389947707878
+      ],
+      "macro_f1": [
+        0.6681703602171489,
+        0.7430314648550479
+      ]
+    }
+  },
+  "practice_evaluations_total": 4,
+  "practice_note": "Log has 5 entries: entry 3 is an accidental re-run of v2 on the third slice; its output was never shown to Astra. Astra saw 4 evaluations. Matched rival uses best-of-5 (conservative)."
+}
