@@ -106,7 +106,7 @@ def apply_edit(path, w, b):
     return nw, nb
 
 
-def pools(z, mode, data="data"):
+def pools(z, mode, data="data", with_index=False):
     """Practice and scoring sets. 'test_half' (default): the official test folder split by PATIENT (seed 0)
     into a practice half and a scoring half, so practice shows the same collection shift the model meets at
     scoring time. 'val': our validation set as practice, whole test folder as scoring (no shift visible)."""
@@ -123,6 +123,8 @@ def pools(z, mode, data="data"):
     pi = np.flatnonzero(is_prac); pi = pi[np.random.default_rng(1).permutation(len(pi))]   # mix the classes
     si = np.flatnonzero(~is_prac)
     ids = np.array([f"T{int(c):05d}" for c in t.cache_idx.values[pi]])
+    if with_index:
+        return (z["test_x"][pi], z["test_y"][pi], ids), (z["test_x"][si], z["test_y"][si]), t.iloc[si].reset_index(drop=True)
     return (z["test_x"][pi], z["test_y"][pi], ids), (z["test_x"][si], z["test_y"][si])
 
 
@@ -162,6 +164,9 @@ def cmd_practice(a):
     print("practice_image_id,label,p_pneumonia")
     for i, pi, yi in zip(pid[sl], p, y):
         print(f"{i},{yi},{pi:.4f}")
+    if a.report:                                   # condition H: G's per-feature report, for the CURRENT (edited) layer
+        from .head import report
+        print(report(px[sl], y, w, b))
 
 
 def youden_threshold(y, p):
@@ -171,37 +176,60 @@ def youden_threshold(y, p):
 
 
 def cmd_evaluate(a):
+    from scipy.stats import rankdata
+    from sklearn.metrics import roc_auc_score
     z = np.load(FEAT)
     w0, b0 = z["w"], float(z["b"][0])
     w1, b1 = apply_edit(a.edit, w0, b0)
-    (xv, yv, _), (xt, yt) = pools(z, a.pool)
+    (xv, yv, _), (xt, yt), trows = pools(z, a.pool, with_index=True)
+    sub = None
+    if a.pool == "test_half":
+        from .robust import size_matched_pairs
+        sub = np.array([k for pr in size_matched_pairs(trows, 0.05) for k in pr])
     rows = []
 
-    def add(name, how, p_test, thr=0.5):
-        m = compute_metrics(yt, p_test)
+    def add(name, how, z_test, thr=0.5):
+        """AUROC (+CI) from the rank of the logit, so a large hand-written scale cannot saturate P to ties."""
+        m = compute_metrics(yt, rankdata(z_test) / len(z_test))
+        p_test = 1 / (1 + np.exp(-np.clip(z_test, -50, 50)))
         pred = (p_test >= thr).astype(int)
         acc = float((pred == yt).mean()); sens = float(pred[yt == 1].mean()); spec = float(1 - pred[yt == 0].mean())
-        rows.append(dict(model=name, how=how, threshold=thr, auroc=m["auroc"], auroc_ci=m["ci95"]["auroc"], accuracy=acc,
-                         sensitivity=sens, specificity=spec, balanced_accuracy=(sens + spec) / 2))
+        r = dict(model=name, how=how, threshold=thr, auroc=m["auroc"], auroc_ci=m["ci95"]["auroc"], accuracy=acc,
+                 sensitivity=sens, specificity=spec, balanced_accuracy=(sens + spec) / 2)
+        if sub is not None and len(sub):
+            r["auroc_size_matched"] = float(roc_auc_score(yt[sub], z_test[sub]))
+        rows.append(r)
 
-    p0 = prob(xt, w0, b0)
-    add("ResNet-50, trained (unedited)", "gradient descent, A1 protocol, seed 42", p0)
+    z0 = xt @ w0 + b0
+    add("ResNet-50, trained (unedited)", "gradient descent, A1 protocol, seed 42", z0)
     t = youden_threshold(yv, prob(xv, w0, b0))
-    add("ResNet-50 + threshold moved on practice set", f"rival: one number changed (threshold {t:.3f}, Youden on the {len(yv)} practice images)", p0, t)
-    p1 = prob(xt, w1, b1)
+    add("ResNet-50 + threshold moved on practice set", f"rival: one number changed (threshold {t:.3f}, Youden on the {len(yv)} practice images)", z0, t)
     changed = int((np.abs(w1 - w0) > 1e-9).sum())
-    add(f"ResNet-50 edited by {a.llm}", f"no gradients; {changed} of 2,048 weights changed, bias {b0:+.3f} -> {b1:+.3f}", p1)
-    out = dict(edit_file=str(a.edit), llm=a.llm, pool=a.pool, n_practice=int(len(yv)), n_scoring=int(len(yt)), checkpoint=CKPT, practice_passes=sum(1 for _ in Path(a.log).open()) if Path(a.log).exists() else 0,
-               weights_changed=changed, rows=rows)
+    add(f"ResNet-50 edited by {a.llm}", f"no gradients; {changed} of 2,048 weights changed, bias {b0:+.3f} -> {b1:+.3f}", xt @ w1 + b1)
+    if a.probe:
+        from sklearn.linear_model import LogisticRegressionCV
+        from sklearn.preprocessing import StandardScaler
+        sc = StandardScaler().fit(xv)
+        lr = LogisticRegressionCV(Cs=[0.001, 0.01, 0.1, 1.0], cv=5, scoring="roc_auc", max_iter=5000).fit(sc.transform(xv), yv)
+        add("Last layer re-trained on the practice half", f"rival: logistic regression on the same {len(yv)} practice images (C={float(lr.C_[0])} by 5-fold CV); gradient-based",
+            lr.decision_function(sc.transform(xt)))
+    out = dict(edit_file=str(a.edit), llm=a.llm, pool=a.pool, n_practice=int(len(yv)), n_scoring=int(len(yt)), checkpoint=CKPT,
+               practice_passes=sum(1 for _ in Path(a.log).open()) if Path(a.log).exists() else 0, weights_changed=changed,
+               n_size_matched=int(len(sub)) if sub is not None else 0, rows=rows)
     R = Path(a.results); R.mkdir(exist_ok=True, parents=True)
-    (R / "edit_resnet50.json").write_text(json.dumps(out, indent=2))
-    lines = ["| Model | How | Test AUROC [95% CI] | Accuracy | Sensitivity | Specificity | Balanced acc. |", "|---|---|---|---|---|---|---|"]
+    tag = f"_{a.tag}" if a.tag else ""
+    (R / f"edit_resnet50{tag}.json").write_text(json.dumps(out, indent=2))
+    sm = sub is not None and len(sub) > 0
+    lines = ["| Model | How | Test AUROC [95% CI] | Accuracy | Sensitivity | Specificity | Balanced acc. |" + (" Size-matched AUROC |" if sm else ""),
+             "|---|---|---|---|---|---|---|" + ("---|" if sm else "")]
     for r in rows:
         lines.append(f"| {r['model']} | {r['how']} | {r['auroc']:.3f} [{r['auroc_ci'][0]:.3f}, {r['auroc_ci'][1]:.3f}] | {r['accuracy']:.3f} | "
-                     f"{r['sensitivity']:.3f} | {r['specificity']:.3f} | {r['balanced_accuracy']:.3f} |")
+                     f"{r['sensitivity']:.3f} | {r['specificity']:.3f} | {r['balanced_accuracy']:.3f} |" + (f" {r['auroc_size_matched']:.3f} |" if sm else ""))
     where = "official test folder, n = 618" if a.pool == "val" else f"scoring half of the official test folder (patients not in the practice half), n = {len(yt)}"
-    md = f"# Condition E: LLM edit of the trained ResNet-50's final layer ({where})\n\n" + "\n".join(lines) + "\n"
-    (R / "edit_resnet50.md").write_text(md); print(md)
+    if sm:
+        where += f"; size-matched pairs within it: {len(sub)} images"
+    md = f"# Condition {a.tag or 'E'}: LLM edit of the trained ResNet-50's final layer ({where})\n\n" + "\n".join(lines) + "\n"
+    (R / f"edit_resnet50{tag}.md").write_text(md); print(md)
 
 
 def main(argv=None):
@@ -210,9 +238,10 @@ def main(argv=None):
     p = sub.add_parser("features"); p.add_argument("--data", default="data"); p.add_argument("--ckpt", default=CKPT)
     sub.add_parser("export")
     p = sub.add_parser("practice"); p.add_argument("--pool", choices=["test_half", "val"], default="test_half"); p.add_argument("--edit", default=None); p.add_argument("--log", default="astra/edit/practice_log_E.jsonl")
-    p.add_argument("--budget", type=int, default=20)
+    p.add_argument("--budget", type=int, default=20); p.add_argument("--report", action="store_true", help="condition H: add the per-feature report")
     p = sub.add_parser("evaluate"); p.add_argument("--pool", choices=["test_half", "val"], default="test_half"); p.add_argument("--edit", required=True); p.add_argument("--llm", default="Astra")
     p.add_argument("--log", default="astra/edit/practice_log_E.jsonl"); p.add_argument("--results", default="results")
+    p.add_argument("--probe", action="store_true", help="add the re-trained-layer rival"); p.add_argument("--tag", default="", help="e.g. H -> results/edit_resnet50_H.*")
     a = ap.parse_args(argv)
     {"features": cmd_features, "export": cmd_export, "practice": cmd_practice, "evaluate": cmd_evaluate}[a.cmd](a)
 

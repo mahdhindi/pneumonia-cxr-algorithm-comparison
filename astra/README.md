@@ -166,3 +166,12 @@ Every row also reports AUROC on the size-matched subset from the robustness chec
   Selection rule (top-32 by separation on the 782 practice images, no gradients): 0.883 [0.853, 0.905]; size-matched 0.669.
   Linear probe (logistic regression on 4,424 training images): 0.947 [0.926, 0.963]; size-matched 0.862.
   Best of 17 random heads (100 reps): median 0.678 [0.573, 0.781], max 0.800; size-matched median 0.571.
+
+## Condition H (Astra edits our trained ResNet-50's last layer, with the per-feature report)
+E's setting (fine-tuned ResNet-50 seed 42, edit(weight, bias), practice = patient-split half of the test
+folder, 306 images, every pass on all of them; scoring = the other 312) plus G's per-feature report
+(python -m cxr.edit practice --report). Read-only tool access is allowed in the prompt from the start
+(G showed the long reports need it). Rivals in `evaluate --probe --tag H`: unedited, threshold moved
+(Youden on practice), and a last layer re-trained by logistic regression on the same 306 practice images
+(C by 5-fold CV). AUROC from logit ranks; size-matched AUROC computed within the scoring half.
+Files astra/edit_h/, log practice_log_H.jsonl, results/edit_resnet50_H.{json,md}.
