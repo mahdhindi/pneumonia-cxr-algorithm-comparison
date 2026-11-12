@@ -11,7 +11,7 @@ const X = THEME.colors;
 const pres = new pptxgen();
 pres.layout = "LAYOUT_WIDE";
 pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFace };
-pres.author = "Mahd Hindi, Khaled AlHassani, Abdulla AlKaabi";
+pres.author = "Mahd Hindi, Khaled AlHassani, Abdullah AlKaabi";
 pres.title = "CSBP711 Paper Critique and Course Project";
 const C = pres.SchemeColor;
 const REPO = "github.com/mahdhindi/pneumonia-cxr-algorithm-comparison";
@@ -53,7 +53,7 @@ let s = pres.addSlide({ masterName: "DARK", sectionTitle: "Opening" });
 s.addText("CSBP711 ADVANCED ARTIFICIAL INTELLIGENCE · PAPER CRITIQUE + COURSE PROJECT · UAEU · FALL 2026", { placeholder: "kicker" });
 s.addText("Two reality checks on\nchildren's pneumonia X-rays", { placeholder: "title" });
 s.addText("Part 1 · Paper critique: does a Vision Transformer really beat CNNs? (Singh et al., Scientific Reports 14:2487, 2024)\nPart 2 · Course project: can an LLM write a classifier's weights itself, with no training at all?", { placeholder: "sub" });
-txt(s, "Mahd Hindi · Khaled AlHassani · Abdulla AlKaabi", 0.7, 4.4, 10, 0.4, { fontSize: 16, color: C.background1 });
+txt(s, "Mahd Hindi · Khaled AlHassani · Abdullah AlKaabi", 0.7, 4.4, 10, 0.4, { fontSize: 16, color: C.background1 });
 txt(s, "Same dataset and leakage-free pipeline as our Assignment 1 (Kermany pediatric chest X-rays, patient-grouped splits, official test folder held out). About 18 minutes: critique first, then the project.", 0.7, 5.0, 11.5, 1.0, { fontSize: 14, color: C.accent4 });
 notes(s, "Mahd (0.3 min)", "Two parts today, on the same dataset and pipeline as our Assignment 1. First, our critique of a paper claiming a Vision Transformer beats CNNs. Then our project: can an LLM write a classifier's weights without any training?");
 
@@ -167,7 +167,7 @@ s.addText("", { placeholder: "sub" });
 card(s, 0.7, 2.6, 5.8, 2.6, "Supported", "\"A fully fine-tuned DeiT-Base reaches about 98 % accuracy on a random image-level split of this dataset.\"", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 16 });
 card(s, 6.85, 2.6, 5.8, 2.6, "Not supported", "\"A Vision Transformer outperforms CNN architectures on pediatric pneumonia detection.\"", { fill: "7A2E1C", headColor: C.accent6, color: "FFFFFF", size: 16 });
 txt(s, "Strengths, for balance: a clear and falsifiable claim, a public dataset, a complete hyper-parameter table, a confusion matrix we can recompute from, and a cost note. That is what makes the claim testable.", 0.7, 5.5, 12, 0.9, { fontSize: 14, color: C.accent4 });
-notes(s, "Khaled (0.3 min)", "Our verdict before running anything. Supported: a fine-tuned DeiT reaches about 98 percent on a random image split. Not supported: transformers beat CNNs. To be fair, the paper is clear enough to be tested, which is a strength. Abdulla will show how we tested it.");
+notes(s, "Khaled (0.3 min)", "Our verdict before running anything. Supported: a fine-tuned DeiT reaches about 98 percent on a random image split. Not supported: transformers beat CNNs. To be fair, the paper is clear enough to be tested, which is a strength. Abdullah will show how we tested it.");
 
 // ============================================================== 9 design
 pres.addSection({ title: "Reality check" });
@@ -193,7 +193,7 @@ card(s, 9.6, 1.95, 3.15, 1.55, "Their model, faithfully", "timm deit_base_patch1
 card(s, 9.6, 3.65, 3.15, 1.55, "Their split, faithfully", "Pool the 5,824 kept images, random label-stratified 80/10/10 by image: 4,659 / 582 / 583. Leakage measured: 58 %.", { size: 11 });
 card(s, 9.6, 5.35, 3.15, 1.5, "Held fixed", "Grayscale, pad-to-square, 224 px, same augmentation, AdamW, 12 epochs, best-val-AUROC checkpoint, seeds 42 + 43, one T4.", { size: 11 });
 txt(s, "Gaps we could not close: their 30 epochs (we keep 12), plain resize (we pad), Adam (we use AdamW). All three can only help their number; the report lists them.", 0.6, 6.35, 8.8, 0.5, { fontSize: 11, italic: true, color: C.accent5 });
-notes(s, "Abdulla (0.8 min)", "Our design is a two-by-two. Rows are the models: their ViT and our ResNet-50. Columns are the protocols: our patient-grouped split with the official test folder, and their random split by image. Three cells are new runs; one is our Assignment 1 result. Their model is DeiT-Base from timm with the paper's own learning rate. Their split we reproduced exactly, and measured its leakage at 58 percent. Everything else is frozen from Assignment 1.");
+notes(s, "Abdullah (0.8 min)", "Our design is a two-by-two. Rows are the models: their ViT and our ResNet-50. Columns are the protocols: our patient-grouped split with the official test folder, and their random split by image. Three cells are new runs; one is our Assignment 1 result. Their model is DeiT-Base from timm with the paper's own learning rate. Their split we reproduced exactly, and measured its leakage at 58 percent. Everything else is frozen from Assignment 1.");
 
 // ============================================================== 10 result: ViT reproduces
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Reality check" });
@@ -257,7 +257,7 @@ s.addChart(pres.ChartType.bar, [
 card(s, 8.1, 1.85, 4.65, 2.0, "Property 1 · Patient leakage", "Under their split 58 % of test images have a sibling scan in training. Specificity jumps from 0.53–0.64 to 0.97–0.98 the moment that is allowed. Memorising a child is rewarded as accuracy.", { size: 12 });
 card(s, 8.1, 3.95, 4.65, 1.85, "Property 2 · Collection shift", "The official test folder is a different collection (A1 audit: different image geometry and class prior). A random 10 % of the training pool never meets it, so their test is easier by construction.", { size: 12 });
 card(s, 0.6, 5.95, 12.15, 1.0, "Plus one property of their setup: frozen baselines.", "Trained equally, ResNet-50 and ViT are within 0.8 points under their protocol and 0.002 AUROC under ours. Architecture did not move the number; the protocol did.", { size: 11.5 });
-notes(s, "Abdulla (0.9 min)", "Why. The chart shows every model at 0.99 or better on validation, then dropping on the official test folder. That drop is the collection shift, and it affects the transformer exactly like the CNNs. Property one is leakage: 58 percent of their test images have a sibling scan in training, and specificity jumps to 0.97 the moment that is allowed. Property two is collection shift: a random slice of the training pool never meets the harder folder. Add frozen baselines, and the whole 97.6-versus-82 story is explained with no help from the architecture.");
+notes(s, "Abdullah (0.9 min)", "Why. The chart shows every model at 0.99 or better on validation, then dropping on the official test folder. That drop is the collection shift, and it affects the transformer exactly like the CNNs. Property one is leakage: 58 percent of their test images have a sibling scan in training, and specificity jumps to 0.97 the moment that is allowed. Property two is collection shift: a random slice of the training pool never meets the harder folder. Add frozen baselines, and the whole 97.6-versus-82 story is explained with no help from the architecture.");
 
 // ============================================================== 14 verdict
 s = pres.addSlide({ masterName: "DARK", sectionTitle: "Explanation" });
@@ -267,7 +267,7 @@ s.addText("", { placeholder: "sub" });
 card(s, 0.7, 3.1, 3.85, 2.9, "Reproduced", "Their 97.6 % → our 98.0 % under their split. Their evidence is real for the question they asked.", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 14 });
 card(s, 4.75, 3.1, 3.85, 2.9, "Explained", "A fine-tuned ResNet-50 gets 97.2 % under the same split. Patient leakage (58 %) and a same-collection test set inflate every model alike.", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 14 });
 card(s, 8.8, 3.1, 3.85, 2.9, "What survives", "\"On this dataset the evaluation protocol dominates the architecture.\" Under a fair protocol the ViT ties ResNet-50 at 0.97 AUROC, at 3.7× the size.", { fill: "7A2E1C", headColor: C.accent6, color: "FFFFFF", size: 14 });
-notes(s, "Abdulla (0.3 min)", "Verdict. Reproduced, explained, and what survives: on this dataset, protocol dominates architecture. The transformer is fine; the claim about it is not.");
+notes(s, "Abdullah (0.3 min)", "Verdict. Reproduced, explained, and what survives: on this dataset, protocol dominates architecture. The transformer is fine; the claim about it is not.");
 
 // ============================================================== P1 divider
 pres.addSection({ title: "Project" });
@@ -314,7 +314,7 @@ s.addTable([
   [td("F", { bold: true, color: X.accent2 }), td("+ images, practice and a channel report (how every filter responds to each class) · 3 independent chats", { align: "left", color: X.accent2, bold: true }), td("up to 20")],
 ], { x: 0.6, y: 3.0, w: 8.0, colW: [1.1, 5.2, 1.7], rowH: 0.48, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
 card(s, 8.85, 3.0, 3.9, 3.85, "Rules (checked by code)", "No gradients, no fitting, no search loops: every change is designed and explained.\nOnly numpy and math, no random numbers, no file access: a static check and an isolated process enforce it.\nDataset not named, no image sizes shown.\nTest set scored once.", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 12.5 });
-notes(s, "Abdulla (1 min)", "The network is small on purpose: 5,569 weights, so an LLM can write all of them. The five conditions are an ablation of information: nothing; example images; practice scores; both; and in F, a channel report that tells Astra how each of its own filters responds to normal and pneumonia images. F was run in three separate chats. The rules on the right are enforced by code, not trust.");
+notes(s, "Abdullah (1 min)", "The network is small on purpose: 5,569 weights, so an LLM can write all of them. The five conditions are an ablation of information: nothing; example images; practice scores; both; and in F, a channel report that tells Astra how each of its own filters responds to normal and pneumonia images. F was run in three separate chats. The rules on the right are enforced by code, not trust.");
 
 // ============================================================== P4 practice loop + rivals
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
@@ -332,7 +332,7 @@ txt(s, "↺  Astra reads the result, decides one change, and repeats; it says FI
 card(s, 0.6, 4.15, 3.9, 2.7, "A real channel-report line (F, run 2)", "conv2 channel 8 (local intensity range): separation 0.061, i.e. clearly higher on NORMAL images.\nAstra's next file read only this channel, with weight −1: practice AUROC 0.59 → 0.93.", { size: 13 });
 card(s, 4.72, 4.15, 3.9, 2.7, "Rival 1 · matched random search", "Draw N random networks, score each on the same practice slices Astra saw, keep the best; N = Astra's number of passes. Repeated 100 times.", { size: 13 });
 card(s, 8.85, 4.15, 3.9, 2.7, "Rival 2 · gradient training", "The same 5,569-weight CNN trained with the Assignment 1 recipe (AdamW, 12 epochs, seeds 42 and 43): 3.3 min on a T4.", { size: 13 });
-notes(s, "Abdulla (0.8 min)", "This is one practice pass. Astra writes a file, we check it, run it once on 256 practice images, and send back the scores. In condition F we also send the channel report. Here is a real line from run 2: one of Astra's own channels was much higher on normal images; Astra rebuilt its output around it and practice AUROC jumped from 0.59 to 0.93. Two rivals: random search with exactly the same number of tries, and the same network trained normally.");
+notes(s, "Abdullah (0.8 min)", "This is one practice pass. Astra writes a file, we check it, run it once on 256 practice images, and send back the scores. In condition F we also send the channel report. Here is a real line from run 2: one of Astra's own channels was much higher on normal images; Astra rebuilt its output around it and practice AUROC jumped from 0.59 to 0.93. Two rivals: random search with exactly the same number of tries, and the same network trained normally.");
 
 // ============================================================== P5 main result (figure)
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
@@ -385,7 +385,7 @@ s.addImage({ path: "/home/claude/a2repo/results/figures/project_robust.png", x: 
 card(s, 8.4, 1.8, 4.35, 1.55, "Everyone drops", "On the matched images, height alone falls to 0.51: the check works. Every model loses AUROC, so the dataset itself rewards this shortcut.", { size: 12.5 });
 card(s, 8.4, 3.45, 4.35, 1.75, "Astra drops more", "Small CNN: Astra 0.859 → 0.703 vs trained 0.882 → 0.742.\nResNet-50 features: Astra 0.902 → 0.724 vs trained probe 0.947 → 0.862.", { size: 12.5 });
 card(s, 8.4, 5.3, 4.35, 1.55, "Why (a property of the data)", "Pneumonia files are smaller, so after resizing they show less fine texture. A 'less texture' rule reads both disease and file size.", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 12 });
-notes(s, "Abdulla (1.3 min)", "This is our robustness check. In Assignment 1 we found that the original image size alone predicts pneumonia, because pneumonia files are smaller. So we paired normal and pneumonia test images of the same size, 140 images, where size alone is at chance. Every model drops, so the shortcut is in the data. But Astra's networks drop more than trained ones, on both backbones. The reason is the rule it found: less fine texture. Smaller files look smoother after resizing, so that rule reads disease and file size together. Astra itself warned about this in all three chats.");
+notes(s, "Abdullah (1.3 min)", "This is our robustness check. In Assignment 1 we found that the original image size alone predicts pneumonia, because pneumonia files are smaller. So we paired normal and pneumonia test images of the same size, 140 images, where size alone is at chance. Every model drops, so the shortcut is in the data. But Astra's networks drop more than trained ones, on both backbones. The reason is the rule it found: less fine texture. Smaller files look smoother after resizing, so that rule reads disease and file size together. Astra itself warned about this in all three chats.");
 
 // ============================================================== P9 edit mode (E, H)
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
