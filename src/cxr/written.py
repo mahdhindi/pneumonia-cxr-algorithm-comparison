@@ -326,10 +326,11 @@ def cmd_report(a):
             ci = r["test"].get("ci95", {}).get("auroc")
             add(f"WrittenCNN, weights written by {r.get('llm', 'LLM')} ({r['label']})",
                 f"no training; {n_pass} practice passes" + (f"; AUROC 95% CI [{ci[0]:.3f}, {ci[1]:.3f}]" if ci else ""), [r])
-    runs_f = load("written__astra-diagnose-r*.json")
-    if len(runs_f) > 1:
-        add(f"WrittenCNN, weights written by Astra, condition F (mean of {len(runs_f)} independent chats)",
-            "no training; images + practice + channel report", runs_f)
+    for who, pat in (("Astra", "written__astra-diagnose-r*.json"), ("Claude Fable 5.2", "written__fable-diagnose-r*.json")):
+        runs_f = load(pat)
+        if len(runs_f) > 1:
+            add(f"WrittenCNN, weights written by {who}, condition F (mean of {len(runs_f)} independent chats)",
+                "no training; images + practice + channel report", runs_f)
     add("WrittenCNN, random init", "no training (floor)", load("written__untrained-seed*.json"))
     add("WrittenCNN, trained", "gradient descent, A1 protocol", load("writtencnn__abl-none__frac-1__seed-4[23].json"))
     for m, name in [("logreg", "Logistic regression (pixels)"), ("smallcnn", "Small CNN (scratch)"), ("resnet50", "ResNet-50 (ImageNet)"), ("majority", "Majority class")]:

@@ -39,7 +39,10 @@ ASTRA = [("Astra, practice (B)", "astra/weights_practice_final.py"),
          ("Astra, images + practice (D)", "astra/weights_examples_practice_final.py"),
          ("Astra, images + practice + channel report (F, run 1)", "astra/practice_F1/weights_diag_final.py"),
          ("Astra, images + practice + channel report (F, run 2)", "astra/practice_F2/weights_diag_final.py"),
-         ("Astra, images + practice + channel report (F, run 3)", "astra/practice_F3/weights_diag_final.py")]
+         ("Astra, images + practice + channel report (F, run 3)", "astra/practice_F3/weights_diag_final.py"),
+         ("Fable 5.2, images + practice + channel report (F, run 1)", "fable/practice_F1/weights_diag_final.py"),
+         ("Fable 5.2, images + practice + channel report (F, run 2)", "fable/practice_F2/weights_diag_final.py"),
+         ("Fable 5.2, images + practice + channel report (F, run 3)", "fable/practice_F3/weights_diag_final.py")]
 TRAINED = [("Same CNN, trained (seed 42)", "writtencnn", 42), ("Same CNN, trained (seed 43)", "writtencnn", 43),
            ("ResNet-50, trained (seed 42)", "resnet50", 42)]
 
