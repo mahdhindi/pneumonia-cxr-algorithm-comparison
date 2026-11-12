@@ -11,6 +11,7 @@ Every chat beat all 100 matched random searches (best 0.821).
 On a frozen ImageNet ResNet-50, Astra's hand-written final layer reached 0.902.
 That beat a mechanical feature-selection rule (0.883) and random search (0.678), but not a trained linear probe on the same features (0.947).
 A size-matched robustness check shows that part of every score comes from an acquisition artefact, and that Astra's selected features lean on it more than trained weights do (0.703 vs.\ 0.742 on the CNN; 0.724 vs.\ 0.862 on ResNet-50 features).
+Given the same report, Astra's edit of our fine-tuned ResNet-50 raised its AUROC from 0.954 to 0.976, short of a layer re-trained on the same practice images (0.985).
 \end{abstract}
 
 \section{Introduction and research question}
@@ -204,16 +205,38 @@ The same pattern holds on the frozen ResNet-50 features (Table~\ref{tab:g}, Fig.
 The trained probe keeps 0.862 on the size-matched subset, but Astra's 26 features fall to 0.724 and the selection rule to 0.669.
 Features chosen because they separate the practice images best tend to be the ones that also track image size; a probe that spreads its weight over all 2,048 features is far less exposed.
 
-\subsection{Edit mode: fixing a trained ResNet-50}\label{sec:edit}
-In MIT's edit mode, Astra edited the final layer (2,048 weights and a bias) of our trained ResNet-50, given practice feedback from one patient-split half of the test folder (306 images); it was scored on the other half (312 images).
-Its edit (mean-centring, pruning small weights, bias $-\ln 2$) left AUROC unchanged (0.954) and raised balanced accuracy from 0.745 to 0.814.
-Simply moving the threshold to its best point on the same practice images reached 0.914.
-When the only flaw is the operating point, one number fixes it, and an LLM edit adds nothing.
+\subsection{Edit mode: fixing our trained ResNet-50 (E, H)}\label{sec:edit}
+In MIT's edit mode, Astra changes the final layer (2,048 weights and a bias) of our fine-tuned ResNet-50.
+That model is already near-perfect on our validation set (0.9995), so practice feedback came from one patient-split half of the test folder (306 images), and scoring used the other half (312 different children).
+In \textbf{E} Astra saw only scores; in \textbf{H} it also got G's per-feature report.
+\begin{table}[h]
+\centering
+\caption{Edit mode on the scoring half ($n{=}312$; size-matched pairs within it: 72 images).}
+\label{tab:edit}
+\setlength{\tabcolsep}{2.4pt}
+\footnotesize
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Last layer of the fine-tuned ResNet-50 & Test AUROC & Bal.\ acc. & Size-m. \\
+\midrule
+Unedited & 0.954 {\scriptsize[0.93, 0.98]} & 0.745 & 0.879 \\
+Threshold moved (Youden on practice) & 0.954 & 0.914 & 0.879 \\
+E\; Astra edit, scores only & 0.954 & 0.814 & -- \\
+\textbf{H\; Astra edit, + feature report} & \textbf{0.976} {\scriptsize[0.96, 0.99]} & 0.903 & 0.922 \\
+Re-trained on the same 306 images & 0.985 {\scriptsize[0.97, 1.00]} & 0.941 & 0.925 \\
+\bottomrule
+\end{tabular}
+\end{table}
+With scores alone (E), Astra could only move the operating point: AUROC stayed at 0.954, and simply moving the threshold did better.
+With the report (H), it changed the ranking.
+After three small adjustments it replaced the trained layer with $\pm1$ votes on 49 features that separate this collection, plus a bias of $-2$, and AUROC rose to 0.976.
+A layer re-trained by logistic regression on the same 306 images still did better (0.985).
+Unlike on the small CNN, Astra's layer is not more size-dependent here (0.922 vs.\ 0.925 size-matched): fine-tuned features already track the disease, so its shortlist did not drift toward image size.
 
 \section{Limitations and future work}
 We used one LLM and one dataset.
 F has three chats, and each other condition has one.
-G has one chat.
+G and H have one chat each.
 The loop was run by hand, which caused one log reset (F run 1) and one accidental re-run (F run 3); both are documented, and neither gave Astra extra information.
 In G, Astra was allowed a tool only to read the long reports (all 36 commands were plain file reads), and it read the top and bottom of each report, so our sort order shaped its shortlist.
 The size-matched subset is small (140 images) and atypical (large pneumonia and small normal files), so absolute AUROC there is lower for every model.

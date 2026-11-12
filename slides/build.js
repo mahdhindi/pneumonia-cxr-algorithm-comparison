@@ -387,16 +387,22 @@ card(s, 8.4, 3.45, 4.35, 1.75, "Astra drops more", "Small CNN: Astra 0.859 → 0
 card(s, 8.4, 5.3, 4.35, 1.55, "Why (a property of the data)", "Pneumonia files are smaller, so after resizing they show less fine texture. A 'less texture' rule reads both disease and file size.", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 12 });
 notes(s, "Abdulla (1.3 min)", "This is our robustness check. In Assignment 1 we found that the original image size alone predicts pneumonia, because pneumonia files are smaller. So we paired normal and pneumonia test images of the same size, 140 images, where size alone is at chance. Every model drops, so the shortcut is in the data. But Astra's networks drop more than trained ones, on both backbones. The reason is the rule it found: less fine texture. Smaller files look smoother after resizing, so that rule reads disease and file size together. Astra itself warned about this in all three chats.");
 
-// ============================================================== P9 edit mode
+// ============================================================== P9 edit mode (E, H)
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
-s.addText("Edit mode (E): no better than moving the threshold", { placeholder: "title" });
-s.addText("Astra edited the last layer (2,048 weights + bias) using practice feedback from one half of the test folder; scored on the other half (312 images).", { placeholder: "lead" });
-s.addChart(pres.ChartType.bar, [{ name: "Balanced accuracy", labels: ["Threshold moved on the same practice images", "Edited by Astra", "Trained ResNet-50, unedited"], values: [0.914, 0.814, 0.745] }],
-  { x: 0.6, y: 1.85, w: 7.4, h: 4.95, barDir: "bar", barGapWidthPct: 45, chartColors: [X.accent1, X.accent2, X.accent3], showValue: true, dataLabelPosition: "outEnd",
-    dataLabelFormatCode: "0.000", valAxisMinVal: 0.5, valAxisMaxVal: 1.0, valAxisMajorUnit: 0.1, showLegend: false, showTitle: true, title: "Balanced accuracy (AUROC 0.954 in all three)", ...chartText });
-card(s, 8.3, 1.85, 4.45, 2.4, "What Astra did", "Centred the weights, pruned small ones, and lowered the bias by ln 2. AUROC stayed exactly 0.954: the ranking did not change; only the cut-off moved.", { size: 13.5 });
-card(s, 8.3, 4.4, 4.45, 2.4, "Lesson", "When a trained model's only flaw is where it draws the line, one number fixes it. MIT's edits removed real obstacles; ours had none.", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 13.5 });
-notes(s, "Mahd (0.5 min)", "Briefly, the edit mode. Astra edited our trained ResNet-50's last layer to fix false alarms. Balanced accuracy rose from 0.745 to 0.814, but AUROC did not move at all, and simply moving the threshold on the same practice images reached 0.914. When the only flaw is the cut-off, an LLM edit adds nothing.");
+s.addText("Edit mode: with the feature report, Astra improved our ResNet-50", { placeholder: "title" });
+s.addText("Astra changed the last layer (2,048 weights + bias) of our fine-tuned ResNet-50. Practice: one half of the test folder (306 images); scored on the other half (312 different children).", { placeholder: "lead" });
+s.addTable([
+  [hdr("Last layer of our fine-tuned ResNet-50"), hdr("Test AUROC [95 % CI]"), hdr("Balanced acc."), hdr("Size-matched")],
+  [td("Unedited", { align: "left" }), td("0.954 [0.925, 0.977]"), td("0.745"), td("0.879")],
+  [td("Threshold moved on the practice images", { align: "left" }), td("0.954"), td("0.914"), td("0.879")],
+  [td("E · Astra edit, scores only", { align: "left" }), td("0.954"), td("0.814"), td("–")],
+  [td("H · Astra edit + per-feature report", { align: "left", bold: true, color: X.accent2 }), td("0.976 [0.959, 0.990]", { bold: true, color: X.accent2 }), td("0.903"), td("0.922")],
+  [td("Re-trained on the same 306 images (logistic regression)", { align: "left", bold: true, color: X.accent1 }), td("0.985 [0.974, 0.995]", { bold: true, color: X.accent1 }), td("0.941"), td("0.925")],
+], { x: 0.6, y: 1.9, w: 12.15, colW: [5.6, 2.75, 1.9, 1.9], rowH: 0.5, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
+card(s, 0.6, 5.1, 3.9, 1.75, "E: scores only", "Astra could only move the cut-off: AUROC stayed 0.954, and a plain threshold move did better.", { size: 13 });
+card(s, 4.72, 5.1, 3.9, 1.75, "H: with the report", "It replaced the layer with ±1 votes on 49 features that separate this collection: AUROC 0.954 → 0.976. Retraining still wins (0.985).", { size: 13 });
+card(s, 8.85, 5.1, 3.9, 1.75, "Not a size shortcut here", "Size-matched 0.922 vs 0.925 for retraining: fine-tuned features already track the disease (72 images, indicative).", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 13 });
+notes(s, "Mahd (0.7 min)", "Finally, edit mode on our own trained ResNet-50. With scores only, condition E, Astra could just move the cut-off and AUROC did not change. With the per-feature report, condition H, it rebuilt the last layer from 49 features that separate this collection, and AUROC rose from 0.954 to 0.976. Retraining the layer on the same 306 images still reaches 0.985. And here, unlike the small CNN, Astra's layer does not lean on image size.");
 
 // ============================================================== conclusion
 pres.addSection({ title: "Conclusion" });
@@ -405,8 +411,8 @@ s.addText("CONCLUSION · BOTH PARTS", { placeholder: "kicker" });
 s.addText("In both parts, the baseline decided what the number meant", { placeholder: "title" });
 s.addText("", { placeholder: "sub" });
 card(s, 0.7, 2.9, 5.8, 3.4, "Part 1 · Paper critique", "The ViT's 97.6 % reproduces under a random image split, and a fine-tuned ResNet-50 gets 97.2 % under the same split. With patient grouping and the official test folder, both tie at 0.97 AUROC. The protocol, not the architecture, produced the claim.", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 15 });
-card(s, 6.85, 2.9, 5.8, 3.4, "Part 2 · Project", "Yes, with the right feedback: GPT-6 Astra wrote a classifier with no training that beat every matched random search (0.859; 0.902 on ImageNet features). It still trails training (0.882; 0.947), and leans more on an image-size shortcut. Without the random-search and size checks, we would have over-claimed.", { fill: "7A2E1C", headColor: C.accent6, color: "FFFFFF", size: 15 });
-notes(s, "Mahd (0.6 min)", "Both parts end in the same place. The ViT's 97.6 meant little without a fair split. Astra's scores meant little without a matched random search and a size check. With them: an LLM can write a working pneumonia classifier without training, and beats random search, but training is still better, and Astra's rule leans more on a dataset shortcut.");
+card(s, 6.85, 2.9, 5.8, 3.4, "Part 2 · Project", "Yes, with the right feedback: GPT-6 Astra wrote a classifier with no training that beat every matched random search (0.859; 0.902 on ImageNet features), and lifted our trained ResNet-50 from 0.954 to 0.976. Gradient training with the same information still wins every time (0.882; 0.947; 0.985).", { fill: "7A2E1C", headColor: C.accent6, color: "FFFFFF", size: 15 });
+notes(s, "Mahd (0.6 min)", "Both parts end in the same place. The ViT's 97.6 meant little without a fair split. Astra's scores meant little without a matched random search and a size check. With them: an LLM can write a working pneumonia classifier without training, beats random search, and can even improve a trained model, but gradient training with the same information is better every time.");
 
 // ============================================================== next
 pres.addSection({ title: "Next" });
@@ -470,7 +476,9 @@ s.addTable([
   [td("G · Astra head, frozen ImageNet ResNet-50", { align: "left" }), td("0.902 [0.88, 0.92]"), td("0.94"), td("0.59"), td("0.724"), td("2,049"), td("17 passes")],
   [td("G · trained linear probe, same features", { align: "left" }), td("0.947 [0.93, 0.96]"), td("0.99"), td("0.53"), td("0.862"), td("2,049"), td("< 1 s")],
   [td("ResNet-50 fine-tuned (A1)", { align: "left" }), td("0.971 ± 0.001"), td("1.00"), td("0.64"), td("0.905"), td("23.5 M"), td("4.4 min")],
-], { x: 0.6, y: 1.85, w: 12.15, colW: [3.7, 2.05, 0.75, 0.75, 2.0, 1.2, 1.7], rowH: 0.42, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
+  [td("H · Astra edit of fine-tuned ResNet-50 (n = 312)", { align: "left" }), td("0.976 [0.96, 0.99]"), td("0.98"), td("0.83"), td("0.922 (72 img)"), td("2,049"), td("7 passes")],
+  [td("H · layer re-trained on the 306 practice images", { align: "left" }), td("0.985 [0.97, 1.00]"), td("0.97"), td("0.91"), td("0.925 (72 img)"), td("2,049"), td("< 1 s")],
+], { x: 0.6, y: 1.85, w: 12.15, colW: [3.7, 2.05, 0.75, 0.75, 2.0, 1.2, 1.7], rowH: 0.38, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
 notes(s, "Backup", "All project numbers for questions.");
 
 // ============================================================== backup: honesty log
