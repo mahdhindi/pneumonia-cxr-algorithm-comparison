@@ -390,7 +390,7 @@ notes(s, "Abdulla (1.3 min)", "This is our robustness check. In Assignment 1 we 
 // ============================================================== P9 edit mode (E, H)
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
 s.addText("Edit mode: with the feature report, Astra improved our ResNet-50", { placeholder: "title" });
-s.addText("Astra changed the last layer (2,048 weights + bias) of our fine-tuned ResNet-50. Practice: one half of the test folder (306 images); scored on the other half (312 different children).", { placeholder: "lead" });
+s.addText("Astra changed the last layer of our fine-tuned ResNet-50. Practice: half the test folder (306 images). All rows scored on the other, harder half (312 children); on all 618 the same model scores 0.966.", { placeholder: "lead" });
 s.addTable([
   [hdr("Last layer of our fine-tuned ResNet-50"), hdr("Test AUROC [95 % CI]"), hdr("Balanced acc."), hdr("Size-matched")],
   [td("Unedited", { align: "left" }), td("0.954 [0.925, 0.977]"), td("0.745"), td("0.879")],
@@ -402,7 +402,7 @@ s.addTable([
 card(s, 0.6, 5.1, 3.9, 1.75, "E: scores only", "Astra could only move the cut-off: AUROC stayed 0.954, and a plain threshold move did better.", { size: 13 });
 card(s, 4.72, 5.1, 3.9, 1.75, "H: with the report", "It replaced the layer with ±1 votes on 49 features that separate this collection: AUROC 0.954 → 0.976. Retraining still wins (0.985).", { size: 13 });
 card(s, 8.85, 5.1, 3.9, 1.75, "Not a size shortcut here", "Size-matched 0.922 vs 0.925 for retraining: fine-tuned features already track the disease (72 images, indicative).", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 13 });
-notes(s, "Mahd (0.7 min)", "Finally, edit mode on our own trained ResNet-50. With scores only, condition E, Astra could just move the cut-off and AUROC did not change. With the per-feature report, condition H, it rebuilt the last layer from 49 features that separate this collection, and AUROC rose from 0.954 to 0.976. Retraining the layer on the same 306 images still reaches 0.985. And here, unlike the small CNN, Astra's layer does not lean on image size.");
+notes(s, "Mahd (0.7 min)", "Finally, edit mode on our own trained ResNet-50. With scores only, condition E, Astra could just move the cut-off and AUROC did not change. With the per-feature report, condition H, it rebuilt the last layer from 49 features that separate this collection, and AUROC rose from 0.954 to 0.976. Retraining the layer on the same 306 images still reaches 0.985. Note that every row is on the same 312 children, a harder half: on all 618 test images the same model scores 0.966, and our A1 two-seed mean was 0.971. And here, unlike the small CNN, Astra's layer does not lean on image size.");
 
 // ============================================================== conclusion
 pres.addSection({ title: "Conclusion" });

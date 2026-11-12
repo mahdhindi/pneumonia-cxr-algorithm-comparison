@@ -209,6 +209,7 @@ Features chosen because they separate the practice images best tend to be the on
 In MIT's edit mode, Astra changes the final layer (2,048 weights and a bias) of our fine-tuned ResNet-50.
 That model is already near-perfect on our validation set (0.9995), so practice feedback came from one patient-split half of the test folder (306 images), and scoring used the other half (312 different children).
 In \textbf{E} Astra saw only scores; in \textbf{H} it also got G's per-feature report.
+All rows in Table~\ref{tab:edit} are scored on the same 312 children; this half is harder than the full test folder, where the same model (seed 42, retrained) scores 0.966 (0.971 is the two-seed mean in Assignment~1).
 \begin{table}[h]
 \centering
 \caption{Edit mode on the scoring half ($n{=}312$; size-matched pairs within it: 72 images).}
