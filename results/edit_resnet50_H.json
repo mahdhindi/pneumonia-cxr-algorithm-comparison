@@ -1,0 +1,73 @@
+{
+  "edit_file": "astra/edit_h/edit_final.py",
+  "llm": "Astra",
+  "pool": "test_half",
+  "n_practice": 306,
+  "n_scoring": 312,
+  "checkpoint": "runs/resnet50__abl-none__frac-1__seed-42/best.pt",
+  "practice_passes": 7,
+  "weights_changed": 2048,
+  "n_size_matched": 72,
+  "rows": [
+    {
+      "model": "ResNet-50, trained (unedited)",
+      "how": "gradient descent, A1 protocol, seed 42",
+      "threshold": 0.5,
+      "auroc": 0.9536176457508784,
+      "auroc_ci": [
+        0.9246954656845715,
+        0.9771795141542259
+      ],
+      "accuracy": 0.8141025641025641,
+      "sensitivity": 0.9949748743718593,
+      "specificity": 0.49557522123893805,
+      "balanced_accuracy": 0.7452750478053987,
+      "auroc_size_matched": 0.878858024691358
+    },
+    {
+      "model": "ResNet-50 + threshold moved on practice set",
+      "how": "rival: one number changed (threshold 0.999, Youden on the 306 practice images)",
+      "threshold": 0.9986415505409241,
+      "auroc": 0.9536176457508784,
+      "auroc_ci": [
+        0.9246954656845715,
+        0.9771795141542259
+      ],
+      "accuracy": 0.9198717948717948,
+      "sensitivity": 0.9346733668341709,
+      "specificity": 0.8938053097345133,
+      "balanced_accuracy": 0.9142393382843421,
+      "auroc_size_matched": 0.878858024691358
+    },
+    {
+      "model": "ResNet-50 edited by Astra",
+      "how": "no gradients; 2048 of 2,048 weights changed, bias +0.018 -> -2.000",
+      "threshold": 0.5,
+      "auroc": 0.9762529461466625,
+      "auroc_ci": [
+        0.9591873201101602,
+        0.9902008029883813
+      ],
+      "accuracy": 0.9230769230769231,
+      "sensitivity": 0.9748743718592965,
+      "specificity": 0.831858407079646,
+      "balanced_accuracy": 0.9033663894694712,
+      "auroc_size_matched": 0.9220679012345679
+    },
+    {
+      "model": "Last layer re-trained on the practice half",
+      "how": "rival: logistic regression on the same 306 practice images (C=0.1 by 5-fold CV); gradient-based",
+      "threshold": 0.5,
+      "auroc": 0.9851469738070885,
+      "auroc_ci": [
+        0.9735597922489289,
+        0.9947642132645265
+      ],
+      "accuracy": 0.9487179487179487,
+      "sensitivity": 0.9698492462311558,
+      "specificity": 0.911504424778761,
+      "balanced_accuracy": 0.9406768355049584,
+      "auroc_size_matched": 0.9251543209876544
+    }
+  ]
+}

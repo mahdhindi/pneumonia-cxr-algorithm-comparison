@@ -185,3 +185,8 @@ Files astra/edit_h/, log practice_log_H.jsonl, results/edit_resnet50_H.{json,md}
   a line range); no computation. Permitted by the prompt from the start.
 - Every pass ran on the same 306 practice images (by design, as in E), so the selection can overfit them;
   the re-trained-layer rival uses the same 306 images.
+- Result (scoring half, n = 312; size-matched pairs within it: 72 images):
+  unedited 0.954 [0.925, 0.977], balanced acc. 0.745, size-matched 0.879;
+  threshold moved 0.954, balanced acc. 0.914;
+  Astra's edit 0.976 [0.959, 0.990], balanced acc. 0.903, size-matched 0.922;
+  layer re-trained on the same 306 practice images 0.985 [0.974, 0.995], balanced acc. 0.941, size-matched 0.925.
