@@ -175,3 +175,13 @@ folder, 306 images, every pass on all of them; scoring = the other 312) plus G's
 (Youden on practice), and a last layer re-trained by logistic regression on the same 306 practice images
 (C by 5-fold CV). AUROC from logit ranks; size-matched AUROC computed within the scoring half.
 Files astra/edit_h/, log practice_log_H.jsonl, results/edit_resnet50_H.{json,md}.
+
+### Condition H, run 1: checks before scoring
+- 7 practice passes + free PASS 0 (unedited practice AUROC 0.9776). FINAL = pass 7: Astra zeroed the whole
+  trained layer and replaced it with 49 hand-picked features at +1 (24) / -1 (25), bias -2.0. So the final
+  "edit" is in effect a new hand-written head on the fine-tuned features (allowed: edit() may return any
+  weights). Practice AUROC 0.9917; Astra predicted 0.990 held-out.
+- Tool use: 17 commands, all PowerShell Get-Content reads (some with Select-Object -Skip/-First to display
+  a line range); no computation. Permitted by the prompt from the start.
+- Every pass ran on the same 306 practice images (by design, as in E), so the selection can overfit them;
+  the re-trained-layer rival uses the same 306 images.
