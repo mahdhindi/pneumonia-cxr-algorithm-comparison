@@ -111,6 +111,12 @@ def pools(z, mode, data="data", with_index=False):
     into a practice half and a scoring half, so practice shows the same collection shift the model meets at
     scoring time. 'val': our validation set as practice, whole test folder as scoring (no shift visible)."""
     if mode == "val":
+        if with_index:
+            import pandas as pd
+            df = pd.read_csv(Path(data) / "index.csv")
+            t = df[df.split == "test"].reset_index(drop=True)
+            assert len(t) == len(z["test_y"]) and (t.label.values == z["test_y"]).all(), "index.csv does not match features.npz"
+            return (z["val_x"], z["val_y"], z["val_id"]), (z["test_x"], z["test_y"]), t
         return (z["val_x"], z["val_y"], z["val_id"]), (z["test_x"], z["test_y"])
     import pandas as pd
     df = pd.read_csv(Path(data) / "index.csv")
@@ -142,7 +148,7 @@ def cmd_practice(a):
     else:
         if used >= a.budget:
             sys.exit(f"budget exhausted: {used}/{a.budget}")
-        if a.pool == "val":
+        if a.pool == "val" and not a.full:
             n = len(py); start = (used * 256) % n
             sl = np.array([(start + i) % n for i in range(256)])
         else:
@@ -182,10 +188,8 @@ def cmd_evaluate(a):
     w0, b0 = z["w"], float(z["b"][0])
     w1, b1 = apply_edit(a.edit, w0, b0)
     (xv, yv, _), (xt, yt), trows = pools(z, a.pool, with_index=True)
-    sub = None
-    if a.pool == "test_half":
-        from .robust import size_matched_pairs
-        sub = np.array([k for pr in size_matched_pairs(trows, 0.05) for k in pr])
+    from .robust import size_matched_pairs
+    sub = np.array([k for pr in size_matched_pairs(trows, 0.05) for k in pr])
     rows = []
 
     def add(name, how, z_test, thr=0.5):
@@ -211,7 +215,7 @@ def cmd_evaluate(a):
         from sklearn.preprocessing import StandardScaler
         sc = StandardScaler().fit(xv)
         lr = LogisticRegressionCV(Cs=[0.001, 0.01, 0.1, 1.0], cv=5, scoring="roc_auc", max_iter=5000).fit(sc.transform(xv), yv)
-        add("Last layer re-trained on the practice half", f"rival: logistic regression on the same {len(yv)} practice images (C={float(lr.C_[0])} by 5-fold CV); gradient-based",
+        add("Last layer re-trained on the practice images", f"rival: logistic regression on the same {len(yv)} practice images (C={float(lr.C_[0])} by 5-fold CV); gradient-based",
             lr.decision_function(sc.transform(xt)))
     out = dict(edit_file=str(a.edit), llm=a.llm, pool=a.pool, n_practice=int(len(yv)), n_scoring=int(len(yt)), checkpoint=CKPT,
                practice_passes=sum(1 for _ in Path(a.log).open()) if Path(a.log).exists() else 0, weights_changed=changed,
@@ -239,6 +243,7 @@ def main(argv=None):
     sub.add_parser("export")
     p = sub.add_parser("practice"); p.add_argument("--pool", choices=["test_half", "val"], default="test_half"); p.add_argument("--edit", default=None); p.add_argument("--log", default="astra/edit/practice_log_E.jsonl")
     p.add_argument("--budget", type=int, default=20); p.add_argument("--report", action="store_true", help="condition H: add the per-feature report")
+    p.add_argument("--full", action="store_true", help="condition I: with --pool val, every pass uses all practice images")
     p = sub.add_parser("evaluate"); p.add_argument("--pool", choices=["test_half", "val"], default="test_half"); p.add_argument("--edit", required=True); p.add_argument("--llm", default="Astra")
     p.add_argument("--log", default="astra/edit/practice_log_E.jsonl"); p.add_argument("--results", default="results")
     p.add_argument("--probe", action="store_true", help="add the re-trained-layer rival"); p.add_argument("--tag", default="", help="e.g. H -> results/edit_resnet50_H.*")

@@ -190,3 +190,12 @@ Files astra/edit_h/, log practice_log_H.jsonl, results/edit_resnet50_H.{json,md}
   threshold moved 0.954, balanced acc. 0.914;
   Astra's edit 0.976 [0.959, 0.990], balanced acc. 0.903, size-matched 0.922;
   layer re-trained on the same 306 practice images 0.985 [0.974, 0.995], balanced acc. 0.941, size-matched 0.925.
+
+## Condition I (H's method, practice on the validation set, scored on all 618 test images)
+Same edit + per-feature report as H, but practice = the 782 validation images (every pass on all of them,
+`practice --pool val --full --report`) and scoring = the whole official test folder (618), never seen in
+practice, so it is directly comparable with Assignment 1. Rivals: threshold moved (Youden on validation)
+and a last layer re-trained by logistic regression on the same 782 validation images (C by 5-fold CV).
+Size-matched AUROC on the robustness check's 140 images. Prompt PROMPT_I_edit_val.md; files astra/edit_i/,
+log practice_log_I.jsonl, results/edit_resnet50_I.{json,md}. Expected difficulty: the unedited model
+already scores 0.9995 on validation, so practice shows little to fix.
