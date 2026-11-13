@@ -11,3 +11,17 @@ Disclosure: the pipeline and prompts were drafted with Claude (Anthropic), the s
 Files: practice_F<run>/, practice_log_F<run>.jsonl, head/, practice_log_G.jsonl, edit_h/, practice_log_H.jsonl,
 transcripts transcript_*.md. Results: results/written__fable-diagnose-r<run>.json, head_resnet50_fable.*,
 edit_resnet50_H_fable.*. Notebook cells FB-F2/F3, FB-G2/G3, FB-H2/H3 (setup cells F1, G1, H1 are shared).
+
+## Condition F, run 1: checks before scoring
+- 11 practice evaluations (Fable's numbering). The Colab log restarted after pass 7 (session reset), so
+  passes 8-11 ran on slices 1-4 again and are logged as 1/20-4/20; Fable noticed and kept its own count.
+  Matched rival: best-of-11 random search (written__search11.json).
+- No tools or code used (transcript_F1.md). Final network: 4 edge filters + 4 "cap" twins (conv1), one conv2
+  channel = edge energy capped at 0.5, read with weight -12 on grid rows 1-2, columns weighted
+  [0.15, 1, 1, 0.15]; bias +15.5 (chosen between the +15.3 and +15.7 it had tried). All other weights zero.
+- Method note: Fable used the channel report as a measuring instrument. It added zero- or tiny-weight
+  "probe" and "reference" channels (e.g. 16 copies of the edge channel, each read in one grid cell at
+  -0.05) to read per-cell class means and on-batch reference separations, then set round weights by hand.
+  No weight is a formula of the statistics, but it extracted more information per pass than Astra did.
+- From the example images alone, Fable noticed that pneumonia films carry more black padding and excluded
+  the padded rows on purpose, as a shortcut it did not want to use.
