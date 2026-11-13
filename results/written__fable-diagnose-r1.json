@@ -1,0 +1,82 @@
+{
+  "model": "writtencnn",
+  "source": "LLM-written weights, no training",
+  "label": "fable-diagnose-r1",
+  "llm": "Claude Fable 5.2",
+  "weights_file": "fable/practice_F1/weights_diag_final.py",
+  "n_params": 5569,
+  "params_M": 0.005569,
+  "train_time_s": 0.0,
+  "split": "patient",
+  "resize": "pad",
+  "ablation": "none",
+  "train_fraction": 1.0,
+  "seed": 0,
+  "practice_passes_used": 4,
+  "val": {
+    "n": 782,
+    "accuracy": 0.8554987212276215,
+    "balanced_accuracy": 0.8576320647966171,
+    "precision": 0.946360153256705,
+    "recall": 0.853195164075993,
+    "specificity": 0.8620689655172413,
+    "f1": 0.8973660308810173,
+    "macro_f1": 0.8266527778595152,
+    "auroc": 0.9140440882445529,
+    "auprc": 0.9707284157971686,
+    "confusion": {
+      "tn": 175,
+      "fp": 28,
+      "fn": 85,
+      "tp": 494
+    },
+    "ci95": {
+      "accuracy": [
+        0.829923273657289,
+        0.8772378516624041
+      ],
+      "auroc": [
+        0.8939366627740478,
+        0.9328181238045591
+      ],
+      "macro_f1": [
+        0.7957394635962769,
+        0.8537132982465389
+      ]
+    }
+  },
+  "test": {
+    "n": 618,
+    "accuracy": 0.8236245954692557,
+    "balanced_accuracy": 0.8050773515889795,
+    "precision": 0.845771144278607,
+    "recall": 0.8785529715762274,
+    "specificity": 0.7316017316017316,
+    "f1": 0.861850443599493,
+    "macro_f1": 0.8090012844395675,
+    "auroc": 0.8762150855174112,
+    "auprc": 0.9266216783989287,
+    "confusion": {
+      "tn": 169,
+      "fp": 62,
+      "fn": 47,
+      "tp": 340
+    },
+    "ci95": {
+      "accuracy": [
+        0.7960760517799352,
+        0.8543689320388349
+      ],
+      "auroc": [
+        0.8497830097016451,
+        0.903509149468706
+      ],
+      "macro_f1": [
+        0.7773486475191307,
+        0.8423169465608097
+      ]
+    }
+  },
+  "practice_evaluations_total": 11,
+  "practice_note": "Colab reset after pass 7; log restarted, so practice_passes_used shows 4. Fable used 11 evaluations (passes 8-11 repeated slices 1-4). Matched rival: best-of-11."
+}

@@ -25,3 +25,5 @@ edit_resnet50_H_fable.*. Notebook cells FB-F2/F3, FB-G2/G3, FB-H2/H3 (setup cell
   No weight is a formula of the statistics, but it extracted more information per pass than Astra did.
 - From the example images alone, Fable noticed that pneumonia films carry more black padding and excluded
   the padded rows on purpose, as a shortcut it did not want to use.
+- Result (n = 618): AUROC 0.876 [0.850, 0.904], accuracy 0.824, sensitivity 0.879, specificity 0.732.
+  Best-of-11 random search: median 0.719, max over 100 repetitions below 0.876 (see written__search11.json).

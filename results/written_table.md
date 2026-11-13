@@ -9,6 +9,7 @@
 | WrittenCNN, weights written by Astra (astra-examples) | no training; 0 practice passes; AUROC 95% CI [0.553, 0.646] | 1 | 0.599 | 0.610 | 0.889 | 0.143 | 5,569 | 0.0 |
 | WrittenCNN, weights written by Astra (astra-practice) | no training; 10 practice passes; AUROC 95% CI [0.695, 0.779] | 1 | 0.737 | 0.673 | 0.587 | 0.818 | 5,569 | 0.0 |
 | WrittenCNN, weights written by Astra (astra-zeroshot) | no training; 0 practice passes; AUROC 95% CI [0.473, 0.565] | 1 | 0.519 | 0.549 | 0.742 | 0.225 | 5,569 | 0.0 |
+| WrittenCNN, weights written by Claude Fable 5.2 (fable-diagnose-r1) | no training; 11 practice passes; AUROC 95% CI [0.850, 0.904] | 1 | 0.876 | 0.824 | 0.879 | 0.732 | 5,569 | 0.0 |
 | WrittenCNN, weights written by Astra, condition F (mean of 3 independent chats) | no training; images + practice + channel report | 3 | 0.859 ± 0.016 | 0.756 | 0.906 | 0.504 | 5,569 | 0.0 |
 | WrittenCNN, random init | no training (floor) | 2 | 0.538 ± 0.197 | 0.661 | 0.872 | 0.307 | 5,569 | 0.0 |
 | WrittenCNN, trained | gradient descent, A1 protocol | 2 | 0.882 ± 0.012 | 0.790 | 0.970 | 0.487 | 5,569 | 3.3 |
