@@ -7,7 +7,7 @@ We compared it with a random search given the same number of practice evaluation
 With no feedback, Astra was at chance (test AUROC 0.519).
 Practice scores raised it to 0.737, and 16 example images added little (0.745).
 A per-channel diagnostic report raised it to 0.859\,$\pm$\,0.016 over three independent chats, close to gradient training (0.882\,$\pm$\,0.012).
-Every chat beat all 100 matched random searches (best 0.821).
+Every chat beat all 100 matched random searches (best 0.821), and one chat with a second LLM, Claude Fable 5.2, matched Astra's best run (0.876).
 On a frozen ImageNet ResNet-50, Astra's hand-written final layer reached 0.902.
 That beat a mechanical feature-selection rule (0.883) and random search (0.678), but not a trained linear probe on the same features (0.947).
 A size-matched robustness check shows that part of every score comes from an acquisition artefact, and that Astra's selected features lean on it more than trained weights do (0.703 vs.\ 0.742 on the CNN; 0.724 vs.\ 0.862 on ResNet-50 features).
@@ -109,6 +109,7 @@ B\; Astra, 10 practice passes & 0.737 {\scriptsize[0.69, 0.78]} & 0.59 & 0.82 & 
 D\; Astra, images + 11 passes & 0.745 {\scriptsize[0.71, 0.79]} & 0.69 & 0.72 & 42 min \\
 \textbf{F\; Astra, + channel report} & \textbf{0.859} {\scriptsize$\pm$0.016} & 0.91 & 0.50 & 20--30 min \\
 \quad run 1 / run 2 / run 3 & {\scriptsize 0.876 / 0.865 / 0.838} & & & 4 passes each \\
+F\; Claude Fable 5.2, 1 chat & 0.876 {\scriptsize[0.85, 0.90]} & 0.88 & 0.73 & 11 passes \\
 \midrule
 Random init, no selection$^\dagger$ & 0.491 {\scriptsize[0.24, 0.75]} & -- & -- & -- \\
 Best of 4 random nets$^\dagger$ (F) & 0.691 {\scriptsize[0.43, 0.77]} & -- & -- & seconds \\
@@ -150,6 +151,10 @@ The channel report therefore works as a label-informed \emph{feature-selection} 
 That is reasoning, not training, but it is not data-free, and we report it as such.
 The matched random search also selects on practice labels, but it selects whole networks.
 Its winners overfit the practice slices (median practice AUROC 0.84, test 0.69), whereas Astra's F networks keep a smaller gap (practice set 0.93, test 0.86).
+
+\textit{A second LLM.} One F chat with Claude Fable 5.2 (Anthropic), using the identical prompt, reached the same test AUROC as Astra's best run (0.876 [0.850, 0.904]) with better balance (specificity 0.73 vs.\ 0.40), after 11 passes; no best-of-11 random search reached it (maximum 0.854).
+It converged on the same rule (capped edge energy in the central lung cells, weight $-12$, bias $+15.5$).
+Unlike Astra, it added zero-weight ``probe'' channels to measure per-cell class differences, and it excluded the padded top and bottom rows on purpose, judging from the example images that padding was an acquisition shortcut.
 
 \begin{table}[t]
 \centering
@@ -235,7 +240,7 @@ A layer re-trained by logistic regression on the same 306 images still did bette
 Unlike on the small CNN, Astra's layer is not more size-dependent here (0.922 vs.\ 0.925 size-matched): fine-tuned features already track the disease, so its shortlist did not drift toward image size.
 
 \section{Limitations and future work}
-We used one LLM and one dataset.
+We used one dataset; the second LLM (Fable) ran one F chat only, and its network was not put through the size-matched check.
 F has three chats, and each other condition has one.
 G and H have one chat each.
 The loop was run by hand, which caused one log reset (F run 1) and one accidental re-run (F run 3); both are documented, and neither gave Astra extra information.
@@ -243,12 +248,13 @@ In G, Astra was allowed a tool only to read the long reports (all 36 commands we
 The size-matched subset is small (140 images) and atypical (large pneumonia and small normal files), so absolute AUROC there is lower for every model.
 The comparison between models matters more than the level.
 Astra's compute cannot be measured, so ``time'' is human wall-clock.
-A longer study would automate the loop, add a second LLM, normalise acquisition size in preprocessing before the LLM sees any feedback, test on an external pediatric collection, and give the LLM a report on feature \emph{groups} rather than 2,048 single features, so that it can use more of the representation.
+A longer study would automate the loop, run the second LLM on every condition, normalise acquisition size in preprocessing before the LLM sees any feedback, test on an external pediatric collection, and give the LLM a report on feature \emph{groups} rather than 2,048 single features, so that it can use more of the representation.
 
 \section*{AI-use statement and contributions}
 \emph{AI use.} GPT-6 Astra is the system under study.
 Every prompt, transcript, weight file and practice log is in the repository~\cite{repo}.
-Claude (Anthropic) was used as a coding and writing assistant.
+Claude Fable 5.2 (Anthropic) was the second system under study.
+Claude (Anthropic), from the same model family, was used as a coding and writing assistant; Fable received exactly the prompt written for Astra.
 It wrote the pipeline extensions (practice runner, channel report, static checks, random-search baselines, robustness check, figures) and drafted this report from our results.
 The group ran every experiment in Google Colab, ran the Astra chats, checked the transcripts, and is responsible for all numbers, which come from our own runs.
 \emph{Contributions.} Mahd Hindi 40\,\%, Khaled AlHassani 30\,\%, Abdullah AlKaabi 30\,\%.

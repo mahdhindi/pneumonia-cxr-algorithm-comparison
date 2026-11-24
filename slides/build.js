@@ -361,6 +361,23 @@ card(s, 7.5, 3.5, 5.25, 1.5, "How simple the final rule is", "Run 3's final netw
 card(s, 7.5, 5.1, 5.25, 1.75, "Honest framing", "No weight was fitted, but the report is label-informed: it tells Astra which of its own hand-built filters separate the classes. That is feature selection by reasoning: no training, but not data-free.", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 12.5 });
 notes(s, "Khaled (1 min)", "What did Astra actually write? Each chat began with a brightness-and-opacity design scoring about 0.6. After the first channel report, all three noticed independently that their texture channels were higher on healthy lungs, and rebuilt the output around them. Run 3 ended up reading a single channel. We are careful about what this means: no weight was fitted, but the report uses labels, so this is feature selection by reasoning, not learning from nothing.");
 
+// ============================================================== P6b second LLM
+s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
+s.addText("A second LLM: Claude Fable 5.2 reached the same score", { placeholder: "title" });
+s.addText("Same prompt, images, practice slices and rivals as Astra's condition F. One chat only, so read it as a check, not a mean.", { placeholder: "lead" });
+s.addTable([
+  [hdr("Condition F, small CNN (n = 618)"), hdr("Test AUROC [95 % CI]"), hdr("Sensitivity"), hdr("Specificity"), hdr("Passes")],
+  [td("Claude Fable 5.2, 1 chat", { align: "left", bold: true, color: X.accent2 }), td("0.876 [0.850, 0.904]", { bold: true, color: X.accent2 }), td("0.88"), td("0.73", { bold: true, color: X.accent2 }), td("11")],
+  [td("GPT-6 Astra, run 1 (best of 3)", { align: "left" }), td("0.876 [0.848, 0.900]"), td("0.96"), td("0.40"), td("4")],
+  [td("GPT-6 Astra, mean of 3 chats", { align: "left" }), td("0.859 ± 0.016"), td("0.91"), td("0.50"), td("4 each")],
+  [td("Best of 11 random networks (100 repeats)", { align: "left" }), td("median 0.719, max 0.854"), td("–"), td("–"), td("11")],
+  [td("Same CNN, gradient-trained (2 seeds)", { align: "left", bold: true, color: X.accent1 }), td("0.882 ± 0.012", { bold: true, color: X.accent1 }), td("0.97"), td("0.49"), td("–")],
+], { x: 0.6, y: 1.9, w: 12.15, colW: [4.8, 2.9, 1.5, 1.5, 1.45], rowH: 0.5, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
+card(s, 0.6, 5.1, 3.9, 1.75, "Same rule, found again", "Edge energy in the central lung cells, capped at 0.5, weight −12: less fine texture means pneumonia.", { size: 13 });
+card(s, 4.72, 5.1, 3.9, 1.75, "A different style", "11 passes with zero-weight \"probe\" channels to measure per-cell class differences; bias tuned to balance the classes.", { size: 13 });
+card(s, 8.85, 5.1, 3.9, 1.75, "It spotted the shortcut", "From the example images alone, it judged the black padding an acquisition artefact and left the top and bottom rows out.", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 13 });
+notes(s, "Khaled (0.6 min)", "To check the result is not specific to one model, we gave Claude Fable 5.2 exactly the same prompt and files. One chat, 11 passes: 0.876, the same as Astra's best run, and no random search reached it. It found the same texture rule, but flagged far fewer healthy children: specificity 0.73. It also noticed the padding shortcut from the example images and deliberately ignored those rows. It is one run, so it is a check, not a mean.");
+
 // ============================================================== P7 condition G
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
 s.addText("Stronger features (G): Astra writes ResNet-50's last layer", { placeholder: "title" });
@@ -418,9 +435,9 @@ notes(s, "Mahd (0.6 min)", "Both parts end in the same place. The ViT's 97.6 mea
 pres.addSection({ title: "Next" });
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Next" });
 s.addText("Limitations, and what we would do next", { placeholder: "title" });
-s.addText("Everything here is one dataset and one LLM; the loop was run by hand.", { placeholder: "lead" });
+s.addText("One dataset; a second LLM for one chat only; the loop was run by hand.", { placeholder: "lead" });
 card(s, 0.6, 1.85, 3.9, 3.25, "Limitations", "F: 3 chats; other conditions: 1. Manual loop: one log reset, one accidental re-run (documented; no extra information to Astra). In G, Astra could read the reports with a tool and saw only their top and bottom. Size-matched set: 140 images.", { size: 12.5 });
-card(s, 4.72, 1.85, 3.9, 3.25, "Project, next", "Automate the loop; add a second LLM; normalise image size before Astra sees any feedback, to remove the shortcut; report on groups of features in G, so the LLM can use more of them; test on another pediatric hospital.", { size: 12.5 });
+card(s, 4.72, 1.85, 3.9, 3.25, "Project, next", "Automate the loop; run Fable on every condition; normalise image size before Astra sees any feedback, to remove the shortcut; report on groups of features in G, so the LLM can use more of them; test on another pediatric hospital.", { size: 12.5 });
 card(s, 8.85, 1.85, 3.9, 3.25, "Critique, next", "Close the budget and preprocessing gaps (30 epochs, plain resize, a third seed) and test the ViT where it might win: an external pediatric set and a training-size sweep.", { size: 12.5 });
 card(s, 0.6, 5.3, 12.15, 1.55, "Our question for another group", "\"In the paper you critiqued, were the baselines trained with the same budget and the same number of trainable parameters as the proposed model, and how would you check that from the paper alone?\"", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 15 });
 notes(s, "Mahd (0.6 min)", "Limitations are on the left: one dataset, one LLM, a manual loop. Next for the project: automate it, try a second LLM, and remove the size shortcut before the LLM sees any feedback. Next for the critique: an external pediatric set and a training-size sweep. Our question for another group is on the slide. Thank you.");
@@ -443,7 +460,7 @@ s.addTable([
   [td("Small CNN (A1)", { align: "left" }), td("A1 protocol", { align: "left" }), td("0.942 ± .006"), td("82.6 ± 0.3"), td("0.996"), td("0.541"), td("0.39 M"), td("3.4 min")],
   [td("Logistic regression (A1)", { align: "left" }), td("A1 protocol", { align: "left" }), td("0.895 ± .006"), td("77.4 ± 4.2"), td("0.982"), td("0.426"), td("0.15 M"), td("3.0 min")],
   [td("Majority class (A1)", { align: "left" }), td("A1 protocol", { align: "left" }), td("0.500"), td("62.6"), td("1.000"), td("0.000"), td("0"), td("0")],
-], { x: 0.6, y: 1.85, w: 12.15, colW: [2.3, 3.6, 1.2, 1.2, 0.85, 0.85, 1.2, 0.95], rowH: 0.38, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
+], { x: 0.6, y: 1.85, w: 12.15, colW: [2.3, 3.6, 1.2, 1.2, 0.85, 0.85, 1.2, 0.95], rowH: 0.35, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
 notes(s, "Backup", "Full table for questions.");
 
 // ============================================================== 7 weakness 3 numbers
@@ -471,6 +488,7 @@ s.addTable([
   [td("B · Astra, 10 practice passes", { align: "left" }), td("0.737 [0.69, 0.78]"), td("0.59"), td("0.82"), td("0.677"), td("5,569"), td("72 min")],
   [td("D · Astra, images + 11 passes", { align: "left" }), td("0.745 [0.71, 0.79]"), td("0.69"), td("0.72"), td("0.693"), td("5,569"), td("42 min")],
   [td("F · Astra + channel report, runs 1 / 2 / 3", { align: "left" }), td("0.876 / 0.865 / 0.838"), td("0.91"), td("0.50"), td("0.761 / 0.656 / 0.692"), td("5,569"), td("20–30 min")],
+  [td("F · Claude Fable 5.2, 1 chat", { align: "left" }), td("0.876 [0.85, 0.90]"), td("0.88"), td("0.73"), td("not run"), td("5,569"), td("11 passes")],
   [td("Best of 4 / 10 random nets (median)", { align: "left" }), td("0.691 / 0.716"), td("–"), td("–"), td("–"), td("5,569"), td("seconds")],
   [td("Same CNN, trained (seeds 42, 43)", { align: "left" }), td("0.894 / 0.870"), td("0.97"), td("0.49"), td("0.758 / 0.726"), td("5,569"), td("3.3 min")],
   [td("G · Astra head, frozen ImageNet ResNet-50", { align: "left" }), td("0.902 [0.88, 0.92]"), td("0.94"), td("0.59"), td("0.724"), td("2,049"), td("17 passes")],
@@ -478,7 +496,7 @@ s.addTable([
   [td("ResNet-50 fine-tuned (A1)", { align: "left" }), td("0.971 ± 0.001"), td("1.00"), td("0.64"), td("0.905"), td("23.5 M"), td("4.4 min")],
   [td("H · Astra edit of fine-tuned ResNet-50 (n = 312)", { align: "left" }), td("0.976 [0.96, 0.99]"), td("0.98"), td("0.83"), td("0.922 (72 img)"), td("2,049"), td("7 passes")],
   [td("H · layer re-trained on the 306 practice images", { align: "left" }), td("0.985 [0.97, 1.00]"), td("0.97"), td("0.91"), td("0.925 (72 img)"), td("2,049"), td("< 1 s")],
-], { x: 0.6, y: 1.85, w: 12.15, colW: [3.7, 2.05, 0.75, 0.75, 2.0, 1.2, 1.7], rowH: 0.38, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
+], { x: 0.6, y: 1.85, w: 12.15, colW: [3.7, 2.05, 0.75, 0.75, 2.0, 1.2, 1.7], rowH: 0.35, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
 notes(s, "Backup", "All project numbers for questions.");
 
 // ============================================================== backup: honesty log
