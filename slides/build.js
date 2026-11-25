@@ -421,6 +421,25 @@ card(s, 4.72, 5.1, 3.9, 1.75, "H: with the report", "It replaced the layer with 
 card(s, 8.85, 5.1, 3.9, 1.75, "Not a size shortcut here", "Size-matched 0.922 vs 0.925 for retraining: fine-tuned features already track the disease (72 images, indicative).", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 13 });
 notes(s, "Mahd (0.7 min)", "Finally, edit mode on our own trained ResNet-50. With scores only, condition E, Astra could just move the cut-off and AUROC did not change. With the per-feature report, condition H, it rebuilt the last layer from 49 features that separate this collection, and AUROC rose from 0.954 to 0.976. Retraining the layer on the same 306 images still reaches 0.985. Note that every row is on the same 312 children, a harder half: on all 618 test images the same model scores 0.966, and our A1 two-seed mean was 0.971. And here, unlike the small CNN, Astra's layer does not lean on image size.");
 
+// ============================================================== P10 second task: hydrogel adhesion
+s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
+s.addText("A second task: predicting how strongly a hydrogel sticks", { placeholder: "title" });
+s.addText("Same method on chemistry data with known rules: 180 published hydrogels (Nature, 2025, public data), six monomer fractions in, underwater adhesion (kPa) out. Practice on 120, scored once on 60 hidden gels.", { placeholder: "lead" });
+s.addTable([
+  [hdr("Network weights obtained by (6-16-1, 129 weights)"), hdr("Test RMSE, kPa [95 % CI]"), hdr("Rank corr.")],
+  [td("Always predict the average", { align: "left" }), td("34.8"), td("–")],
+  [td("A · Astra, chemistry knowledge only", { align: "left" }), td("36.4"), td("0.10")],
+  [td("B · Astra, practice scores (6 passes)", { align: "left" }), td("39.7"), td("0.24")],
+  [td("F · Astra, scores + hidden-unit report (20 passes)", { align: "left", bold: true, color: X.accent2 }), td("25.4 [20.9, 29.8]", { bold: true, color: X.accent2 }), td("0.71", { bold: true, color: X.accent2 })],
+  [td("Best of 20 random networks (median)", { align: "left" }), td("58.9"), td("0.00")],
+  [td("Same network, gradient-trained (tuned, 5 seeds)", { align: "left", bold: true, color: X.accent1 }), td("26.4 ± 5.6", { bold: true, color: X.accent1 }), td("–")],
+  [td("Random forest / Gaussian process", { align: "left" }), td("25.1 / 24.6"), td("0.69 / 0.75")],
+], { x: 0.6, y: 1.95, w: 7.6, colW: [4.4, 2.0, 1.2], rowH: 0.47, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
+card(s, 8.45, 1.95, 4.3, 1.55, "Same lesson as pneumonia", "Scores alone did not help (B, worse than the average); the hidden-unit report did (F: 39.7 → 25.4).", { size: 12.5 });
+card(s, 8.45, 3.6, 4.3, 1.55, "This time it ties training", "F is level with the trained network, random forest and GP; all CIs overlap (only 60 test gels).", { size: 12.5 });
+card(s, 8.45, 5.25, 4.3, 1.6, "Why it worked better here", "Real chemistry to reason with: its final rule rewards ATAC balanced with hydrophobic BA/PEA, as the paper found. It was overconfident (predicted 21, got 25.4).", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 12 });
+notes(s, "Mahd (0.8 min)", "To test whether this depends on the task, we repeated the method on a chemistry problem: predicting how strongly a hydrogel sticks under water from six monomer fractions, using 180 published hydrogels. Chemistry knowledge alone gave nothing better than predicting the average, and scores alone made it worse. With the hidden-unit report, Astra's network reached 25.4 kPa error on 60 hidden gels, level with a trained network, a random forest and a Gaussian process. Unlike X-rays, this task has rules an LLM can reason with, and that is where weight-writing works best. One chat, 60 test gels, so the uncertainty is wide.");
+
 // ============================================================== conclusion
 pres.addSection({ title: "Conclusion" });
 s = pres.addSlide({ masterName: "DARK", sectionTitle: "Conclusion" });
@@ -428,14 +447,14 @@ s.addText("CONCLUSION · BOTH PARTS", { placeholder: "kicker" });
 s.addText("In both parts, the baseline decided what the number meant", { placeholder: "title" });
 s.addText("", { placeholder: "sub" });
 card(s, 0.7, 2.9, 5.8, 3.4, "Part 1 · Paper critique", "The ViT's 97.6 % reproduces under a random image split, and a fine-tuned ResNet-50 gets 97.2 % under the same split. With patient grouping and the official test folder, both tie at 0.97 AUROC. The protocol, not the architecture, produced the claim.", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 15 });
-card(s, 6.85, 2.9, 5.8, 3.4, "Part 2 · Project", "Yes, with the right feedback: GPT-6 Astra wrote a classifier with no training that beat every matched random search (0.859; 0.902 on ImageNet features), and lifted our trained ResNet-50 from 0.954 to 0.976. Gradient training with the same information still wins every time (0.882; 0.947; 0.985).", { fill: "7A2E1C", headColor: C.accent6, color: "FFFFFF", size: 15 });
-notes(s, "Mahd (0.6 min)", "Both parts end in the same place. The ViT's 97.6 meant little without a fair split. Astra's scores meant little without a matched random search and a size check. With them: an LLM can write a working pneumonia classifier without training, beats random search, and can even improve a trained model, but gradient training with the same information is better every time.");
+card(s, 6.85, 2.9, 5.8, 3.4, "Part 2 · Project", "Yes, with the right feedback: GPT-6 Astra wrote a classifier with no training that beat every matched random search (0.859; 0.902 on ImageNet features), lifted our trained ResNet-50 from 0.954 to 0.976, and tied trained models on a hydrogel task. On X-rays, gradient training with the same information still won every time (0.882; 0.947; 0.985).", { fill: "7A2E1C", headColor: C.accent6, color: "FFFFFF", size: 15 });
+notes(s, "Mahd (0.6 min)", "Both parts end in the same place. The ViT's 97.6 meant little without a fair split. Astra's scores meant little without a matched random search and a size check. With them: an LLM can write a working pneumonia classifier without training, beats random search, and can even improve a trained model; on X-rays gradient training still won, but on the hydrogel task Astra tied it.");
 
 // ============================================================== next
 pres.addSection({ title: "Next" });
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Next" });
 s.addText("Limitations, and what we would do next", { placeholder: "title" });
-s.addText("One dataset; a second LLM for one chat only; the loop was run by hand.", { placeholder: "lead" });
+s.addText("One X-ray dataset and one small chemistry dataset; one chat for Fable and for the hydrogel task; the loop was run by hand.", { placeholder: "lead" });
 card(s, 0.6, 1.85, 3.9, 3.25, "Limitations", "F: 3 chats; other conditions: 1. Manual loop: one log reset, one accidental re-run (documented; no extra information to Astra). In G, Astra could read the reports with a tool and saw only their top and bottom. Size-matched set: 140 images.", { size: 12.5 });
 card(s, 4.72, 1.85, 3.9, 3.25, "Project, next", "Automate the loop; run Fable on every condition; normalise image size before Astra sees any feedback, to remove the shortcut; report on groups of features in G, so the LLM can use more of them; test on another pediatric hospital.", { size: 12.5 });
 card(s, 8.85, 1.85, 3.9, 3.25, "Critique, next", "Close the budget and preprocessing gaps (30 epochs, plain resize, a third seed) and test the ViT where it might win: an external pediatric set and a training-size sweep.", { size: 12.5 });
