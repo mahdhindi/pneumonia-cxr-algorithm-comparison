@@ -424,7 +424,7 @@ notes(s, "Mahd (0.7 min)", "Finally, edit mode on our own trained ResNet-50. Wit
 // ============================================================== P10 second task: hydrogel adhesion
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
 s.addText("A second task: predicting how strongly a hydrogel sticks", { placeholder: "title" });
-s.addText("Same method on chemistry data with known rules: 180 published hydrogels (Nature, 2025, public data), six monomer fractions in, underwater adhesion (kPa) out. Practice on 120, scored once on 60 hidden gels.", { placeholder: "lead" });
+s.addText("Why a second task: MIT's wins came from tasks with known rules, and X-rays have none. Does weight-writing work better when the LLM has real chemistry to reason with?", { placeholder: "lead" });
 s.addTable([
   [hdr("Network weights obtained by (6-16-1, 129 weights)"), hdr("Test RMSE, kPa [95 % CI]"), hdr("Rank corr.")],
   [td("Always predict the average", { align: "left" }), td("34.8"), td("–")],
@@ -435,10 +435,11 @@ s.addTable([
   [td("Same network, gradient-trained (tuned, 5 seeds)", { align: "left", bold: true, color: X.accent1 }), td("26.4 ± 5.6", { bold: true, color: X.accent1 }), td("–")],
   [td("Random forest / Gaussian process", { align: "left" }), td("25.1 / 24.6"), td("0.69 / 0.75")],
 ], { x: 0.6, y: 1.95, w: 7.6, colW: [4.4, 2.0, 1.2], rowH: 0.47, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
+txt(s, "Data: 180 published hydrogels (Nature, 2025, public). Six monomer fractions in, underwater adhesion (kPa) out. Practice on 120, scored once on 60 hidden gels.", 0.6, 5.85, 7.6, 0.9, { fontSize: 12, color: C.accent5 });
 card(s, 8.45, 1.95, 4.3, 1.55, "Same lesson as pneumonia", "Scores alone did not help (B, worse than the average); the hidden-unit report did (F: 39.7 → 25.4).", { size: 12.5 });
 card(s, 8.45, 3.6, 4.3, 1.55, "This time it ties training", "F is level with the trained network, random forest and GP; all CIs overlap (only 60 test gels).", { size: 12.5 });
 card(s, 8.45, 5.25, 4.3, 1.6, "Why it worked better here", "Real chemistry to reason with: its final rule rewards ATAC balanced with hydrophobic BA/PEA, as the paper found. It was overconfident (predicted 21, got 25.4).", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 12 });
-notes(s, "Mahd (0.8 min)", "To test whether this depends on the task, we repeated the method on a chemistry problem: predicting how strongly a hydrogel sticks under water from six monomer fractions, using 180 published hydrogels. Chemistry knowledge alone gave nothing better than predicting the average, and scores alone made it worse. With the hidden-unit report, Astra's network reached 25.4 kPa error on 60 hidden gels, level with a trained network, a random forest and a Gaussian process. Unlike X-rays, this task has rules an LLM can reason with, and that is where weight-writing works best. One chat, 60 test gels, so the uncertainty is wide.");
+notes(s, "Mahd (0.8 min)", "Why a second task? MIT's successes came from tasks whose rules the LLM can read, like game code; pneumonia X-rays have no written rules. So we asked whether weight-writing works better when there is real domain knowledge to reason with. To test that, we repeated the method on a chemistry problem: predicting how strongly a hydrogel sticks under water from six monomer fractions, using 180 published hydrogels. Chemistry knowledge alone gave nothing better than predicting the average, and scores alone made it worse. With the hidden-unit report, Astra's network reached 25.4 kPa error on 60 hidden gels, level with a trained network, a random forest and a Gaussian process. Unlike X-rays, this task has rules an LLM can reason with, and that is where weight-writing works best. One chat, 60 test gels, so the uncertainty is wide.");
 
 // ============================================================== conclusion
 pres.addSection({ title: "Conclusion" });
