@@ -76,7 +76,7 @@ notes(s, "Mahd (0.6 min)", "Two numbers on the same images. Our fair protocol gi
 pres.addSection({ title: "The paper" });
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "The paper" });
 s.addText("The paper in one line: problem, data, model, claim", { placeholder: "title" });
-s.addText("Singh, Kumar, Kumar, Verma, Abhishek & Selvarajan. Scientific Reports 14:2487, January 2024. No code released.", { placeholder: "lead" });
+s.addText("\"Efficient pneumonia detection using Vision Transformers on chest X-rays\", Singh et al., Scientific Reports 14:2487, 2024. No code released.", { placeholder: "lead" });
 const steps = [["Problem", "Is this child's frontal chest X-ray NORMAL or PNEUMONIA?"], ["Data", "Kermany et al. 2018: 5,856 images, Guangzhou Women and Children's Medical Center, 73 % pneumonia"],
   ["Split", "Random 80 / 10 / 10 by image: 4,684 train, 586 val, 586 test. Patients not mentioned."], ["Model", "DeiT-Base/16 at 224 px, ImageNet weights, fully fine-tuned: Adam, LR 1e-5 × 0.995/epoch, batch 16, 30 epochs"],
   ["Claim", "97.61 % accuracy, sens. 0.949, spec. 0.981, AUC 0.966: \"a great improvement over all other architectures\""]];
@@ -228,7 +228,7 @@ s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Reality check" });
 s.addText("Result 3: fair protocol, the ViT ties ResNet-50 at 3.7× the size", { placeholder: "title" });
 s.addText("All six models, patient-grouped split, official test folder, mean of seeds 42 and 43. Our Assignment 1 table with the paper's model added.", { placeholder: "lead" });
 s.addChart(pres.ChartType.bar, [{ name: "Test AUROC", labels: ["Majority class", "Logistic regression", "Small CNN (scratch)", "DenseNet-121", "ResNet-50", "ViT DeiT-B/16"], values: [0.500, 0.895, 0.942, 0.936, 0.971, 0.973] }],
-  { x: 0.6, y: 1.9, w: 6.6, h: 4.9, barDir: "bar", barGapWidthPct: 40, chartColors: [X.accent3, X.accent3, X.accent3, X.accent3, X.accent1, X.accent2], invertedColors: [X.accent3],
+  { x: 0.6, y: 1.9, w: 6.6, h: 4.9, barDir: "bar", barGapWidthPct: 40, chartColors: ["F4B9A8", "F4B9A8", "F4B9A8", "F4B9A8", X.accent2, X.accent2], invertedColors: ["F4B9A8"],
     showValue: true, dataLabelPosition: "outEnd", dataLabelFormatCode: "0.000", valAxisMinVal: 0.4, valAxisMaxVal: 1.05, valAxisMajorUnit: 0.1, showLegend: false,
     showTitle: true, title: "Test AUROC, fair protocol (higher is better)", ...chartText });
 s.addTable([
@@ -275,9 +275,47 @@ s = pres.addSlide({ masterName: "DARK", sectionTitle: "Project" });
 s.addText("PART 2 · COURSE PROJECT (OPTION 3: AI AGENTS)", { placeholder: "kicker" });
 s.addText("Can an LLM write a pneumonia classifier's weights, with no training at all?", { placeholder: "title" });
 s.addText("Part 1 showed that the evaluation decides what a number means. Part 2 keeps our fair pipeline fixed and changes who sets the weights.", { placeholder: "sub" });
-card(s, 0.7, 4.2, 5.8, 2.5, "Where it came from", "Our critique's next steps were an external test set and a training-size sweep. We took Option 3 instead: in class we met MIT's \"Sparks of Weight-Space Programming\" (Takehi et al., Nov 2026, blog post), where GPT-6 Astra wrote and edited network weights directly. We have access to Astra.", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 13 });
+card(s, 0.7, 4.2, 5.8, 2.5, "Where it came from", "Our critique's next steps were an external test set and a training-size sweep. We took Option 3 instead: our instructor pointed us to MIT's \"Sparks of Weight-Space Programming\" (Takehi et al., Nov 2026, blog post), where GPT-6 Astra wrote and edited network weights directly. We have access to Astra.", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 13 });
 card(s, 6.85, 4.2, 5.8, 2.5, "Research question (one sentence)", "Can GPT-6 Astra, writing all 5,569 weights of a small CNN by reasoning alone, beat a random search given the same number of practice evaluations on test AUROC, and how close does it get to the same CNN trained by gradient descent?", { fill: "7A2E1C", headColor: C.accent6, color: "FFFFFF", size: 13.5 });
-notes(s, "Mahd (0.5 min)", "Part two. Our critique pointed to an external test set, but in class we met MIT's weight-space programming work, where the same LLM we have access to, GPT-6 Astra, wrote network weights directly. Our question names the method, the problem, the fair baseline and the metric: can Astra beat a matched random search, and how close does it get to training?");
+notes(s, "Mahd (0.5 min)", "Part two. Our critique pointed to an external test set, but at the end of one class our instructor told us about MIT's weight-space programming work, where the same LLM we have access to, GPT-6 Astra, wrote network weights directly. Our question names the method, the problem, the fair baseline and the metric: can Astra beat a matched random search, and how close does it get to training?");
+
+// ============================================================== MIT part 1: read
+const mitSlide = (title, lead, cards, take, who, note) => {
+  s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
+  s.addText(title, { placeholder: "title" });
+  s.addText(lead, { placeholder: "lead" });
+  const w = (12.15 - 0.25 * (cards.length - 1)) / cards.length;
+  cards.forEach(([h, b, bad], i) => card(s, 0.6 + i * (w + 0.25), 1.95, w, 3.6, h, b, { size: 15, headColor: bad ? C.accent2 : C.accent1, fill: bad ? "FCE9E3" : X.lt2, line: bad ? "FCE9E3" : X.lt2 }));
+  box(s, 0.6, 5.75, 12.15, 1.05, X.dk2);
+  txt(s, take, 0.85, 5.9, 11.7, 0.8, { fontSize: 14, color: "FFFFFF", valign: "middle" });
+  notes(s, who, note);
+};
+mitSlide("MIT part 1 · Read: what does a network do, from weights alone?",
+  "Astra got only the raw numbers: no inputs, no outputs, no labels. Its job was to say what the network had learned.",
+  [["Game players", "Four game-playing networks (Breakout, Pong, Pac-Man, Freeway), all the same shape, 17,253 weights each. Astra named the right game for all four, without being given the list."],
+   ["Image generators", "Three small diffusion models, each drawing one shape. With no forward pass, Astra said which one draws circles, squares or triangles."],
+   ["Language models", "The middle blocks of three small character-level models. Astra named the training language (Python, Japanese in romaji, English) every time."],
+   ["Missed: sycophancy", "An honest and a sycophantic version of Gemma 3 270M. From weights alone it could not tell them apart in four tries; with attention patterns shown, it could.", true]],
+  "Takeaway: concrete skills leave readable traces in the weights. Subtle behaviour, like flattery, does not.",
+  "Mahd (0.6 min)", "MIT's first question: can Astra read a network? They gave it only the weights and asked what the network does. It named the game for four game players, the shape for three image generators, and the language for three small language models. It failed on one: it could not tell a flattering model from an honest one using weights alone. So concrete skills are readable; subtle behaviour is not.");
+
+// ============================================================== MIT part 2: fix
+mitSlide("MIT part 2 · Fix: can an LLM repair a broken network?",
+  "Astra got a network with a known problem, changed numbers directly, and was not allowed to write a training loop.",
+  [["Car stuck on a ramp", "A driving policy trained for 1 billion steps stalled at the ramp every time. From the weights, the scene and one recorded run, Astra wrote a fix in one reply: 3.5 % of weights changed, success 0 % → 100 % over 1,024 runs."],
+   ["Looping language model", "Qwen3.5-0.8B kept repeating itself until it ran out of tokens. Astra traced the loop to one direction in two layers and removed it: 0.016 % of weights. MATH-500 rose from 7.9 % to 48.1 %."],
+   ["Nothing to fix", "Gemma 3 270M rarely loops, so there was no single fault. Astra's best edit moved MATH-500 only from 6.8 % to 7.7 %.", true]],
+  "Takeaway: editing works when there is one clear fault to find. It does not make a healthy model better.",
+  "Mahd (0.6 min)", "Second question: can Astra fix a broken network? A car policy kept stalling on a ramp; one edit to 3.5 percent of the weights made it succeed every time. A small language model kept looping; removing one direction lifted its maths score from 7.9 to 48.1 percent. But on a model with no clear bug, it barely helped. Remember this: our trained ResNet-50 had no clear bug either.");
+
+// ============================================================== MIT part 3: write
+mitSlide("MIT part 3 · Write: can an LLM build a network from scratch?",
+  "Astra started from an all-zero network and wrote every weight itself: no data, no gradients.",
+  [["Three simple games", "Given only the rules and source code, it wrote players for Breakout, Seaquest and Asterix in one reply. All three beat a standard RL agent (PPO) trained for 100 million steps; two lost to PPO at 500 million."],
+   ["A 9×9 Go player", "1.48 million weights, written in a Python sandbox with 50 test runs. It beat an equal-sized PPO network trained on 20 million games."],
+   ["Their own caveats", "Early work, not peer-reviewed. One LLM only, small networks (largest 0.8 billion weights), and no shared benchmark yet.", true]],
+  "Our question: every win had readable rules or one clear bug. Pneumonia has neither. Does it still work, against fair rivals?",
+  "Mahd (0.6 min)", "Third question: can Astra write a network from nothing? For three simple games, given the rules and code, it wrote players that beat a reinforcement-learning agent trained for 100 million steps. Breakout was literally written as a program: predict where the ball lands, move the paddle there. It also wrote a Go player. The authors call this early work. Our question follows: every success had rules to read or a bug to find. Pneumonia X-rays have neither.");
 
 // ============================================================== P2 MIT modes -> our conditions
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
