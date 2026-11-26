@@ -275,9 +275,9 @@ s = pres.addSlide({ masterName: "DARK", sectionTitle: "Project" });
 s.addText("PART 2 · COURSE PROJECT (OPTION 3: AI AGENTS)", { placeholder: "kicker" });
 s.addText("Can an LLM write a pneumonia classifier's weights, with no training at all?", { placeholder: "title" });
 s.addText("Part 1 showed that the evaluation decides what a number means. Part 2 keeps our fair pipeline fixed and changes who sets the weights.", { placeholder: "sub" });
-card(s, 0.7, 4.2, 5.8, 2.5, "Where it came from", "Our critique's next steps were an external test set and a training-size sweep. We took Option 3 instead: our instructor pointed us to MIT's \"Sparks of Weight-Space Programming\" (Takehi et al., Nov 2026, blog post), where GPT-6 Astra wrote and edited network weights directly. We have access to Astra.", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 13 });
+card(s, 0.7, 4.2, 5.8, 2.5, "Where it came from", "Our critique's next steps were an external test set and a training-size sweep. We took Option 3 instead: Prof. Fady pointed us to MIT's \"Sparks of Weight-Space Programming\" (Takehi et al., Nov 2026, blog post), where GPT-6 Astra wrote and edited network weights directly. We have access to Astra.", { fill: "0B4F5F", headColor: C.accent4, color: "FFFFFF", size: 13 });
 card(s, 6.85, 4.2, 5.8, 2.5, "Research question (one sentence)", "Can GPT-6 Astra, writing all 5,569 weights of a small CNN by reasoning alone, beat a random search given the same number of practice evaluations on test AUROC, and how close does it get to the same CNN trained by gradient descent?", { fill: "7A2E1C", headColor: C.accent6, color: "FFFFFF", size: 13.5 });
-notes(s, "Mahd (0.5 min)", "Part two. Our critique pointed to an external test set, but at the end of one class our instructor told us about MIT's weight-space programming work, where the same LLM we have access to, GPT-6 Astra, wrote network weights directly. Our question names the method, the problem, the fair baseline and the metric: can Astra beat a matched random search, and how close does it get to training?");
+notes(s, "Mahd (0.5 min)", "Part two. Our critique pointed to an external test set, but at the end of one class Prof. Fady told us about MIT's weight-space programming work, where the same LLM we have access to, GPT-6 Astra, wrote network weights directly. Our question names the method, the problem, the fair baseline and the metric: can Astra beat a matched random search, and how close does it get to training?");
 
 // ============================================================== MIT part 1: read
 const mitSlide = (title, lead, cards, take, who, note) => {
@@ -384,6 +384,34 @@ stat(s, 10.2, 3.55, 2.5, "0.882", "± 0.012, same CNN trained by gradient descen
 card(s, 7.6, 5.25, 5.15, 1.6, "Read it as", "Every F chat beat all 100 matched random searches (best 0.821). With practice alone (B), Astra was not clearly better than random search (28 % of searches matched it).", { size: 12.5 });
 notes(s, "Khaled (1.3 min)", "The whole ladder on one chart. With nothing, Astra is at chance: 0.519. Looking at 16 images barely helps. Practice scores are what make it work: 0.737, but at that point random search with the same feedback matches it a quarter of the time. The channel report changes the picture: three independent chats reach 0.876, 0.865 and 0.838, mean 0.859, and every one beats all hundred random searches. The same network trained by gradient descent gets 0.882, so the gap is 0.02.");
 
+// ============================================================== at-a-glance tables
+const YES = (t) => td(t || "Yes", { bold: true, color: X.accent1 });
+const NO = () => td("No", { color: X.accent3 });
+const glance = (title, lead, head, rows, colW, foot, who, note) => {
+  s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
+  s.addText(title, { placeholder: "title" });
+  s.addText(lead, { placeholder: "lead" });
+  s.addTable([head.map(hdr), ...rows], { x: 0.6, y: 1.95, w: 12.15, colW, rowH: 0.55, border: { type: "solid", color: "E3E8EB", pt: 0.5 }, fill: { color: "FFFFFF" }, fontFace: "Calibri" });
+  const y = 1.95 + 0.55 * (rows.length + 1) + 0.3;
+  const bh = Math.min(6.8 - y, 1.3);
+  box(s, 0.6, y, 12.15, bh, X.lt2);
+  txt(s, foot, 0.85, y + 0.15, 11.7, bh - 0.3, { fontSize: 14, valign: "middle", paraSpaceAfter: 4 });
+  notes(s, who, note);
+};
+glance("At a glance: what Astra got in each condition, and what it scored",
+  "Small CNN, all 5,569 weights written by Astra. Test AUROC on the 618 official test images. Ordered by how much help Astra got.",
+  ["Condition", "Example X-rays", "Practice feedback", "Test AUROC"],
+  [[td("A", { bold: true }), NO(), NO(), td("0.519 (chance)")],
+   [td("C", { bold: true }), YES("Yes (16)"), NO(), td("0.599")],
+   [td("B", { bold: true }), NO(), YES(), td("0.737")],
+   [td("D", { bold: true }), YES("Yes (16)"), YES(), td("0.745")],
+   [td("F", { bold: true, color: X.accent2 }), YES("Yes (16)"), YES("Yes + channel report"), td("0.859 ± 0.016  (3 chats: 0.838–0.876)", { bold: true, color: X.accent2 })],
+   [td("Same CNN, trained normally", { italic: true, color: X.accent5 }), td("–", { color: X.accent5 }), td("–", { color: X.accent5 }), td("0.882", { italic: true, color: X.accent5 })]],
+  [3.2, 2.6, 3.0, 3.35],
+  [{ text: "Images alone: +0.08 (C vs A).   Practice feedback: +0.22 (B vs A).   Images on top of practice: +0.01 (D vs B).", options: { breakLine: true } },
+   { text: "The channel report: +0.11 more (F vs D), close to normal training. Feedback about the inside of the network is what helps.", options: { bold: true } }],
+  "Mahd (0.4 min)", "The whole ladder in one table. A got nothing and is at chance. C adds 16 example X-rays: a small gain. B adds practice feedback instead: the big jump. D adds the images on top of practice: almost nothing. F adds the channel report, how each filter behaves on normal versus pneumonia images, and gets close to training. The letters are the order we ran them; the table is ordered by how much help Astra got.");
+
 // ============================================================== P6 what Astra wrote
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
 s.addText("Three chats, one rule: less fine texture means pneumonia", { placeholder: "title" });
@@ -458,6 +486,17 @@ card(s, 0.6, 5.1, 3.9, 1.75, "E: scores only", "Astra could only move the cut-of
 card(s, 4.72, 5.1, 3.9, 1.75, "H: with the report", "It replaced the layer with ±1 votes on 49 features that separate this collection: AUROC 0.954 → 0.976. Retraining still wins (0.985).", { size: 13 });
 card(s, 8.85, 5.1, 3.9, 1.75, "Not a size shortcut here", "Size-matched 0.922 vs 0.925 for retraining: fine-tuned features already track the disease (72 images, indicative).", { fill: X.dk2, headColor: C.accent6, color: "FFFFFF", size: 13 });
 notes(s, "Mahd (0.7 min)", "Finally, edit mode on our own trained ResNet-50. With scores only, condition E, Astra could just move the cut-off and AUROC did not change. With the per-feature report, condition H, it rebuilt the last layer from 49 features that separate this collection, and AUROC rose from 0.954 to 0.976. Retraining the layer on the same 306 images still reaches 0.985. Note that every row is on the same 312 children, a harder half: on all 618 test images the same model scores 0.966, and our A1 two-seed mean was 0.971. And here, unlike the small CNN, Astra's layer does not lean on image size.");
+
+glance("At a glance: Astra on a ResNet-50's last layer (G, E, H)",
+  "Backbone frozen; Astra writes or edits only the final layer (2,048 weights + 1 bias). No example X-rays in any of the three.",
+  ["Condition", "Network", "Astra's job", "Feedback", "Test AUROC", "Trained rival"],
+  [[td("G", { bold: true }), td("ImageNet ResNet-50 (never saw X-rays)", { align: "left" }), td("Write from zeros", { align: "left" }), YES("Yes + feature report"), td("0.902", { bold: true }), td("0.947 (trained layer)")],
+   [td("E", { bold: true }), td("Our trained ResNet-50 (A1)", { align: "left" }), td("Edit", { align: "left" }), YES("Scores only"), td("0.954 (no change)"), td("0.985 (retrained layer)")],
+   [td("H", { bold: true, color: X.accent2 }), td("Our trained ResNet-50 (A1)", { align: "left" }), td("Edit", { align: "left" }), YES("Yes + feature report"), td("0.954 → 0.976", { bold: true, color: X.accent2 }), td("0.985 (retrained layer)")]],
+  [1.3, 3.3, 1.8, 2.15, 1.75, 1.85],
+  [{ text: "Same pattern as A–F: scores alone (E) changed nothing; the feature report (H) lifted our trained model. Training still won every time.", options: { bold: true, breakLine: true } },
+   { text: "G is scored on all 618 test images. E and H are scored on the harder 312-image half (the other half was practice); there the trained model starts at 0.954 (0.966 on all 618).", options: { fontSize: 12, color: X.accent5 } }],
+  "Mahd (0.4 min)", "The ResNet-50 experiments in one table. G: Astra wrote the last layer of an ImageNet model from zeros and reached 0.902; a trained layer reached 0.947. E: Astra edited our trained model with scores only, and AUROC did not move. H: the same edit with the feature report lifted it from 0.954 to 0.976; retraining the layer reached 0.985. Note that E and H are scored on half of the test folder, because the other half was used for practice.");
 
 // ============================================================== P10 second task: hydrogel adhesion
 s = pres.addSlide({ masterName: "LIGHT", sectionTitle: "Project" });
