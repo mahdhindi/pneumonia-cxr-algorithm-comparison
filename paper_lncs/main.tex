@@ -36,13 +36,14 @@ A Controlled Test of Weight-Space Programming on Pediatric Chest X-rays}
 
 \author{Mahd Hindi\inst{1} \and
 Khaled AlHassani\inst{1} \and
-Abdullah AlKaabi\inst{1} \and
-Fady~[SURNAME]\inst{1}}
+Abdulla AlKaabi\inst{1} \and
+Fady Alnajjar\inst{1} \and
+Salah Bouktif\inst{1}}
 
 \authorrunning{M. Hindi et al.}
 
-\institute{College of Information Technology [check], United Arab Emirates University, Al Ain, United Arab Emirates\\
-\email{mahmoud.alhindi@gmail.com}}
+\institute{College of Computing and AI, United Arab Emirates University, Al Ain, United Arab Emirates\\
+\email{700039878@uaeu.ac.ae, 201614667@uaeu.ac.ae, 700052990@uaeu.ac.ae, fady.alnajjar@uaeu.ac.ae, SalahB@uaeu.ac.ae}}
 
 \maketitle
 
@@ -72,7 +73,7 @@ First, the successes came either from tasks whose rules the LLM can read (game s
 Second, the report is an early, non-peer-reviewed blog post, and medical tasks were outside its scope.
 LLM-driven program search has produced verified results in mathematics~\cite{romeraparedes2024}, and networks that generate other networks' weights have a long history~\cite{ha2017}, but we know of no controlled test of an LLM writing a medical classifier's weights.
 
-We provide one on the Kermany pediatric chest X-ray dataset~\cite{kermany2018}, a benchmark on which image-level splits inflate reported accuracy~\cite{singh2024}, so we keep patients separate and score once on the official test collection.
+We present such a test on the Kermany pediatric chest X-ray dataset~\cite{kermany2018}, a benchmark on which image-level splits inflate reported accuracy~\cite{singh2024}, so we keep patients separate and score once on the official test collection.
 Our question is: \emph{can an LLM, writing every weight by reasoning, beat a random search given the same number of practice evaluations, and how close does it come to gradient training of the same network?}
 
 \noindent\textbf{Main contributions.}
