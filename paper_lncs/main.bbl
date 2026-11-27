@@ -9,7 +9,8 @@ Bergstra, J., Bengio, Y.: Random search for hyper-parameter optimization.
 
 \bibitem{ha2017}
 Ha, D., Dai, A.M., Le, Q.V.: Hypernetworks. In: International Conference on
-  Learning Representations (ICLR) (2017)
+  Learning Representations (ICLR) (2017), arXiv:1609.09106,
+  \url{https://arxiv.org/abs/1609.09106}
 
 \bibitem{he2016}
 He, K., Zhang, X., Ren, S., Sun, J.: Deep residual learning for image
