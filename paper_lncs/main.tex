@@ -43,7 +43,7 @@ Salah Bouktif\inst{1}}
 \authorrunning{M. Hindi et al.}
 
 \institute{College of Computing and AI, United Arab Emirates University, Al Ain, United Arab Emirates\\
-\email{700039878@uaeu.ac.ae, 201614667@uaeu.ac.ae, 700052990@uaeu.ac.ae, fady.alnajjar@uaeu.ac.ae, SalahB@uaeu.ac.ae}}
+\email{\{700039878, 201614667, 700052990, fady.alnajjar, SalahB\}@uaeu.ac.ae}}
 
 \maketitle
 
@@ -51,7 +51,7 @@ Salah Bouktif\inst{1}}
 Medical image classifiers are normally trained by gradient descent on labelled data.
 A recent report claims that a frontier large language model (LLM) can instead write a network's weights directly.
 But its successes came from tasks whose rules the model can read, such as game source code.
-Whether this works on medical images, which have no written rules, and how it compares with fair baselines, is unknown.
+First medical studies had the LLM write weights from knowledge alone; what help it needs on medical images, and how it compares with fair baselines, is unknown.
 We test it on pneumonia detection in pediatric chest X-rays, with patient-grouped splits and a held-out test collection.
 An LLM wrote all weights of a small CNN under five information conditions.
 We compared it with a random search given the same evaluation budget, and with gradient training of the same network.
@@ -71,15 +71,23 @@ In their experiments it named the game a policy network plays from its weights a
 Two features of that work limit what it says about medicine.
 First, the successes came either from tasks whose rules the LLM can read (game source code, a simulator) or from models with one clear fault to remove; a medical image has neither a specification nor a single bug.
 Second, the report is an early, non-peer-reviewed blog post, and medical tasks were outside its scope.
-LLM-driven program search has produced verified results in mathematics~\cite{romeraparedes2024}, and networks that generate other networks' weights have a long history~\cite{ha2017}, but we know of no controlled test of an LLM writing a medical classifier's weights.
+LLM-driven program search has produced verified results in mathematics~\cite{romeraparedes2024}, and networks that generate other networks' weights have a long history~\cite{ha2017}.
 
-We present such a test on the Kermany pediatric chest X-ray dataset~\cite{kermany2018}, a benchmark on which image-level splits inflate reported accuracy~\cite{singh2024}, so we keep patients separate and score once on the official test collection.
+\noindent\textbf{Weight-space programming in medicine.}
+Several preprints followed the report within weeks.
+Lindholz et al.~\cite{lindholz2026} had two LLMs, including \Astra, write a small CNN in one reply from medical knowledge alone, on six MedMNIST tasks at $28\times28$ pixels (including PneumoniaMNIST, derived from the same Kermany collection) and one MRI task; the LLM-written networks were above chance but below the same network trained on 256 labels.
+Their setting has no practice feedback, no random-search baseline and no pretrained network, and the prompt named the dataset and its classes.
+Varam et al.~\cite{varam2026} applied the idea to EEG and ECG: with a few practice subjects and feedback, an LLM wrote an EEG classifier from zeros that matched gradient training on more subjects, but no LLM improved an already well-trained network.
+Other work uses LLMs to audit and repair small clinical decision networks from their weights~\cite{nusrat2026,liu2026}, and a critique finds that LLMs' readings of weights often rest on recognising familiar datasets~\cite{ahmed2026}.
+None of these studies varies what feedback the LLM receives on a medical image task, or compares it with a random search given the same number of evaluations.
+
+We address both on the Kermany pediatric chest X-ray dataset~\cite{kermany2018}, a benchmark on which image-level splits inflate reported accuracy~\cite{singh2024}, so we keep patients separate and score once on the official test collection.
 Our question is: \emph{can an LLM, writing every weight by reasoning, beat a random search given the same number of practice evaluations, and how close does it come to gradient training of the same network?}
 
 \noindent\textbf{Main contributions.}
 \begin{enumerate}
-\item The first controlled test of LLM weight-space programming on a medical imaging task, in three modes: writing a CNN from scratch, writing the final layer of a frozen pretrained network, and editing a fine-tuned network.
-\item A fair protocol: patient-grouped splits, a held-out test collection scored once, a random search matched to the LLM's evaluation budget, a mechanical selection rule, and gradient training of the identical architecture.
+\item A controlled test of LLM weight-space programming on full-resolution chest X-rays with patient-grouped splits, in three modes: writing a CNN from scratch, writing the final layer of a frozen pretrained network, and editing a fine-tuned network. Unlike knowledge-only medical studies~\cite{lindholz2026}, the LLM works in a practice loop, and unlike biosignal work~\cite{varam2026}, its edit improves an already fine-tuned network.
+\item A fair protocol: a held-out test collection scored once, a random search matched to the LLM's evaluation budget (absent from earlier medical studies), a mechanical selection rule, and gradient training of the identical architecture.
 \item An ablation over what the LLM is given, showing that example images add little, practice scores help, and a report on the network's own channels is what brings it close to training; a second LLM reproduces the result.
 \end{enumerate}
 
@@ -301,6 +309,13 @@ On a medical task with no written rules, an LLM can write a working classifier's
 With that feedback it beats a random search given the same budget in every chat, comes within 0.023 AUROC of gradient training on a small CNN, and improves a fine-tuned ResNet-50 from 0.954 to 0.976.
 Gradient training on the same information still wins in every comparison (0.882, 0.947, 0.985).
 The value of the approach is therefore not accuracy but legibility: every weight comes with a stated reason.
+
+\noindent\textbf{Relation to prior medical results.}
+Lindholz et al.~\cite{lindholz2026} report a knowledge-only \Astra{} network at AUROC 0.854 on PneumoniaMNIST, whereas our zero-shot condition A is at chance (0.519).
+The settings differ in three ways: their prompt named the dataset and its classes, while ours withheld both; their images are $28\times28$, ours $224\times224$ with padding; and they score the MedMNIST test split rather than our patient-grouped protocol.
+They also note that exposure of public MedMNIST data during LLM training cannot be excluded, consistent with the critique that LLMs lean on familiar datasets~\cite{ahmed2026}.
+Our results suggest that, when such cues are removed, feedback on the network's own internals is what makes weight-writing work.
+Varam et al.~\cite{varam2026} found that no LLM improved a well-trained EEG network; our edit H did improve a fine-tuned ResNet-50, but with a per-feature report and practice feedback drawn from the test collection, conditions their setting did not provide.
 
 \noindent\textbf{Limitations.}
 We used one dataset from one hospital.
