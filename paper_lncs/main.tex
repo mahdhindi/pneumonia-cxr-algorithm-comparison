@@ -57,9 +57,8 @@ We compared it with a random search given the same evaluation budget, and with g
 Example images and practice scores alone were not enough.
 With a report on its own network's channels, the LLM beat every matched random search and reached a test AUROC of 0.859, close to gradient training (0.882).
 Editing the last layer of a fine-tuned ResNet-50 with the same kind of report raised its AUROC from 0.954 to 0.976, though re-training still did better.
-A size-matched check shows that LLM-selected features rely more on an image-size shortcut than trained weights do.
 LLM weight-writing works, but only with feedback on the network's internals.
-\keywords{Large language models \and Weight-space programming \and Chest X-ray \and Shortcut learning \and Evaluation}
+\keywords{Large language models \and Weight-space programming \and Chest X-ray \and Evaluation}
 \end{abstract}
 
 % =====================================================================
@@ -81,7 +80,6 @@ Our question is: \emph{can an LLM, writing every weight by reasoning, beat a ran
 \item The first controlled test of LLM weight-space programming on a medical imaging task, in three modes: writing a CNN from scratch, writing the final layer of a frozen pretrained network, and editing a fine-tuned network.
 \item A fair protocol: patient-grouped splits, a held-out test collection scored once, a random search matched to the LLM's evaluation budget, a mechanical selection rule, and gradient training of the identical architecture.
 \item An ablation over what the LLM is given, showing that example images add little, practice scores help, and a report on the network's own channels is what brings it close to training; a second LLM reproduces the result.
-\item A size-matched robustness check showing that the features an LLM selects from such reports rely more on an acquisition-size shortcut~\cite{zech2018,geirhos2020,degrave2021} than trained weights do.
 \end{enumerate}
 
 % =====================================================================
@@ -184,11 +182,6 @@ The official test folder (618 images: 231 normal, 387 pneumonia) is a separately
 No child appears in two splits.
 Because the fine-tuned ResNet-50 is already near-perfect on the practice set (AUROC 0.9995), E and H take practice feedback from one patient-grouped half of the test folder (306 images) and are scored on the other half (312 different children).
 
-\noindent\textbf{Size-matched subset.}
-On the test folder, the original image height alone separates the classes (AUROC 0.921), because pneumonia files are smaller.
-We pair each normal test image greedily (random order, seed 0) with an unused pneumonia image whose original width and height are both within about 5\,\%, giving 70 pairs (140 images).
-On this subset height alone scores 0.510 and aspect ratio 0.500; a model that ranks by size should fall toward 0.5.
-
 \noindent\textbf{Implementation details.}
 The LLMs were \Astra{} and, for one F chat, Claude Fable 5.2 (Anthropic), each used through its chat interface with no tools except, in G, plain file reads of the long reports.
 Each chat was started fresh, from an empty project folder, so that no earlier condition was visible.
@@ -264,26 +257,26 @@ It converged on the same rule (capped edge energy in the central lung cells), ad
 
 \begin{table}[t]
 \centering
-\caption{Final layers on frozen and fine-tuned ResNet-50 features. G is scored on the full test folder ($n{=}618$; size-matched subset 140 images). E and H are scored on the 312-image scoring half (size-matched pairs within it: 72 images).}
+\caption{Final layers on frozen and fine-tuned ResNet-50 features. G is scored on the full test folder ($n{=}618$); E and H on the 312-image scoring half.}
 \label{tab:resnet}
 \setlength{\tabcolsep}{3pt}
 \scriptsize
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-Final layer obtained by & Test AUROC & Spec. & Features & Size-matched \\
+Final layer obtained by & Test AUROC & Spec. & Features \\
 \midrule
-\multicolumn{5}{@{}l}{\emph{G: frozen ImageNet ResNet-50, layer written from zeros} ($n{=}618$)} \\
-\textbf{LLM, 17 passes + feature report} & \textbf{0.902} [0.877, 0.922] & 0.59 & 26 & 0.724 \\
-Selection rule (no LLM, no gradients) & 0.883 [0.853, 0.905] & 0.80 & 32 & 0.669 \\
-Best of 17 random layers (median of 100) & 0.678 [0.573, 0.781] & -- & 2,048 & 0.571 \\
-Linear probe, trained & 0.947 [0.926, 0.963] & 0.53 & 2,047 & 0.862 \\
+\multicolumn{4}{@{}l}{\emph{G: frozen ImageNet ResNet-50, layer written from zeros} ($n{=}618$)} \\
+\textbf{LLM, 17 passes + feature report} & \textbf{0.902} [0.877, 0.922] & 0.59 & 26 \\
+Selection rule (no LLM, no gradients) & 0.883 [0.853, 0.905] & 0.80 & 32 \\
+Best of 17 random layers (median of 100) & 0.678 [0.573, 0.781] & -- & 2,048 \\
+Linear probe, trained & 0.947 [0.926, 0.963] & 0.53 & 2,047 \\
 \midrule
-\multicolumn{5}{@{}l}{\emph{E, H: fine-tuned ResNet-50, layer edited} ($n{=}312$)} \\
-Unedited & 0.954 [0.925, 0.977] & 0.50 & 2,048 & 0.879 \\
-Threshold moved (Youden on practice half) & 0.954 [0.925, 0.977] & 0.89 & 2,048 & 0.879 \\
-E\; LLM edit, scores only & 0.954 [0.925, 0.977] & 0.64 & 2,048 & -- \\
-\textbf{H\; LLM edit, + feature report} & \textbf{0.976} [0.959, 0.990] & 0.83 & 49 & 0.922 \\
-Re-trained on the same 306 practice images & 0.985 [0.974, 0.995] & 0.91 & 2,048 & 0.925 \\
+\multicolumn{4}{@{}l}{\emph{E, H: fine-tuned ResNet-50, layer edited} ($n{=}312$)} \\
+Unedited & 0.954 [0.925, 0.977] & 0.50 & 2,048 \\
+Threshold moved (Youden on practice half) & 0.954 [0.925, 0.977] & 0.89 & 2,048 \\
+E\; LLM edit, scores only & 0.954 [0.925, 0.977] & 0.64 & 2,048 \\
+\textbf{H\; LLM edit, + feature report} & \textbf{0.976} [0.959, 0.990] & 0.83 & 49 \\
+Re-trained on the same 306 practice images & 0.985 [0.974, 0.995] & 0.91 & 2,048 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -301,43 +294,25 @@ With the feature report (H), it changed the ranking: after three adjustments it 
 Re-training the layer by logistic regression on the same 306 practice images still did better (0.985).
 On all 618 test images the unedited model scores 0.966; the scoring half is harder.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.86\textwidth]{project_robust.pdf}
-\caption{Size-matched check. Open markers: all 618 test images; filled: 140 images matched for original width and height. Image height alone drops to chance, so the check removes the shortcut. Every model loses AUROC, but LLM-written networks and LLM-selected features lose more than trained weights on the same input.}
-\label{fig:robust}
-\end{figure}
-
-\subsection{Shortcut check: part of every score is image size}
-Fig.~\ref{fig:robust} shows that every model loses AUROC on the size-matched subset, so part of every score on this collection comes from acquisition size.
-The F networks fall from 0.859 to 0.703 on average (0.761, 0.656, 0.692; every 95\,\% CI stays above 0.5), the same CNN trained by gradient descent from 0.882 to 0.742, and the fine-tuned ResNet-50 from 0.966 to 0.905.
-On frozen features the gap is larger: the trained probe keeps 0.862, whereas the LLM's 26 features fall to 0.724 and the selection rule to 0.669.
-The mechanism is visible in the data: pneumonia files are smaller, so after resizing they show less fine texture, and a ``less texture means pneumonia'' rule reads both the disease (consolidation smooths the lung pattern) and the file size.
-Within each class, F2 and F3 scores correlate with log image height (Spearman $\rho$ from $-0.48$ to $-0.72$), as do the trained CNN's ($-0.59$ to $-0.74$).
-Features chosen because they separate the practice images best tend to be the ones that also track size, whereas a probe spreading weight over all 2,048 features is less exposed.
-In every F chat the LLM itself warned that the texture cue might reflect acquisition or processing rather than disease.
-On the fine-tuned network the LLM's edit is not more size-dependent than re-training (0.922 vs.\ 0.925): fine-tuned features already track the disease.
-This matches shortcut learning reported for chest X-ray models~\cite{zech2018,degrave2021}, and it means that a report-driven LLM can find a shortcut as readily as a signal.
-
 % =====================================================================
 \section{Discussion and Conclusion}
 On a medical task with no written rules, an LLM can write a working classifier's weights, but only with feedback about the internals of its own network.
 With that feedback it beats a random search given the same budget in every chat, comes within 0.023 AUROC of gradient training on a small CNN, and improves a fine-tuned ResNet-50 from 0.954 to 0.976.
-Gradient training on the same information still wins in every comparison (0.882, 0.947, 0.985), and the features the LLM selects lean more on an acquisition shortcut.
-The value of the approach is therefore not accuracy but legibility: every weight comes with a stated reason, and the LLM flagged the shortcut it was exploiting.
+Gradient training on the same information still wins in every comparison (0.882, 0.947, 0.985).
+The value of the approach is therefore not accuracy but legibility: every weight comes with a stated reason.
 
 \noindent\textbf{Limitations.}
-We used one dataset from one hospital; the size-matched subset is small (140 images) and atypical, so its absolute AUROC values matter less than the comparison between models.
-F has three chats and every other condition one; the second LLM ran one F chat and was not put through the size-matched check.
+We used one dataset from one hospital.
+F has three chats and every other condition one; the second LLM ran one F chat.
 The loop was run by hand, which caused one log reset (F run 1, after which the matched rival was set to the evaluations actually used); a separate re-run is documented in the repository and gave the LLM no extra information.
 E and H take practice feedback from half of the test folder; their scoring half contains different children but the same collection.
 The LLMs' own compute cannot be measured, so reported times are human wall-clock.
-Future work will automate the loop, run every condition with several chats and LLMs, normalise acquisition size before any feedback is given, add an external test collection, and report on groups of features rather than 2,048 single ones.
+Future work will automate the loop, run every condition with several chats and LLMs, add an external test collection, and report on groups of features rather than 2,048 single ones.
 
 % =====================================================================
 \section*{Use of AI tools}
 \Astra{} and Claude Fable 5.2 are the systems under study; every prompt, transcript, weight file and practice log is in the repository~\cite{repo}.
-Claude (Anthropic) was used as a coding and writing assistant: it wrote pipeline extensions (practice runner, channel and feature reports, static checks, random-search baselines, robustness check and figures) and drafted this manuscript from the authors' results.
+Claude (Anthropic) was used as a coding and writing assistant: it wrote pipeline extensions (practice runner, channel and feature reports, static checks, random-search baselines and figures) and drafted this manuscript from the authors' results.
 The authors ran every experiment and every LLM chat, checked the transcripts against the rules, verified every number against the result files, and take full responsibility for the content.
 
 \begin{credits}

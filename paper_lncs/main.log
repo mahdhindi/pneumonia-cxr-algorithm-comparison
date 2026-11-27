@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.16)  27 NOV 2026 08:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.16)  27 NOV 2026 09:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -777,41 +777,28 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/
 dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-su
 per-ts1.enc}] [2] [3] [4]
-Overfull \hbox (0.51607pt too wide) in paragraph at lines 209--230
+Overfull \hbox (0.51607pt too wide) in paragraph at lines 202--223
  [][] 
  []
 
-<figures/project_ladder.pdf, id=97, 272.9623pt x 211.02841pt>
+<figures/project_ladder.pdf, id=87, 272.9623pt x 211.02841pt>
 File: figures/project_ladder.pdf Graphic file (type pdf)
 <use figures/project_ladder.pdf>
-Package pdftex.def Info: figures/project_ladder.pdf  used on input line 241.
+Package pdftex.def Info: figures/project_ladder.pdf  used on input line 234.
 (pdftex.def)             Requested size: 284.64383pt x 220.07617pt.
-[5] [6 <./figures/project_ladder.pdf>]
-<figures/project_robust.pdf, id=132, 306.7623pt x 200.9077pt>
-File: figures/project_robust.pdf Graphic file (type pdf)
-<use figures/project_robust.pdf>
-Package pdftex.def Info: figures/project_robust.pdf  used on input line 306.
-(pdftex.def)             Requested size: 298.52644pt x 195.52094pt.
- [7] [8 <./figures/project_robust.pdf>]
-(./main.bbl
-Underfull \hbox (badness 2875) in paragraph at lines 30--34
+[5] [6 <./figures/project_ladder.pdf>] [7] (./main.bbl
+Underfull \hbox (badness 3919) in paragraph at lines 20--24
 []\T1/cmr/m/n/9 Hindi, M., Al-Has-sani, K., AlKa-abi, A.: Code, prompts, tran-s
 cripts and
  []
 
 
-Underfull \hbox (badness 5091) in paragraph at lines 30--34
+Underfull \hbox (badness 7981) in paragraph at lines 20--24
 \T1/cmr/m/n/9 re-sults for LLM-written clas-si-fier weights. []$https : / / git
 hub . com / mahdhindi /
  []
 
-[9]
-Underfull \hbox (badness 2080) in paragraph at lines 51--56
-\T1/cmr/m/n/9 (not peer-reviewed), []$https : / / rikiyat . github . io / blog 
-/ weight-[]space-[]programming/$[]
- []
-
-) [10] (./main.aux)
+) [8] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -820,10 +807,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 8605937D6BF7F1CAF54731210889F4B6;694.
  ) 
 Here is how much of TeX's memory you used:
- 20831 strings out of 476106
- 387366 string characters out of 5793932
- 1940975 words of memory out of 5000000
- 42448 multiletter control sequences out of 15000+600000
+ 20810 strings out of 476106
+ 386926 string characters out of 5793932
+ 1938975 words of memory out of 5000000
+ 42435 multiletter control sequences out of 15000+600000
  571612 words of font info for 62 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  84i,10n,87p,729b,828s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -845,10 +832,10 @@ er/sfrm1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti0700.pfb></us
 r/share/texmf/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf/fonts/
 type1/public/cm-super/sftt0900.pfb></usr/share/texmf/fonts/type1/public/cm-supe
 r/sftt1000.pfb>
-Output written on main.pdf (10 pages, 437233 bytes).
+Output written on main.pdf (8 pages, 413520 bytes).
 PDF statistics:
- 292 PDF objects out of 1000 (max. 8388607)
- 204 compressed objects within 3 object streams
- 50 named destinations out of 1000 (max. 500000)
- 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 248 PDF objects out of 1000 (max. 8388607)
+ 175 compressed objects within 2 object streams
+ 42 named destinations out of 1000 (max. 500000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 

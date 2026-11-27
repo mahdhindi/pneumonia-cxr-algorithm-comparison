@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
 \providecommand{\doi}[1]{https://doi.org/#1}
@@ -6,16 +6,6 @@
 \bibitem{bergstra2012}
 Bergstra, J., Bengio, Y.: Random search for hyper-parameter optimization.
   Journal of Machine Learning Research  \textbf{13},  281--305 (2012)
-
-\bibitem{degrave2021}
-DeGrave, A.J., Janizek, J.D., Lee, S.I.: {AI} for radiographic {COVID-19}
-  detection selects shortcuts over signal. Nature Machine Intelligence
-  \textbf{3},  610--619 (2021)
-
-\bibitem{geirhos2020}
-Geirhos, R., Jacobsen, J.H., Michaelis, C., Zemel, R., Brendel, W., Bethge, M.,
-  Wichmann, F.A.: Shortcut learning in deep neural networks. Nature Machine
-  Intelligence  \textbf{2},  665--673 (2020)
 
 \bibitem{ha2017}
 Ha, D., Dai, A.M., Le, Q.V.: Hypernetworks. In: International Conference on
@@ -53,11 +43,5 @@ Takehi, R., Teoh, J., Zhang, A., Khattab, O.: Sparks of weight-space
   CSAIL blog post (not peer-reviewed),
   \url{https://rikiyat.github.io/blog/weight-space-programming/} (2026),
   accessed November 2026
-
-\bibitem{zech2018}
-Zech, J.R., Badgeley, M.A., Liu, M., Costa, A.B., Titano, J.J., Oermann, E.K.:
-  Variable generalization performance of a deep learning model to detect
-  pneumonia in chest radiographs: A cross-sectional study. PLOS Medicine
-  \textbf{15}(11),  e1002683 (2018)
 
 \end{thebibliography}
