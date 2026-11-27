@@ -1,0 +1,63 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{bergstra2012}
+Bergstra, J., Bengio, Y.: Random search for hyper-parameter optimization.
+  Journal of Machine Learning Research  \textbf{13},  281--305 (2012)
+
+\bibitem{degrave2021}
+DeGrave, A.J., Janizek, J.D., Lee, S.I.: {AI} for radiographic {COVID-19}
+  detection selects shortcuts over signal. Nature Machine Intelligence
+  \textbf{3},  610--619 (2021)
+
+\bibitem{geirhos2020}
+Geirhos, R., Jacobsen, J.H., Michaelis, C., Zemel, R., Brendel, W., Bethge, M.,
+  Wichmann, F.A.: Shortcut learning in deep neural networks. Nature Machine
+  Intelligence  \textbf{2},  665--673 (2020)
+
+\bibitem{ha2017}
+Ha, D., Dai, A.M., Le, Q.V.: Hypernetworks. In: International Conference on
+  Learning Representations (ICLR) (2017)
+
+\bibitem{he2016}
+He, K., Zhang, X., Ren, S., Sun, J.: Deep residual learning for image
+  recognition. In: IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR). pp. 770--778 (2016)
+
+\bibitem{repo}
+Hindi, M., AlHassani, K., AlKaabi, A.: Code, prompts, transcripts and results
+  for {LLM}-written classifier weights.
+  \url{https://github.com/mahdhindi/pneumonia-cxr-algorithm-comparison} (branch
+  \texttt{a2-paper-critique}) (2026)
+
+\bibitem{kermany2018}
+Kermany, D.S., Goldbaum, M., Cai, W., et~al.: Identifying medical diagnoses and
+  treatable diseases by image-based deep learning. Cell  \textbf{172}(5),
+  1122--1131 (2018)
+
+\bibitem{romeraparedes2024}
+Romera-Paredes, B., Barekatain, M., Novikov, A., et~al.: Mathematical
+  discoveries from program search with large language models. Nature
+  \textbf{625},  468--475 (2024)
+
+\bibitem{singh2024}
+Singh, S., Kumar, M., Kumar, A., Verma, B.K., Abhishek, K., Selvarajan, S.:
+  Efficient pneumonia detection using vision transformers on chest {X}-rays.
+  Scientific Reports  \textbf{14}, ~2487 (2024)
+
+\bibitem{takehi2026}
+Takehi, R., Teoh, J., Zhang, A., Khattab, O.: Sparks of weight-space
+  programming: {LLMs} can natively read \& write neural network weights. MIT
+  CSAIL blog post (not peer-reviewed),
+  \url{https://rikiyat.github.io/blog/weight-space-programming/} (2026),
+  accessed November 2026
+
+\bibitem{zech2018}
+Zech, J.R., Badgeley, M.A., Liu, M., Costa, A.B., Titano, J.J., Oermann, E.K.:
+  Variable generalization performance of a deep learning model to detect
+  pneumonia in chest radiographs: A cross-sectional study. PLOS Medicine
+  \textbf{15}(11),  e1002683 (2018)
+
+\end{thebibliography}

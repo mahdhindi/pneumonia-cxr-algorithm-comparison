@@ -47,15 +47,18 @@ Fady~[SURNAME]\inst{1}}
 \maketitle
 
 \begin{abstract}
-A recent report claims that a frontier large language model (LLM) can write or edit neural-network weights directly, with no gradient descent.
-Its successes came from tasks whose rules the model can read, such as game source code.
-We test the idea on a task with no written rules: pneumonia detection on pediatric chest X-rays, under patient-grouped splits and a held-out test collection.
-\Astra{} wrote all 5,569 weights of a small CNN under five information conditions, and we compared it with a random search given the same number of practice evaluations and with the same network trained by gradient descent.
-With no feedback the LLM was at chance (test AUROC 0.519); example images added little (0.599); practice scores raised it to 0.737.
-A per-channel diagnostic report raised it to 0.859\,$\pm$\,0.016 over three independent chats, above every matched random search (best 0.821) and close to gradient training (0.882\,$\pm$\,0.012); a second LLM matched the best run (0.876).
-On a frozen ImageNet ResNet-50, an LLM-written final layer reached 0.902 versus 0.947 for a trained linear probe, and an LLM edit of a fine-tuned ResNet-50 raised its AUROC from 0.954 to 0.976, versus 0.985 for re-training.
-A size-matched check shows that LLM-selected features lean more on an image-size shortcut than trained weights do.
-Weight-space programming is real but feedback-driven: the LLM needs a report on its own network's internals, and gradient training still wins.
+Medical image classifiers are normally trained by gradient descent on labelled data.
+A recent report claims that a frontier large language model (LLM) can instead write a network's weights directly.
+But its successes came from tasks whose rules the model can read, such as game source code.
+Whether this works on medical images, which have no written rules, and how it compares with fair baselines, is unknown.
+We test it on pneumonia detection in pediatric chest X-rays, with patient-grouped splits and a held-out test collection.
+An LLM wrote all weights of a small CNN under five information conditions.
+We compared it with a random search given the same evaluation budget, and with gradient training of the same network.
+Example images and practice scores alone were not enough.
+With a report on its own network's channels, the LLM beat every matched random search and reached a test AUROC of 0.859, close to gradient training (0.882).
+Editing the last layer of a fine-tuned ResNet-50 with the same kind of report raised its AUROC from 0.954 to 0.976, though re-training still did better.
+A size-matched check shows that LLM-selected features rely more on an image-size shortcut than trained weights do.
+LLM weight-writing works, but only with feedback on the network's internals.
 \keywords{Large language models \and Weight-space programming \and Chest X-ray \and Shortcut learning \and Evaluation}
 \end{abstract}
 

@@ -1,0 +1,59 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{takehi2026}
+\citation{romeraparedes2024}
+\citation{ha2017}
+\@writefile{toc}{\contentsline {title}{Can an LLM Write a Medical Classifier's Weights?\unskip \ \ignorespaces  A Controlled Test of Weight-Space Programming on Pediatric Chest X-rays}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\authcount {4}}
+\@writefile{toc}{\contentsline {author}{Mahd Hindi \and Khaled AlHassani \and Abdullah AlKaabi \and Fady~[SURNAME]}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1.1}\protected@file@percent }
+\citation{kermany2018}
+\citation{singh2024}
+\citation{zech2018,geirhos2020,degrave2021}
+\citation{he2016}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Method}{2}{section.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Networks the LLM writes}{2}{subsection.1.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The practice loop. Each condition is a fresh LLM chat. The LLM returns a file that builds every weight; a static check and a sandbox enforce the rules before the weights are loaded. Practice passes return feedback on practice images only; the LLM decides when to stop, and its FINAL file is scored once on the test collection. Conditions differ only in what the prompt and the feedback contain (Table~\ref {tab:conds}).}}{3}{figure.1.1}\protected@file@percent }
+\newlabel{fig:loop}{{1}{3}{The practice loop. Each condition is a fresh LLM chat. The LLM returns a file that builds every weight; a static check and a sandbox enforce the rules before the weights are loaded. Practice passes return feedback on practice images only; the LLM decides when to stop, and its FINAL file is scored once on the test collection. Conditions differ only in what the prompt and the feedback contain (Table~\ref {tab:conds})}{figure.1.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Information conditions. Letters follow the order in which conditions were run; rows are ordered by how much information the LLM receives.}}{3}{table.1.1}\protected@file@percent }
+\newlabel{tab:conds}{{1}{3}{Information conditions. Letters follow the order in which conditions were run; rows are ordered by how much information the LLM receives}{table.1.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Information conditions}{3}{subsection.1.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Rules}{3}{subsection.1.2.3}\protected@file@percent }
+\citation{bergstra2012}
+\citation{kermany2018}
+\citation{repo}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Rivals}{4}{subsection.1.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Experimental Setup}{4}{section.1.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Small CNN (5,569 parameters) on the official test folder ($n{=}618$). Brackets: 95\,\% bootstrap CI for single runs; 5th--95th percentile for random rows. $\pm $: SD over chats or seeds.}}{5}{table.1.2}\protected@file@percent }
+\newlabel{tab:main}{{2}{5}{Small CNN (5,569 parameters) on the official test folder ($n{=}618$). Brackets: 95\,\% bootstrap CI for single runs; 5th--95th percentile for random rows. $\pm $: SD over chats or seeds}{table.1.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{5}{section.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Writing a CNN from scratch}{5}{subsection.1.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Ablation over what the LLM receives (test AUROC, $n{=}618$). Example images add 0.08 (C vs.\ A); practice scores add 0.22 (B vs.\ A); images on top of practice add 0.01 (D vs.\ B); the channel report adds a further 0.11 (F vs.\ D). Every F run lies above the 95th percentile of its matched random search.}}{6}{figure.1.2}\protected@file@percent }
+\newlabel{fig:ladder}{{2}{6}{Ablation over what the LLM receives (test AUROC, $n{=}618$). Example images add 0.08 (C vs.\ A); practice scores add 0.22 (B vs.\ A); images on top of practice add 0.01 (D vs.\ B); the channel report adds a further 0.11 (F vs.\ D). Every F run lies above the 95th percentile of its matched random search}{figure.1.2}{}}
+\citation{zech2018,degrave2021}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Final layers on frozen and fine-tuned ResNet-50 features. G is scored on the full test folder ($n{=}618$; size-matched subset 140 images). E and H are scored on the 312-image scoring half (size-matched pairs within it: 72 images).}}{7}{table.1.3}\protected@file@percent }
+\newlabel{tab:resnet}{{3}{7}{Final layers on frozen and fine-tuned ResNet-50 features. G is scored on the full test folder ($n{=}618$; size-matched subset 140 images). E and H are scored on the 312-image scoring half (size-matched pairs within it: 72 images)}{table.1.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Pretrained features: writing and editing a final layer}{7}{subsection.1.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Shortcut check: part of every score is image size}{7}{subsection.1.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Size-matched check. Open markers: all 618 test images; filled: 140 images matched for original width and height. Image height alone drops to chance, so the check removes the shortcut. Every model loses AUROC, but LLM-written networks and LLM-selected features lose more than trained weights on the same input.}}{8}{figure.1.3}\protected@file@percent }
+\newlabel{fig:robust}{{3}{8}{Size-matched check. Open markers: all 618 test images; filled: 140 images matched for original width and height. Image height alone drops to chance, so the check removes the shortcut. Every model loses AUROC, but LLM-written networks and LLM-selected features lose more than trained weights on the same input}{figure.1.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion and Conclusion}{8}{section.1.5}\protected@file@percent }
+\citation{repo}
+\bibstyle{splncs04}
+\bibdata{refs}
+\bibcite{bergstra2012}{1}
+\bibcite{degrave2021}{2}
+\bibcite{geirhos2020}{3}
+\bibcite{ha2017}{4}
+\bibcite{he2016}{5}
+\bibcite{repo}{6}
+\bibcite{kermany2018}{7}
+\@writefile{toc}{\contentsline {subsubsection}{Acknowledgments.}{9}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Disclosure of Interests.}{9}{section*.4}\protected@file@percent }
+\bibcite{romeraparedes2024}{8}
+\bibcite{singh2024}{9}
+\bibcite{takehi2026}{10}
+\bibcite{zech2018}{11}
+\gdef \@abspage@last{10}
