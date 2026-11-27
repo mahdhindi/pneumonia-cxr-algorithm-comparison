@@ -125,7 +125,7 @@ For conditions E and H the network is our own ResNet-50, fully fine-tuned on the
 \subsection{Information conditions}
 Table~\ref{tab:conds} lists what each condition gives the LLM.
 Every condition receives the exact architecture, the preprocessing code path and the scoring rule, but not the dataset's name or class proportions.
-In a \emph{practice pass} the LLM sends a complete weight file, which we run once, with no training, on the next 256 of 782 practice images (cycling), returning AUROC, accuracy, sensitivity, specificity, per-class mean probability and a per-image score table.
+Fig.~\ref{fig:loop} shows the loop: in a \emph{practice pass} the LLM sends a complete weight file, which we run once, with no training, on the next 256 of 782 practice images (cycling), returning AUROC, accuracy, sensitivity, specificity, per-class mean probability and a per-image score table.
 The \emph{channel report} (F) adds, for each of the 16 conv1 and 32 conv2 channels, the mean activation per class, its \emph{separation} (the AUROC of that channel's mean activation alone), the share of images on which it is silent, and, for conv2, its mean contribution to the logit per class.
 The \emph{feature report} (G, H) gives the same statistics for each of the 2,048 ResNet-50 features, sorted by separation; no images are attached in G, E or H because those features have no names.
 F was run in three independent chats; every other condition in one.
